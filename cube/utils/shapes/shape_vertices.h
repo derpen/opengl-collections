@@ -8,4 +8,7 @@ extern size_t vertexCount;
 extern size_t vertexSize;
 extern size_t indexSize;
 
+extern float verticesNoEBO[];
+extern size_t vertexNOEBOSize;
+
 #endif

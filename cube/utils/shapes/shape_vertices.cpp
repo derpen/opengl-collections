@@ -5,33 +5,72 @@
 
 // This is a cube
 float vertices[] = {
-    -0.5f, -0.5f, -0.5f,  // 0: Left  bottom back
-     0.5f, -0.5f, -0.5f,  // 1: Right bottom back
-     0.5f,  0.5f, -0.5f,  // 2: Right top    back
-    -0.5f,  0.5f, -0.5f,  // 3: Left  top    back
-    -0.5f, -0.5f,  0.5f,  // 4: Left  bottom front
-     0.5f, -0.5f,  0.5f,  // 5: Right bottom front
-     0.5f,  0.5f,  0.5f,  // 6: Right top    front
-    -0.5f,  0.5f,  0.5f   // 7: Left  top    front
+  // Positions          // Texture Coords
+  // Front face
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+   0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+   0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+  -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+  // Back face
+  -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+   0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+   0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+};
+
+float verticesNoEBO[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
 // Indices for drawing the cube with EBO
 unsigned int indices[] = {
-    // Back face
-    0, 1, 2,   0, 2, 3,
-    // Front face
-    4, 5, 6,   4, 6, 7,
-    // Left face
-    0, 3, 7,   0, 7, 4,
-    // Right face
-    1, 5, 6,   1, 6, 2,
-    // Bottom face
-    0, 1, 5,   0, 5, 4,
-    // Top face
-    3, 2, 6,   3, 6, 7
+  0, 1, 2, 2, 3, 0,  // Front face
+  4, 5, 6, 6, 7, 4,  // Back face
 };
 
 // Explicit array sizes
 size_t vertexCount = sizeof(vertices) / sizeof(vertices[0]);
-size_t vertexSize = sizeof(vertices);                          
+size_t vertexSize = sizeof(vertices);
 size_t indexSize = sizeof(indices);
+
+size_t vertexNOEBOSize = sizeof(verticesNoEBO);

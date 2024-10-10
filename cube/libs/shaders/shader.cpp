@@ -32,9 +32,11 @@ unsigned int createShaderProgram(const std::string &vertexPath, const std::strin
 }
 
 std::string readShaderSource(const std::string &filepath){
-  std::ifstream file(filepath);
+  std::ifstream file;
+  file.open(filepath);
   std::stringstream buffer;
   buffer << file.rdbuf();
+  file.close();
   return buffer.str();
 }
 
