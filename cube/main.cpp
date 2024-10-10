@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "libs/textures/texture_loader.h"
 #include "libs/shaders/shader.h"
 #include "utils/shapes/shape_vertices.h"
@@ -58,6 +58,15 @@ int main(){
   glEnableVertexAttribArray(1);
 
   unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+  unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+  unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+
+  // Le Perspective/Projection
+  glUseProgram(shaderProgram);
+  glm::mat4 projection;
+  projection = glm::perspective(glm::radians(45.0f), (float)WIDTH/(float)HEIGHT, 0.1f, 100.0f);
+  glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projection[0][0]);
+
   unsigned int texture = loadTexture("assets/textures/osaka.jpg");
 
   /*// Wireframe*/
@@ -74,9 +83,15 @@ int main(){
 
     glUseProgram(shaderProgram);
 
+    // Set view
+    glm::mat4 view = glm::mat4(1.0);
+    view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0f));
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+
+    // Rotate cube with model matrix
     glm::mat4 model = glm::mat4(1.0);
     float timeValue = glfwGetTime();
-    model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.3f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
     glBindTexture(GL_TEXTURE_2D, texture);
