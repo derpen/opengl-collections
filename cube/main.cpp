@@ -1,3 +1,4 @@
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 #include <iostream>
 #include <glad/glad.h>
@@ -72,6 +73,10 @@ int main(){
   /*// Wireframe*/
   /*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 
+  float cubeSize = 1.0f;
+  float spacing = 0.6f;
+  int gridSize = 10;
+
   glEnable(GL_DEPTH_TEST);  
 
   while(!glfwWindowShouldClose(window)){
@@ -85,20 +90,25 @@ int main(){
 
     // Set view
     glm::mat4 view = glm::mat4(1.0);
-    view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0f));
+    view = glm::translate(view, glm::vec3(0.0f, -1.5f, -10.0f));
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
 
-    // Rotate cube with model matrix
-    glm::mat4 model = glm::mat4(1.0);
-    float timeValue = glfwGetTime();
-    model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+    for(int x = -gridSize; x < gridSize; x++){
+      for(int z = -gridSize; z < gridSize; z++){
+        glm::mat4 model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(x * (cubeSize + spacing), 0.0f, z * (cubeSize + spacing)));
+        float timeValue = glfwGetTime();
+        model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glBindVertexArray(VAO);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindVertexArray(VAO);
 
-    /*glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);*/
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+        /*glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);*/
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+      }
+    }
+
 
     glfwSwapBuffers(window);
     glfwPollEvents();
