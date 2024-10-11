@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "libs/textures/texture_loader.h"
 #include "libs/shaders/shader.h"
+#include "libs/camera/fps_camera_control.h"
 #include "utils/shapes/shape_vertices.h"
 
 const unsigned int WIDTH = 800;
@@ -15,7 +16,14 @@ const unsigned int HEIGHT = 600;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
+Camera cameraClass = Camera();
+
+float deltaTime = 0.0;
+float lastFrame = 0.0;
+
 int main(){
+  std::cout << "The nightmare begins once more.. \n" ;
+    
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -88,17 +96,25 @@ int main(){
 
     glUseProgram(shaderProgram);
 
+    float currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
     // Set view
     glm::mat4 view = glm::mat4(1.0);
-    view = glm::translate(view, glm::vec3(0.0f, -1.5f, -10.0f));
+    /*view = glm::translate(view, glm::vec3(0.0f, -0.0f, -10.0f));*/
+    view = glm::lookAt(cameraClass.Position, cameraClass.Position + cameraClass.Front, cameraClass.Up);
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
 
     for(int x = -gridSize; x < gridSize; x++){
       for(int z = -gridSize; z < gridSize; z++){
         glm::mat4 model = glm::mat4(1.0);
-        model = glm::translate(model, glm::vec3(x * (cubeSize + spacing), 0.0f, z * (cubeSize + spacing)));
-        float timeValue = glfwGetTime();
-        model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(x * (cubeSize + spacing), -1.0f, z * (cubeSize + spacing)));
+
+        /*// To rotate*/
+        /*float timeValue = glfwGetTime();*/
+        /*model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));*/
+
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -131,5 +147,17 @@ void processInput(GLFWwindow* window){
   /*if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){*/
   if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
     glfwSetWindowShouldClose(window, true);
+  }
+  if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+    cameraClass.processKeyboard(FORWARD, deltaTime);
+  }
+  if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+    cameraClass.processKeyboard(BACKWARD, deltaTime);
+  }
+  if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+    cameraClass.processKeyboard(LEFT, deltaTime);
+  }
+  if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+    cameraClass.processKeyboard(RIGHT, deltaTime);
   }
 }

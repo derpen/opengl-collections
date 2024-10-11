@@ -1,5 +1,4 @@
-#ifndef SHAPE_VERTICES_H
-#define SHAPE_VERTICES_H
+#pragma once
 #include <stdio.h>
 
 extern float vertices[];  // Vertex data
@@ -10,5 +9,3 @@ extern size_t indexSize;
 
 extern float verticesNoEBO[];
 extern size_t vertexNOEBOSize;
-
-#endif
