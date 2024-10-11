@@ -13,10 +13,15 @@
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
-Camera cameraClass = Camera();
+// Cam controls
+Camera cameraClass = Camera(); // Default is at vec3(0.0, 0.0, 3.0)
+float lastX = WIDTH / 2.0;
+float lastY = HEIGHT / 2.0;
+bool firstMouse = true;
 
 float deltaTime = 0.0;
 float lastFrame = 0.0;
@@ -44,6 +49,10 @@ int main(){
   }
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+  // le mouz
+  glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   unsigned int shaderProgram = createShaderProgram("shaders/cube.vert", "shaders/cube.frag");
 
@@ -91,7 +100,7 @@ int main(){
     processInput(window);
 
     // BG color
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderProgram);
@@ -103,7 +112,7 @@ int main(){
     // Set view
     glm::mat4 view = glm::mat4(1.0);
     /*view = glm::translate(view, glm::vec3(0.0f, -0.0f, -10.0f));*/
-    view = glm::lookAt(cameraClass.Position, cameraClass.Position + cameraClass.Front, cameraClass.Up);
+    view = cameraClass.GetViewMatrix();
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
 
     for(int x = -gridSize; x < gridSize; x++){
@@ -160,4 +169,30 @@ void processInput(GLFWwindow* window){
   if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
     cameraClass.processKeyboard(RIGHT, deltaTime);
   }
+
+  //SHIFT SPRINT
+  if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+    cameraClass.isSprinting = true;
+  }
+  if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
+    cameraClass.isSprinting = false;
+  }
+}
+
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
+  float xpos = static_cast<float>(xposIn);
+  float ypos = static_cast<float>(yposIn);
+
+  if(firstMouse){
+    lastX = xpos;
+    lastY = ypos;
+    firstMouse = false;
+  }
+
+  float xoffset = xpos - lastX;
+  float yoffset = lastY - ypos; // Reverse since y go from up to bottom
+  lastX = xpos;
+  lastY = ypos;
+
+  cameraClass.processMouse(xoffset, yoffset);
 }
