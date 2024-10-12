@@ -13,7 +13,7 @@ enum cameraDirection {
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float CAMERASPEED = 3.0f;
-const float CAMERASPRINTSPEED = 6.0f;
+const float CAMERASPRINTSPEED = CAMERASPEED * 2.0f;
 const float SENSITIVITY = 0.1f;
 
 class Camera{

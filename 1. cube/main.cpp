@@ -19,19 +19,34 @@ const unsigned int HEIGHT = 600;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+
+// MOVE ALL OF THIS TO ANOTHER FILE LATER !!! -----------------------------
+
 void imguiInit(GLFWwindow* window);
 void imguiStartFrame();
 void imguiEndFrame();
 void imguiShutdown();
+void imguiSimpleCubeDebugMenu(float* mouseSens, float* movementSpeed, float* cubeRotateSpeed, float* cubeSize, float* cubeSpacing);
+void imguiHandleClick();
+
+// MAKE A SEPARATE CLASS TO HANDLE INPUT
+bool cursorHidden = true; // On by default
+bool isHideCursorButtonTriggered = false;
+int hideCursorButton = GLFW_KEY_R;
+
+// END --------------------------------------------------------------------------
 
 // Cam controls
 Camera cameraClass = Camera(); // Default is at vec3(0.0, 0.0, 3.0)
 float lastX = WIDTH / 2.0;
 float lastY = HEIGHT / 2.0;
 bool firstMouse = true;
-bool cursorHidden = true; // On by default
-bool isHideCursorButtonTriggered = false;
-int hideCursorButton = GLFW_KEY_R;
+
+// Cube modifiers
+float cubeSize = 1.5f;
+float spacing = 0.6f;
+float cubeRotateSpeed = 50.0f;
+int gridSize = 10;
 
 float deltaTime = 0.0;
 float lastFrame = 0.0;
@@ -100,10 +115,6 @@ int main(){
   /*// Wireframe*/
   /*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 
-  float cubeSize = 1.5f;
-  float spacing = 0.6f;
-  int gridSize = 10;
-
   glEnable(GL_DEPTH_TEST);  
 
   imguiInit(window);
@@ -138,7 +149,7 @@ int main(){
 
         // To rotate
         float timeValue = glfwGetTime();
-        model = glm::rotate(model, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(timeValue * cubeRotateSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
@@ -236,7 +247,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
 void imguiInit(GLFWwindow* window){
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
-  ImGuiIO& io = ImGui::GetIO();
+
+  
+  /*// This one to handle input with controller, keyboard, and shit*/
+  /*ImGuiIO& io = ImGui::GetIO();*/
+
   ImGui_ImplGlfw_InitForOther(window, true);
   ImGui_ImplOpenGL3_Init();
 }
@@ -245,7 +260,14 @@ void imguiStartFrame(){
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
-  ImGui::ShowDemoWindow();
+  /*ImGui::ShowDemoWindow();*/
+  imguiSimpleCubeDebugMenu(
+    &cameraClass.MouseSensitivity, 
+    &cameraClass.MovementSpeed, 
+    &cubeRotateSpeed, 
+    &cubeSize, 
+    &spacing
+  );
 }
 
 void imguiEndFrame(){
@@ -257,4 +279,21 @@ void imguiShutdown(){
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
+}
+
+// This one is the real shit
+void imguiSimpleCubeDebugMenu(float* mouseSens, float* movementSpeed, float* cubeRotateSpeed, float* cubeSize, float* cubeSpacing){
+  ImGui::Begin("Debug Area", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+
+  ImGui::SliderFloat("Mouse Sensitivity", mouseSens, 0.0f, 2.0f);
+
+  ImGui::SliderFloat("Movement Speed", movementSpeed, 0.0f, 10.0f);
+
+  ImGui::SliderFloat("Cube rotate speed", cubeRotateSpeed, 0.0f, 100.0f);
+
+  ImGui::SliderFloat("Cube Size", cubeSize, 0.0f, 100.0f);
+
+  ImGui::SliderFloat("Cube spacing", cubeSpacing, 0.0f, 10.0f);
+
+  ImGui::End();
 }
