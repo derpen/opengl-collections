@@ -8,11 +8,13 @@
 #include "libs/textures/texture_loader.h"
 #include "libs/shaders/shader.h"
 #include "libs/camera/fps_camera_control.h"
+#include "libs/imgui_debug_menu/imgui_debug.h"
+#include "libs/input/user_input.h"
 #include "utils/shapes/shape_vertices.h"
 #include "include/imgui/imgui.h"
 #include "include/imgui/backends/imgui_impl_glfw.h"
 #include "include/imgui/backends/imgui_impl_opengl3.h"
-
+ 
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
 
@@ -20,27 +22,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
-// MOVE ALL OF THIS TO ANOTHER FILE LATER !!! -----------------------------
-
-void imguiInit(GLFWwindow* window);
-void imguiStartFrame();
-void imguiEndFrame();
-void imguiShutdown();
-void imguiSimpleCubeDebugMenu(float* mouseSens, float* movementSpeed, float* cubeRotateSpeed, float* cubeSize, float* cubeSpacing);
-void imguiHandleClick();
-
-// MAKE A SEPARATE CLASS TO HANDLE INPUT
-bool cursorHidden = true; // On by default
-bool isHideCursorButtonTriggered = false;
-int hideCursorButton = GLFW_KEY_R;
-
-// END --------------------------------------------------------------------------
-
 // Cam controls
 Camera cameraClass = Camera(); // Default is at vec3(0.0, 0.0, 3.0)
 float lastX = WIDTH / 2.0;
 float lastY = HEIGHT / 2.0;
-bool firstMouse = true;
 
 // Cube modifiers
 float cubeSize = 1.5f;
@@ -50,6 +35,15 @@ int gridSize = 10;
 
 float deltaTime = 0.0;
 float lastFrame = 0.0;
+
+//Create debug menu
+IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
+void imguiStartFrame();
+void imguiSimpleCubeDebugMenu(float* mouseSens, float* movementSpeed, float* cubeRotateSpeed, float* cubeSize, float* cubeSpacing, bool* flyingCamera, int* gridSize);
+
+//Input
+UserInput Input = UserInput();
+
 
 int main(){
   std::cout << "The nightmare begins once more.. \n" ;
@@ -117,7 +111,7 @@ int main(){
 
   glEnable(GL_DEPTH_TEST);  
 
-  imguiInit(window);
+  debugMenu.imguiInit(window);
 
   while(!glfwWindowShouldClose(window)){
     processInput(window);
@@ -161,7 +155,7 @@ int main(){
       }
     }
 
-    imguiEndFrame();
+    debugMenu.imguiEndFrame();
 
     glfwSwapBuffers(window);
   }
@@ -170,7 +164,7 @@ int main(){
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
   glDeleteProgram(shaderProgram);
-  imguiShutdown();
+  debugMenu.imguiShutdown();
 
   glfwTerminate();
   return 0;
@@ -199,20 +193,12 @@ void processInput(GLFWwindow* window){
   }
 
   //Toggle Cursor
-  if(glfwGetKey(window, hideCursorButton) == GLFW_PRESS){
-    if(!isHideCursorButtonTriggered){
-      firstMouse = true;
-      if(cursorHidden){
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        cursorHidden = false;
-      } else {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        cursorHidden = true;
-      }
-      isHideCursorButtonTriggered = true;
+  if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
+    if(!Input.isHideCursorButtonTriggered){
+      Input.EnableCursor(window);
     }
-  } else if (glfwGetKey(window, hideCursorButton) == GLFW_RELEASE){
-      isHideCursorButtonTriggered = false;
+  } else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE){
+      Input.isHideCursorButtonTriggered = false;
   }
 
   //SHIFT SPRINT
@@ -225,14 +211,14 @@ void processInput(GLFWwindow* window){
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
-  if(cursorHidden){
+  if(Input.cursorHidden){
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 
-    if(firstMouse){
+    if(Input.firstMouse){
       lastX = xpos;
       lastY = ypos;
-      firstMouse = false;
+      Input.firstMouse = false;
     }
 
     float xoffset = xpos - lastX;
@@ -242,18 +228,6 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
 
     cameraClass.processMouse(xoffset, yoffset);
   }
-}
-
-void imguiInit(GLFWwindow* window){
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-
-  
-  /*// This one to handle input with controller, keyboard, and shit*/
-  /*ImGuiIO& io = ImGui::GetIO();*/
-
-  ImGui_ImplGlfw_InitForOther(window, true);
-  ImGui_ImplOpenGL3_Init();
 }
 
 void imguiStartFrame(){
@@ -266,34 +240,31 @@ void imguiStartFrame(){
     &cameraClass.MovementSpeed, 
     &cubeRotateSpeed, 
     &cubeSize, 
-    &spacing
+    &spacing,
+    &cameraClass.flyingCamera,
+    &gridSize
   );
 }
 
-void imguiEndFrame(){
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void imguiShutdown(){
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-}
-
-// This one is the real shit
-void imguiSimpleCubeDebugMenu(float* mouseSens, float* movementSpeed, float* cubeRotateSpeed, float* cubeSize, float* cubeSpacing){
+// This one is the real shit that creates the menu
+void imguiSimpleCubeDebugMenu(float* mouseSens, float* movementSpeed, float* cubeRotateSpeed, float* cubeSize, float* cubeSpacing, bool* flyingCamera, int* gridSize){
   ImGui::Begin("Debug Area", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
   ImGui::SliderFloat("Mouse Sensitivity", mouseSens, 0.0f, 2.0f);
 
-  ImGui::SliderFloat("Movement Speed", movementSpeed, 0.0f, 10.0f);
+  ImGui::SliderFloat("Movement Speed", movementSpeed, 0.0f, 100.0f);
 
   ImGui::SliderFloat("Cube rotate speed", cubeRotateSpeed, 0.0f, 100.0f);
 
   ImGui::SliderFloat("Cube Size", cubeSize, 0.0f, 100.0f);
 
   ImGui::SliderFloat("Cube spacing", cubeSpacing, 0.0f, 10.0f);
+
+  ImGui::SliderInt("Grid Size", gridSize, 0, 50);
+
+  ImGui::Checkbox("Flying Camera", flyingCamera);
+  ImGui::SameLine();
+  debugMenu.HelpMarker("If turned off, FPS camera style is used");
 
   ImGui::End();
 }

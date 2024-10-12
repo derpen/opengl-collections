@@ -11,7 +11,7 @@ Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp) : MovementSpeed(CAMERASP
 void Camera::processKeyboard(cameraDirection currentDir, float deltaTime) {
   float currentSpeed = MovementSpeed;
   if(isSprinting){
-    currentSpeed = SprintSpeed;
+    currentSpeed = MovementSpeed * SprintSpeed;
   }
 
   float velocity = currentSpeed * deltaTime;
@@ -29,7 +29,9 @@ void Camera::processKeyboard(cameraDirection currentDir, float deltaTime) {
     Position += glm::normalize(glm::cross(Front, Up)) * velocity;
   }
 
-  Position.y = 0.0f;
+  if(!flyingCamera){
+    Position.y = 0.0f;
+  }
 }
 
 glm::mat4 Camera::GetViewMatrix(){

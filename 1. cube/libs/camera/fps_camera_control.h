@@ -13,8 +13,9 @@ enum cameraDirection {
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float CAMERASPEED = 3.0f;
-const float CAMERASPRINTSPEED = CAMERASPEED * 2.0f;
+const float CAMERASPRINTSPEED = 2.0f;
 const float SENSITIVITY = 0.1f;
+const bool FLYINGCAMERA = false;
 
 class Camera{
 public:
@@ -29,6 +30,8 @@ public:
 
   float MouseYaw;
   float MousePitch;
+
+  bool flyingCamera = FLYINGCAMERA;
 
   //Sprint
   float SprintSpeed = CAMERASPRINTSPEED;
