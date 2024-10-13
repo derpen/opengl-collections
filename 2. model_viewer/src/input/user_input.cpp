@@ -16,3 +16,7 @@ void UserInput::EnableCursor(GLFWwindow* window){
     isHideCursorButtonTriggered = true;
   }
 }
+
+bool UserInput::isMousePressed(unsigned int mouseButton){
+  return true;
+}

@@ -7,6 +7,8 @@ public:
   bool firstMouse = true;
   bool isHideCursorButtonTriggered = false;
 
+  bool isMousePressed(unsigned int mouseButton);
+
   UserInput();
   void EnableCursor(GLFWwindow* window);
 };

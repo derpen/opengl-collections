@@ -1,8 +1,9 @@
 # Stuffs in opengl
 
-Currently can only compile on linux
+Developed in Linux. Therefore, currently can only compile on linux.
 
 ## TODO
 
 * Make a release page, release as binaries
-* Make tutorial to compile on windows
+* Better Makefile
+* Compile on windows

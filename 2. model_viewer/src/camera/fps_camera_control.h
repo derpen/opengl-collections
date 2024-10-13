@@ -15,7 +15,7 @@ const float PITCH = 0.0f;
 const float CAMERASPEED = 3.0f;
 const float CAMERASPRINTSPEED = 2.0f;
 const float SENSITIVITY = 0.1f;
-const bool FLYINGCAMERA = false;
+const bool FLYINGCAMERA = true;
 
 class Camera{
 public:
