@@ -1,3 +1,8 @@
 # Stuffs in opengl
 
-:3
+Currently can only compile on linux
+
+## TODO
+
+* Make a release page, release as binaries
+* Make tutorial to compile on windows

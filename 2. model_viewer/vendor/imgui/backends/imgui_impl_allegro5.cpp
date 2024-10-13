@@ -83,7 +83,7 @@ struct ImDrawVertAllegro
 // FIXME-OPT: Unfortunately Allegro doesn't support 32-bit packed colors so we have to convert them to 4 float as well..
 // FIXME-OPT: Consider inlining al_map_rgba()?
 // see https://github.com/liballeg/allegro5/blob/master/src/pixels.c#L554
-// and https://github.com/liballeg/allegro5/blob/master/include/allegro5/internal/aintern_pixels.h
+// and https://github.com/liballeg/allegro5/blob/master/vendor/allegro5/internal/aintern_pixels.h
 #define DRAW_VERT_IMGUI_TO_ALLEGRO(DST, SRC)  { (DST)->pos = (SRC)->pos; (DST)->uv = (SRC)->uv; unsigned char* c = (unsigned char*)&(SRC)->col; (DST)->col = al_map_rgba(c[0], c[1], c[2], c[3]); }
 
 // Allegro Data

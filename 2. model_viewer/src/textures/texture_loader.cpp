@@ -1,7 +1,7 @@
 #include "texture_loader.h"
 #include <iostream>
 #include <glad/glad.h>
-#include "../../include/stb/stb_image.h"
+#include "../../vendor/stb/stb_image.h"
 
 unsigned int loadTexture(const char* path){
   unsigned int textureId;

@@ -1,7 +1,7 @@
 #include "imgui_debug.h"
-#include "../../include/imgui/imgui.h"
-#include "../../include/imgui/backends/imgui_impl_glfw.h"
-#include "../../include/imgui/backends/imgui_impl_opengl3.h"
+#include "../../vendor/imgui/imgui.h"
+#include "../../vendor/imgui/backends/imgui_impl_glfw.h"
+#include "../../vendor/imgui/backends/imgui_impl_opengl3.h"
 
 IMGUI_DEBUG::IMGUI_DEBUG(){};
 

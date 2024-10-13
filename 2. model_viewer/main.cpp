@@ -5,15 +5,15 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "libs/textures/texture_loader.h"
-#include "libs/shaders/shader.h"
-#include "libs/camera/fps_camera_control.h"
-#include "libs/imgui_debug_menu/imgui_debug.h"
-#include "libs/input/user_input.h"
-#include "utils/shapes/shape_vertices.h"
-#include "include/imgui/imgui.h"
-#include "include/imgui/backends/imgui_impl_glfw.h"
-#include "include/imgui/backends/imgui_impl_opengl3.h"
+#include "src/textures/texture_loader.h"
+#include "src/shaders/shader.h"
+#include "src/camera/fps_camera_control.h"
+#include "src/imgui_debug_menu/imgui_debug.h"
+#include "src/input/user_input.h"
+#include "src/utils/shapes/shape_vertices.h"
+#include "vendor/imgui/imgui.h"
+#include "vendor/imgui/backends/imgui_impl_glfw.h"
+#include "vendor/imgui/backends/imgui_impl_opengl3.h"
  
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;

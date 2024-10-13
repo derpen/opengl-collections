@@ -2,9 +2,9 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall
 LIBS = -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGLEW
 
-IMGUI_DIRS = include/imgui
+IMGUI_DIRS = vendor/imgui
 
-SOURCES = main.cpp glad.c libs/shaders/shader.cpp utils/shapes/shape_vertices.cpp include/stb/stb_image.cpp libs/textures/texture_loader.cpp libs/camera/fps_camera_control.cpp include/imgui/backends/imgui_impl_glfw.cpp include/imgui/backends/imgui_impl_opengl3.cpp $(wildcard $(IMGUI_DIRS)/*.cpp) libs/imgui_debug_menu/imgui_debug.cpp libs/input/user_input.cpp
+SOURCES = main.cpp glad.c src/shaders/shader.cpp src/utils/shapes/shape_vertices.cpp vendor/stb/stb_image.cpp src/textures/texture_loader.cpp src/camera/fps_camera_control.cpp vendor/imgui/backends/imgui_impl_glfw.cpp vendor/imgui/backends/imgui_impl_opengl3.cpp $(wildcard $(IMGUI_DIRS)/*.cpp) src/imgui_debug_menu/imgui_debug.cpp src/input/user_input.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS := $(OBJECTS:.c=.o)
