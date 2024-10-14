@@ -106,15 +106,12 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     mat->GetTexture(type, i, &str);
     bool skip = false;
 
-    // TODO: OPTIMIZATION USING MAP HERE
-    for(unsigned int j = 0; j < m_TexturesLoaded.size(); j++){
-      if(std::strcmp(m_TexturesLoaded[j].path.data(), str.C_Str()) == 0){
-        textures.push_back(m_TexturesLoaded[j]);
-        skip = true; 
-        break;
-      }
+    std::string texturePath = str.C_Str();
+    if(m_TexturesMap.find(texturePath) != m_TexturesMap.end()){
+      textures.push_back(m_TexturesMap[texturePath]);
+      skip = true;
+      break;
     }
-    // TODO DONE
 
     if(!skip){
       Texture texture;
@@ -122,7 +119,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
       texture.type = typeName;
       texture.path = str.C_Str();
       textures.push_back(texture);
-      m_TexturesLoaded.push_back(texture);
+
+      m_TexturesMap[texturePath] = texture;
     }
   }
 

@@ -5,12 +5,15 @@
 #include "mesh.h"
 #include "../shaders/shader.h"
 #include <vector>
-
+#include <unordered_map>
 
 class Model{
 public:
   std::vector<Mesh> m_Meshes;
-  std::vector<Texture> m_TexturesLoaded;
+
+  /*std::vector<Texture> m_TexturesLoaded;*/
+
+  std::unordered_map<std::string, Texture> m_TexturesMap;
   std::string m_Directory;
 
   Model(const char* path);

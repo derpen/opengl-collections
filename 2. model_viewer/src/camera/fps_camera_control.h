@@ -10,8 +10,8 @@ enum cameraDirection {
   RIGHT,
 };
 
-const float YAW = -90.0f;
-const float PITCH = 0.0f;
+const float YAW = -130.0f;
+const float PITCH = -10.0f;
 const float CAMERASPEED = 3.0f;
 const float CAMERASPRINTSPEED = 2.0f;
 const float SENSITIVITY = 0.1f;
@@ -38,7 +38,9 @@ public:
   bool isSprinting = false;
 
   Camera(glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f), 
-         glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f));
+         glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f),
+         glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f)
+         );
 
   glm::mat4 GetViewMatrix();
 

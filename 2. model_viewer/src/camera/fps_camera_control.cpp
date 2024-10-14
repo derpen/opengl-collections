@@ -2,9 +2,10 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp) : MovementSpeed(CAMERASPEED), MouseSensitivity(SENSITIVITY), MouseYaw(YAW),  MousePitch(PITCH) {
+Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraFront) : MovementSpeed(CAMERASPEED), MouseSensitivity(SENSITIVITY), MouseYaw(YAW),  MousePitch(PITCH) {
   Position = cameraPos;
   WorldUp = cameraUp;
+  Front = cameraFront;
   updateCameraVectors();
 }
 

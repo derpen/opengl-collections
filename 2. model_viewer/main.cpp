@@ -26,7 +26,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 // Cam controls
-Camera cameraClass = Camera(); // Default is at vec3(0.0, 0.0, 3.0)
+Camera cameraClass = Camera(
+  glm::vec3(6.27f, 2.89f, 6.86f)
+);
 float lastX = WIDTH / 2.0;
 float lastY = HEIGHT / 2.0;
 
@@ -80,20 +82,28 @@ int main(){
 
   debugMenu.imguiInit(window);
 
-  stbi_set_flip_vertically_on_load(true);
+  /*// Sometimes might wanna flip image for texture to work */
+  /*stbi_set_flip_vertically_on_load(true);*/
 
   // Load model
-  /*std::filesystem::path backpack_path = "model/backpack/backpack.obj";*/
-  std::string backpack_path = "assets/models/backpack/backpack.obj";
-  Model backpackModel = Model(backpack_path.c_str());
-  Shader backpackShader = Shader();
-  backpackShader.createShaderProgram("shaders/backpack.vert", "shaders/backpack.frag");
-  backpackShader.use();
+  /*// BACKPACK*/
+  /*std::string backpack_path = "assets/models/backpack/backpack.obj";*/
+  /*Model backpackModel = Model(backpack_path.c_str());*/
+  /*Shader backpackShader = Shader();*/
+  /*backpackShader.createShaderProgram("shaders/backpack.vert", "shaders/backpack.frag");*/
+  /*backpackShader.use();*/
+
+  // OSAKA FROM AZUMANGA DAIOH
+  std::string ayumu = "assets/models/osaka/osaka-assimp.obj";
+  Model ayumuModel = Model(ayumu.c_str());
+  Shader ayumuShader = Shader();
+  ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
+  ayumuShader.use();
 
   glEnable(GL_DEPTH_TEST);  
 
   glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-  backpackShader.setMat4("projection", projection);
+  ayumuShader.setMat4("projection", projection);
 
   while(!glfwWindowShouldClose(window)){
     processInput(window);
@@ -110,18 +120,18 @@ int main(){
     lastFrame = currentFrame;
 
     //-----------------------Draw backpack here-----------------
-    backpackShader.use();
+    ayumuShader.use();
 
     // View/Projection Transform
     glm::mat4 view = cameraClass.GetViewMatrix();
-    backpackShader.setMat4("view", view);
+    ayumuShader.setMat4("view", view);
 
     // Render
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-    backpackShader.setMat4("model", model);
-    backpackModel.Draw(backpackShader);
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    ayumuShader.setMat4("model", model);
+    ayumuModel.Draw(ayumuShader);
     //------------------------Draw done --------------------------
 
     debugMenu.imguiEndFrame();
@@ -212,7 +222,13 @@ void imguiDebugMenu(){
   ImGui::SliderFloat("Movement Speed", &cameraClass.MovementSpeed, 0.0f, 100.0f);
 
   glm::vec3 camPos = cameraClass.Position;
-  ImGui::Text("x:%.3f y:%.3f, z:%.3f", camPos.x, camPos.y, camPos.z);
+  ImGui::Text("Camera Position  x: %.3f y: %.3f, z: %.3f", camPos.x, camPos.y, camPos.z);
+
+  glm::vec3 camFront = cameraClass.Front;
+  ImGui::Text("Camera Front  x: %.3f y: %.3f, z: %.3f", camFront.x, camFront.y, camFront.z);
+
+  glm::vec3 camUp = cameraClass.Up;
+  ImGui::Text("Camera Up  x: %.3f y: %.3f, z: %.3f", camUp.x, camUp.y, camUp.z);
 
   pl::FrameMetric fm = pl::GetTimePerFrame(glfwGetTime());
   ImGui::Text("%.2f ms/frame (%d fps)", fm.sec_per_frame, fm.frames_per_sec);
