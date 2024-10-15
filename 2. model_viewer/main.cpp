@@ -75,23 +75,11 @@ int main(){
 
   // le mouz
   glfwSetCursorPosCallback(window, mouse_callback);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-  /*// Wireframe*/
-  /*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 
   debugMenu.imguiInit(window);
 
   /*// Sometimes might wanna flip image for texture to work */
   /*stbi_set_flip_vertically_on_load(true);*/
-
-  // Load model
-  /*// BACKPACK*/
-  /*std::string backpack_path = "assets/models/backpack/backpack.obj";*/
-  /*Model backpackModel = Model(backpack_path.c_str());*/
-  /*Shader backpackShader = Shader();*/
-  /*backpackShader.createShaderProgram("shaders/backpack.vert", "shaders/backpack.frag");*/
-  /*backpackShader.use();*/
 
   // OSAKA FROM AZUMANGA DAIOH
   std::string ayumu = "assets/models/osaka/osaka-assimp.obj";
@@ -135,6 +123,9 @@ int main(){
     //------------------------Draw done --------------------------
 
     debugMenu.imguiEndFrame();
+
+    //Update Mouse
+    Input.MouseState(window);
     glfwSwapBuffers(window);
   }
 
@@ -153,36 +144,13 @@ void processInput(GLFWwindow* window){
     glfwSetWindowShouldClose(window, true);
   }
 
-  // Handle these movement so it only applies on mouse right click hold
-  if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-    cameraClass.processKeyboard(FORWARD, deltaTime);
-  }
-  if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-    cameraClass.processKeyboard(BACKWARD, deltaTime);
-  }
-  if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-    cameraClass.processKeyboard(LEFT, deltaTime);
-  }
-  if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-    cameraClass.processKeyboard(RIGHT, deltaTime);
+  if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)){
+    Input.ToggleCursor(window);
+  } else if (Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_RIGHT)){
+    Input.ToggleCursor(window);
   }
 
-  //Toggle Cursor
-  if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
-    if(!Input.isHideCursorButtonTriggered){
-      Input.EnableCursor(window);
-    }
-  } else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE){
-      Input.isHideCursorButtonTriggered = false;
-  }
-
-  //SHIFT SPRINT
-  if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-    cameraClass.isSprinting = true;
-  }
-  if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
-    cameraClass.isSprinting = false;
-  }
+  Input.FlyingMovement(window, &cameraClass, deltaTime);
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){

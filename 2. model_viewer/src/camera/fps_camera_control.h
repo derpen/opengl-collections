@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <glad/glad.h>
 
 enum cameraDirection {
   FORWARD,
@@ -45,7 +44,7 @@ public:
   glm::mat4 GetViewMatrix();
 
   void processKeyboard(cameraDirection currentDir, float deltaTime);
-  void processMouse(float xoffset, float yoffset, GLboolean constrainPitch = true);
+  void processMouse(float xoffset, float yoffset, bool constrainPitch = true);
   void updateCameraVectors();
 
 private:

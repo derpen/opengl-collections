@@ -39,7 +39,7 @@ glm::mat4 Camera::GetViewMatrix(){
     return glm::lookAt(Position, Position + Front, Up);
 }
 
-void Camera::processMouse(float xoffset, float yoffset, GLboolean constrainPitch){
+void Camera::processMouse(float xoffset, float yoffset, bool constrainPitch){
   xoffset *= MouseSensitivity;
   yoffset *= MouseSensitivity;
 
