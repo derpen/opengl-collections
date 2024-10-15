@@ -7,3 +7,4 @@ Developed in Linux. Therefore, currently can only compile on linux.
 * Make a release page, release as binaries
 * Better Makefile
 * Compile on windows
+* Add screenshots/gif to showcase

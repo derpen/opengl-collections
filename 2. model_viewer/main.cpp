@@ -154,22 +154,24 @@ void processInput(GLFWwindow* window){
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
-  if(Input.cursorHidden){
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
+  float xpos = static_cast<float>(xposIn);
+  float ypos = static_cast<float>(yposIn);
 
-    if(Input.firstMouse){
-      lastX = xpos;
-      lastY = ypos;
-      Input.firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // Reverse since y go from up to bottom
+  if(Input.firstMouse){
     lastX = xpos;
     lastY = ypos;
+    Input.firstMouse = false;
+  }
 
+  float xoffset = xpos - lastX;
+  float yoffset = lastY - ypos; // Reverse since y go from up to bottom
+  lastX = xpos;
+  lastY = ypos;
+
+  if(Input.cursorHidden){
     cameraClass.processMouse(xoffset, yoffset);
+  } else {
+
   }
 }
 
