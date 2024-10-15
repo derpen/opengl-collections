@@ -11,6 +11,7 @@ enum cameraDirection {
 
 const float YAW = -130.0f;
 const float PITCH = -10.0f;
+const float FOV = 45.0f;
 const float CAMERASPEED = 3.0f;
 const float CAMERASPRINTSPEED = 2.0f;
 const float SENSITIVITY = 0.1f;
@@ -24,6 +25,7 @@ public:
   glm::vec3 Up;
   glm::vec3 WorldUp;
 
+  float cameraFOV = FOV;
   float MovementSpeed;
   float MouseSensitivity;
 
@@ -44,7 +46,9 @@ public:
   glm::mat4 GetViewMatrix();
 
   void processKeyboard(cameraDirection currentDir, float deltaTime);
-  void processMouse(float xoffset, float yoffset, bool constrainPitch = true);
+  void processMouseEditor(float xoffset, float yoffset);
+  void processMouseFPS(float xoffset, float yoffset, bool constrainPitch = true);
+  void ProcessMouseScroll(float yoffset);
   void updateCameraVectors();
 
 private:

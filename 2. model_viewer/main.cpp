@@ -22,6 +22,7 @@ const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xpos, double ypos);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -71,10 +72,10 @@ int main(){
     return -1;
   }
 
+  //le callbacks
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-  // le mouz
   glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetScrollCallback(window, scroll_callback);
 
   debugMenu.imguiInit(window);
 
@@ -86,12 +87,8 @@ int main(){
   Model ayumuModel = Model(ayumu.c_str());
   Shader ayumuShader = Shader();
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
-  ayumuShader.use();
 
   glEnable(GL_DEPTH_TEST);  
-
-  glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-  ayumuShader.setMat4("projection", projection);
 
   while(!glfwWindowShouldClose(window)){
     processInput(window);
@@ -109,7 +106,6 @@ int main(){
 
     //-----------------------Draw backpack here-----------------
     ayumuShader.use();
-
     // View/Projection Transform
     glm::mat4 view = cameraClass.GetViewMatrix();
     ayumuShader.setMat4("view", view);
@@ -119,6 +115,11 @@ int main(){
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     ayumuShader.setMat4("model", model);
+
+    /*glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);*/
+    glm::mat4 projection = glm::perspective(glm::radians(cameraClass.cameraFOV), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    ayumuShader.setMat4("projection", projection);
+
     ayumuModel.Draw(ayumuShader);
     //------------------------Draw done --------------------------
 
@@ -168,11 +169,18 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
   lastX = xpos;
   lastY = ypos;
 
-  if(Input.cursorHidden){
-    cameraClass.processMouse(xoffset, yoffset);
+  if(Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)){
+    cameraClass.processMouseEditor(xoffset, yoffset);
   } else {
-
+    if(Input.cursorHidden){
+      cameraClass.processMouseFPS(xoffset, yoffset);
+    }
   }
+
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
+  cameraClass.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 //Everything below is an example on how to make a menu
