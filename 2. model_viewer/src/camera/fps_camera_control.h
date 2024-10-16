@@ -14,7 +14,8 @@ const float PITCH = -10.0f;
 const float FOV = 45.0f;
 const float CAMERASPEED = 3.0f;
 const float CAMERASPRINTSPEED = 2.0f;
-const float SENSITIVITY = 0.1f;
+const float FLYINGSENSITIVITY = 0.1f;
+const float DRAGGINGSENSITIVITY = 0.01f;
 const bool FLYINGCAMERA = true;
 
 class Camera{
@@ -28,6 +29,7 @@ public:
   float cameraFOV = FOV;
   float MovementSpeed;
   float MouseSensitivity;
+  float MouseDraggingSensitivity;
 
   float MouseYaw;
   float MousePitch;

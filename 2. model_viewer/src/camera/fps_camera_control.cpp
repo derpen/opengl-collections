@@ -2,7 +2,7 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraFront) : MovementSpeed(CAMERASPEED), MouseSensitivity(SENSITIVITY), MouseYaw(YAW),  MousePitch(PITCH) {
+Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraFront) : MovementSpeed(CAMERASPEED), MouseSensitivity(FLYINGSENSITIVITY), MouseDraggingSensitivity(DRAGGINGSENSITIVITY), MouseYaw(YAW),  MousePitch(PITCH) {
   Position = cameraPos;
   WorldUp = cameraUp;
   Front = cameraFront;
@@ -30,9 +30,9 @@ void Camera::processKeyboard(cameraDirection currentDir, float deltaTime) {
     Position += glm::normalize(glm::cross(Front, Up)) * velocity;
   }
 
-  if(!flyingCamera){
-    Position.y = 0.0f;
-  }
+  /*if(!flyingCamera){*/
+  /*  Position.y = 0.0f;*/
+  /*}*/
 }
 
 glm::mat4 Camera::GetViewMatrix(){
@@ -43,13 +43,13 @@ void Camera::ProcessMouseScroll(float yoffset){
 	cameraFOV -= (float)yoffset;
 	if (cameraFOV < 1.0f)
 		cameraFOV = 1.0f;
-	if (cameraFOV > 45.0f)
-		cameraFOV = 45.0f;
+	if (cameraFOV > 90.0f)
+		cameraFOV = 90.0f;
 }
 
 void Camera::processMouseEditor(float xoffset, float yoffset){
-  xoffset *= MouseSensitivity;
-  yoffset *= MouseSensitivity;
+  xoffset *= MouseDraggingSensitivity;
+  yoffset *= MouseDraggingSensitivity;
 
   Position += Right * xoffset;
   Position += Up * yoffset;  

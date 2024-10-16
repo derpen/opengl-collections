@@ -170,7 +170,9 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
   lastY = ypos;
 
   if(Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)){
-    cameraClass.processMouseEditor(xoffset, yoffset);
+    if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+      cameraClass.processMouseEditor(xoffset, yoffset);
+    }
   } else {
     if(Input.cursorHidden){
       cameraClass.processMouseFPS(xoffset, yoffset);
