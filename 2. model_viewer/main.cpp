@@ -13,6 +13,7 @@
 #include "src/input/user_input.h"
 #include "src/utils/logs/performance_log.h"
 #include "src/assimp_model_loader/model.h"
+#include "src/scene_framebuffer/scene_framebuffer.h"
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/backends/imgui_impl_glfw.h"
 #include "vendor/imgui/backends/imgui_impl_opengl3.h"
@@ -88,21 +89,27 @@ int main(){
   Shader ayumuShader = Shader();
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
+  //Framebuffer
+  SceneFramebuffer pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
+
   glEnable(GL_DEPTH_TEST);  
 
   while(!glfwWindowShouldClose(window)){
     processInput(window);
     glfwPollEvents();
 
-    // BG color
-    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     imguiStartFrame();
 
     float currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
+
+    //Draw to new framebuffer
+    pickingFramebuffer.UseFrameBuffer();
+
+    // BG color
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //-----------------------Draw backpack here-----------------
     ayumuShader.use();
@@ -122,6 +129,13 @@ int main(){
 
     ayumuModel.Draw(ayumuShader);
     //------------------------Draw done --------------------------
+
+    //Unuse framebuffer
+    pickingFramebuffer.DeactivateFrameBuffer();
+
+    // BG color
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     debugMenu.imguiEndFrame();
 
