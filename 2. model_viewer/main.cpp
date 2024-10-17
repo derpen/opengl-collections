@@ -12,6 +12,7 @@
 #include "src/imgui_debug_menu/imgui_debug.h"
 #include "src/input/user_input.h"
 #include "src/utils/logs/performance_log.h"
+#include "src/utils/shapes/shape_vertices.h"
 #include "src/assimp_model_loader/model.h"
 #include "src/scene_framebuffer/scene_framebuffer.h"
 #include "vendor/imgui/imgui.h"
@@ -89,8 +90,12 @@ int main(){
   Shader ayumuShader = Shader();
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
-  //Framebuffer
+  //Framebuffer, and screen quad
   SceneFramebuffer pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
+  shapes::InitScreenTexture();    
+  Shader screenTexture = Shader();
+  screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
+  screenTexture.setInt("screenTexture", 0);
 
   glEnable(GL_DEPTH_TEST);  
 
@@ -135,7 +140,14 @@ int main(){
 
     // BG color
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Show texture on quad on screen
+    screenTexture.use();
+    shapes::UseScreenTexture();
+    glBindTexture(GL_TEXTURE_2D, pickingFramebuffer.m_ScreenTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    shapes::DisableScreenTexture();
 
     debugMenu.imguiEndFrame();
 
@@ -143,6 +155,8 @@ int main(){
     Input.MouseState(window);
     glfwSwapBuffers(window);
   }
+
+  //TODO code to do clean up here (remove vbo, vao, etc)
 
   debugMenu.imguiShutdown();
 
