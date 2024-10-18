@@ -52,6 +52,9 @@ void imguiStartFrame();
 void imguiDebugMenu();
 IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
 
+// Framebuffer?
+SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
+
 int main(){
   std::cout << "The nightmare begins once more.. \n" ;
     
@@ -91,7 +94,7 @@ int main(){
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
   //Framebuffer, and screen quad
-  SceneFramebuffer pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
+  pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
   shapes::InitScreenTexture();    
   Shader screenTexture = Shader();
   screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
@@ -165,6 +168,7 @@ int main(){
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
+  pickingFramebuffer = SceneFramebuffer(width, height);
   glViewport(0, 0, width, height);
 }
 
