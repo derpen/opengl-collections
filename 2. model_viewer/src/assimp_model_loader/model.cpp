@@ -9,9 +9,9 @@ Model::Model(const char* path){
   loadModel(path);
 }
 
-void Model::Draw(Shader &shader){
+void Model::Draw(Shader &shader, bool mainFramebuffer){
   for(unsigned int i = 0; i < m_Meshes.size(); i++){
-    m_Meshes[i].Draw(shader);
+    m_Meshes[i].Draw(shader, mainFramebuffer);
   }
 }
 

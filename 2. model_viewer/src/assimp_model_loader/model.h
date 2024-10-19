@@ -17,7 +17,7 @@ public:
   std::string m_Directory;
 
   Model(const char* path);
-  void Draw(Shader &shader);
+  void Draw(Shader &shader, bool mainFramebuffer);
 
 private:
   void loadModel(std::string path);

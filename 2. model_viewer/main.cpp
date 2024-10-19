@@ -53,7 +53,7 @@ void imguiDebugMenu();
 IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
 
 // Framebuffer?
-SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
+SceneFramebuffer mainFramebuffer = SceneFramebuffer();
 
 int main(){
   std::cout << "The nightmare begins once more.. \n" ;
@@ -94,7 +94,7 @@ int main(){
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
   //Framebuffer, and screen quad
-  pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
+  mainFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
   shapes::InitScreenTexture();    
   Shader screenTexture = Shader();
   screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
@@ -113,7 +113,7 @@ int main(){
     lastFrame = currentFrame;
 
     //Draw to new framebuffer
-    pickingFramebuffer.UseFrameBuffer();
+    mainFramebuffer.UseFrameBuffer();
 
     // BG color
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
@@ -135,11 +135,11 @@ int main(){
     glm::mat4 projection = glm::perspective(glm::radians(cameraClass.cameraFOV), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     ayumuShader.setMat4("projection", projection);
 
-    ayumuModel.Draw(ayumuShader);
+    ayumuModel.Draw(ayumuShader, true);
     //------------------------Draw done --------------------------
 
     //Unuse framebuffer
-    pickingFramebuffer.DeactivateFrameBuffer();
+    mainFramebuffer.DeactivateFrameBuffer();
 
     // BG color
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -148,7 +148,7 @@ int main(){
     // Show texture on quad on screen
     screenTexture.use();
     shapes::UseScreenTexture();
-    glBindTexture(GL_TEXTURE_2D, pickingFramebuffer.m_ScreenTexture);
+    glBindTexture(GL_TEXTURE_2D, mainFramebuffer.m_ScreenTexture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     shapes::DisableScreenTexture();
 
@@ -168,7 +168,7 @@ int main(){
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
-  pickingFramebuffer = SceneFramebuffer(width, height);
+  mainFramebuffer = SceneFramebuffer(width, height);
   glViewport(0, 0, width, height);
 }
 
