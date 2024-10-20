@@ -10,6 +10,11 @@ public:
   void createShaderProgram(const std::string &vertexPath, const std::string &fragmentPath);
   std::string readShaderSource(const std::string &filepath);
   unsigned int compileShader(unsigned int type, const std::string &source);
+  void SetMVP(
+      glm::mat4 model,
+      glm::mat4 view,
+      glm::mat4 projection
+  );
 
   //UniformSetterz
 	void setBool(const std::string &name, bool value) const;

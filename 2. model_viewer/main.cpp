@@ -54,6 +54,7 @@ IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
 
 // Framebuffer?
 SceneFramebuffer mainFramebuffer = SceneFramebuffer();
+bool pickingShader = false;
 
 int main(){
   std::cout << "The nightmare begins once more.. \n" ;
@@ -93,6 +94,9 @@ int main(){
   Shader ayumuShader = Shader();
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
+  Shader model_select_shader = Shader();
+  model_select_shader.createShaderProgram("shaders/osaka.vert", "shaders/model_select.frag");
+
   //Framebuffer, and screen quad
   mainFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
   shapes::InitScreenTexture();    
@@ -112,33 +116,35 @@ int main(){
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    //Draw to new framebuffer
+    //Draw to offscreen framebuffer
     mainFramebuffer.UseFrameBuffer();
 
     // BG color
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //-----------------------Draw backpack here-----------------
-    ayumuShader.use();
+    //-----------------------Draw Osaka here-----------------
     // View/Projection Transform
     glm::mat4 view = cameraClass.GetViewMatrix();
-    ayumuShader.setMat4("view", view);
-
-    // Render
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    ayumuShader.setMat4("model", model);
-
-    /*glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);*/
     glm::mat4 projection = glm::perspective(glm::radians(cameraClass.cameraFOV), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-    ayumuShader.setMat4("projection", projection);
 
-    ayumuModel.Draw(ayumuShader, true);
+
+    if(!pickingShader){
+      ayumuShader.use();
+      ayumuShader.SetMVP(model, view, projection);
+      ayumuModel.Draw(ayumuShader, true);
+    } else {
+      model_select_shader.use();
+      model_select_shader.SetMVP(model, view, projection);
+      ayumuModel.Draw(model_select_shader, true);
+    }
+
     //------------------------Draw done --------------------------
 
-    //Unuse framebuffer
+    //Unuse offscreen framebuffer, now on default framebuffer
     mainFramebuffer.DeactivateFrameBuffer();
 
     // BG color
@@ -183,6 +189,13 @@ void processInput(GLFWwindow* window){
     Input.ToggleCursor(window);
   }
 
+  // Toggle between shader
+  if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
+    pickingShader = !pickingShader;
+  } else if (Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT)){
+    pickingShader = !pickingShader;
+  }
+
   Input.FlyingMovement(window, &cameraClass, deltaTime);
 }
 
@@ -204,13 +217,12 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
   if(Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)){
     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
       cameraClass.processMouseEditor(xoffset, yoffset);
-    }
+    } 
   } else {
     if(Input.cursorHidden){
       cameraClass.processMouseFPS(xoffset, yoffset);
     }
   }
-
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){

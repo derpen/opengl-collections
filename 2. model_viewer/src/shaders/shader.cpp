@@ -60,6 +60,16 @@ unsigned int Shader::compileShader(unsigned int type, const std::string &source)
   return id;
 }
 
+void Shader::SetMVP(
+    glm::mat4 model,
+    glm::mat4 view,
+    glm::mat4 projection
+){
+    setMat4("model", model);
+    setMat4("view", view);
+    setMat4("projection", projection);
+}
+
 void Shader::setBool(const std::string& name, bool value) const {
 	glUniform1i(glGetUniformLocation(ShaderID, name.c_str()), (int)value);
 }
