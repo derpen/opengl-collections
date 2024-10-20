@@ -54,6 +54,7 @@ IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
 
 // Framebuffer?
 SceneFramebuffer mainFramebuffer = SceneFramebuffer();
+SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
 bool pickingShader = false;
 
 int main(){
@@ -95,7 +96,7 @@ int main(){
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
   Shader model_select_shader = Shader();
-  model_select_shader.createShaderProgram("shaders/osaka.vert", "shaders/model_select.frag");
+  model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");
 
   //Framebuffer, and screen quad
   mainFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
@@ -103,6 +104,9 @@ int main(){
   Shader screenTexture = Shader();
   screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
   screenTexture.setInt("screenTexture", 0);
+
+  //Second framebuffer for picking things
+  pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
 
   glEnable(GL_DEPTH_TEST);  
 
@@ -116,13 +120,6 @@ int main(){
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    //Draw to offscreen framebuffer
-    mainFramebuffer.UseFrameBuffer();
-
-    // BG color
-    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     //-----------------------Draw Osaka here-----------------
     // View/Projection Transform
     glm::mat4 view = cameraClass.GetViewMatrix();
@@ -131,27 +128,37 @@ int main(){
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 projection = glm::perspective(glm::radians(cameraClass.cameraFOV), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
+    // Draw normally to offscreen buffer
+    mainFramebuffer.UseFrameBuffer();
+    ayumuShader.use();
+    ayumuShader.SetMVP(model, view, projection);
+    ayumuModel.Draw(ayumuShader);
+    mainFramebuffer.DeactivateFrameBuffer();
 
-    if(!pickingShader){
-      ayumuShader.use();
-      ayumuShader.SetMVP(model, view, projection);
-      ayumuModel.Draw(ayumuShader, true);
-    } else {
-      model_select_shader.use();
-      model_select_shader.SetMVP(model, view, projection);
-      ayumuModel.Draw(model_select_shader, true);
-    }
+    // Draw it again, but for the picking framebuffer
+    pickingFramebuffer.UseFrameBuffer();
+    model_select_shader.use();
+    model_select_shader.SetMVP(model, view, projection);
+    ayumuModel.Draw(model_select_shader);
+    pickingFramebuffer.DeactivateFrameBuffer();
+
+    /*if(!pickingShader){*/
+    /*  ayumuShader.use();*/
+    /*  ayumuShader.SetMVP(model, view, projection);*/
+    /*  ayumuModel.Draw(ayumuShader, true);*/
+    /*} else {*/
+    /*  model_select_shader.use();*/
+    /*  model_select_shader.SetMVP(model, view, projection);*/
+    /*  ayumuModel.Draw(model_select_shader, true);*/
+    /*}*/
 
     //------------------------Draw done --------------------------
 
-    //Unuse offscreen framebuffer, now on default framebuffer
-    mainFramebuffer.DeactivateFrameBuffer();
-
-    // BG color
+    // BG color (irrelevant at this point honestly)
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Show texture on quad on screen
+    // Draw texture from offscreen framebuffer to  quad on screen
     screenTexture.use();
     shapes::UseScreenTexture();
     glBindTexture(GL_TEXTURE_2D, mainFramebuffer.m_ScreenTexture);

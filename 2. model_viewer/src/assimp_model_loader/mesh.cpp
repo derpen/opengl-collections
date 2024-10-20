@@ -15,33 +15,28 @@ Mesh::Mesh(
   setupMesh();
 }
 
-void Mesh::Draw(Shader &shader, bool mainFramebuffer){
-  if(mainFramebuffer){
-	  glUniform1i(glGetUniformLocation(shader.ShaderID, "UseTexture"), (int)true);
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
-    for(unsigned int i = 0; i < Textures.size(); i++){
-      glActiveTexture(GL_TEXTURE0 + i);
+void Mesh::Draw(Shader &shader){
+  unsigned int diffuseNr = 1;
+  unsigned int specularNr = 1;
+  for(unsigned int i = 0; i < Textures.size(); i++){
+    glActiveTexture(GL_TEXTURE0 + i);
 
-      std::string number;
-      std::string name = Textures[i].type;
-      if(name == "texture_diffuse"){
-        number = std::to_string(diffuseNr++);
-      }
-      else if(name == "texture_specular"){
-        number = std::to_string(specularNr++);
-      }
-
-      glUniform1i(glGetUniformLocation(shader.ShaderID, (name + number).c_str()), i);
-
-      // Another way of setting the le shader
-      /*shader.setInt((name + number).c_str(), i);*/
-      /*shader.setInt(("material." + name + number).c_str(), i); //Use this if using struct in model's shader */
-
-      glBindTexture(GL_TEXTURE_2D, Textures[i].id);
+    std::string number;
+    std::string name = Textures[i].type;
+    if(name == "texture_diffuse"){
+      number = std::to_string(diffuseNr++);
     }
-  } else {
-	    glUniform1i(glGetUniformLocation(shader.ShaderID, "UseTexture"), (int)false);
+    else if(name == "texture_specular"){
+      number = std::to_string(specularNr++);
+    }
+
+    glUniform1i(glGetUniformLocation(shader.ShaderID, (name + number).c_str()), i);
+
+    // Another way of setting the le shader
+    /*shader.setInt((name + number).c_str(), i);*/
+    /*shader.setInt(("material." + name + number).c_str(), i); //Use this if using struct in model's shader */
+
+    glBindTexture(GL_TEXTURE_2D, Textures[i].id);
   }
 
   //Draw le Mesh

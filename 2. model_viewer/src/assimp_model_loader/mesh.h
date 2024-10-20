@@ -28,7 +28,7 @@ public:
     std::vector<Texture> textures
   );
 
-  void Draw(Shader &shader, bool mainFramebuffer);
+  void Draw(Shader &shader);
 
 private:
   // render data
