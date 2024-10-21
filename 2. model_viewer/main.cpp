@@ -111,7 +111,6 @@ int main(){
   glEnable(GL_DEPTH_TEST);  
 
   while(!glfwWindowShouldClose(window)){
-    processInput(window);
     glfwPollEvents();
 
     imguiStartFrame();
@@ -130,6 +129,8 @@ int main(){
 
     // Draw normally to offscreen buffer
     mainFramebuffer.UseFrameBuffer();
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ayumuShader.use();
     ayumuShader.SetMVP(model, view, projection);
     ayumuModel.Draw(ayumuShader);
@@ -137,6 +138,8 @@ int main(){
 
     // Draw it again, but for the picking framebuffer
     pickingFramebuffer.UseFrameBuffer();
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     model_select_shader.use();
     model_select_shader.SetMVP(model, view, projection);
     ayumuModel.Draw(model_select_shader);
@@ -154,9 +157,9 @@ int main(){
 
     //------------------------Draw done --------------------------
 
-    // BG color (irrelevant at this point honestly)
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    /*// BG color (irrelevant at this point honestly)*/
+    /*glClearColor(1.0f, 1.0f, 1.0f, 1.0f);*/
+    /*glClear(GL_COLOR_BUFFER_BIT);*/
 
     // Draw texture from offscreen framebuffer to  quad on screen
     screenTexture.use();
@@ -168,6 +171,7 @@ int main(){
     debugMenu.imguiEndFrame();
 
     //Update Mouse
+    processInput(window);
     Input.MouseState(window);
     glfwSwapBuffers(window);
   }
@@ -201,6 +205,15 @@ void processInput(GLFWwindow* window){
     pickingShader = !pickingShader;
   } else if (Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT)){
     pickingShader = !pickingShader;
+  }
+
+  // Read pixel from picking framebuffer
+  if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
+    pickingFramebuffer.UseFrameBuffer();
+    unsigned char pixel[3];
+    glReadPixels(lastX, HEIGHT - lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
+    std::cout << (int)pixel[0] << (int)pixel[1] << (int)pixel[2] << "\n";
+    pickingFramebuffer.DeactivateFrameBuffer();
   }
 
   Input.FlyingMovement(window, &cameraClass, deltaTime);
