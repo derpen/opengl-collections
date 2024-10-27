@@ -15,7 +15,9 @@ public:
 
   std::unordered_map<std::string, Texture> m_TexturesMap;
   std::string m_Directory;
+  std::string m_modelName;
 
+  Model();
   Model(const char* path);
   void Draw(Shader &shader);
 

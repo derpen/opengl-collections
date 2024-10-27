@@ -51,8 +51,8 @@ void Camera::processMouseEditor(float xoffset, float yoffset){
   xoffset *= MouseDraggingSensitivity;
   yoffset *= MouseDraggingSensitivity;
 
-  Position += Right * xoffset;
-  Position += Up * yoffset;  
+  Position -= Right * xoffset;
+  Position -= Up * yoffset;  
 }
 
 void Camera::processMouseFPS(float xoffset, float yoffset, bool constrainPitch){

@@ -2,10 +2,16 @@
 #include "../../vendor/assimp/Importer.hpp"
 #include "../../vendor/assimp/scene.h"
 #include "../../vendor/assimp/postprocess.h"
+#include <cstring>
 #include <glad/glad.h>
 #include "../../vendor/stb/stb_image.h"
 
+Model::Model(){
+  m_modelName = "default";
+}
+
 Model::Model(const char* path){
+  m_modelName = path;
   loadModel(path);
 }
 

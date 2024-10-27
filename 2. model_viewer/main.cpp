@@ -55,7 +55,10 @@ IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
 // Framebuffer?
 SceneFramebuffer mainFramebuffer = SceneFramebuffer();
 SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
-bool pickingShader = false;
+
+// All Models
+std::vector<Model> ModelsInScene;
+Model currentSelected = Model();
 
 int main(){
   std::cout << "The nightmare begins once more.. \n" ;
@@ -92,6 +95,7 @@ int main(){
   // OSAKA FROM AZUMANGA DAIOH
   std::string ayumu = "assets/models/osaka/osaka-assimp.obj";
   Model ayumuModel = Model(ayumu.c_str());
+  ModelsInScene.push_back(ayumuModel);
   Shader ayumuShader = Shader();
   ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
@@ -142,18 +146,9 @@ int main(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     model_select_shader.use();
     model_select_shader.SetMVP(model, view, projection);
+    model_select_shader.setFloat("modelIndex", 0.5f); /* TODO: Temporary way of storing object index */
     ayumuModel.Draw(model_select_shader);
     pickingFramebuffer.DeactivateFrameBuffer();
-
-    /*if(!pickingShader){*/
-    /*  ayumuShader.use();*/
-    /*  ayumuShader.SetMVP(model, view, projection);*/
-    /*  ayumuModel.Draw(ayumuShader, true);*/
-    /*} else {*/
-    /*  model_select_shader.use();*/
-    /*  model_select_shader.SetMVP(model, view, projection);*/
-    /*  ayumuModel.Draw(model_select_shader, true);*/
-    /*}*/
 
     //------------------------Draw done --------------------------
 
@@ -200,19 +195,26 @@ void processInput(GLFWwindow* window){
     Input.ToggleCursor(window);
   }
 
-  // Toggle between shader
-  if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
-    pickingShader = !pickingShader;
-  } else if (Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT)){
-    pickingShader = !pickingShader;
-  }
-
   // Read pixel from picking framebuffer
   if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
     pickingFramebuffer.UseFrameBuffer();
     unsigned char pixel[3];
     glReadPixels(lastX, HEIGHT - lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
-    std::cout << (int)pixel[0] << (int)pixel[1] << (int)pixel[2] << "\n";
+
+    /*std::cout << (int)pixel[0] << (int)pixel[1] << (int)pixel[2] << "\n";*/
+    
+    // Handle picking
+    unsigned long int objectIndex = (int)pixel[0];
+    if(objectIndex < ModelsInScene.size()){
+      currentSelected = ModelsInScene[objectIndex];
+    } else {
+      currentSelected = Model();
+    }
+     
+    std::cout << "Models amount in scene: " << ModelsInScene.size() << "\n";
+    std::cout << "Current objectIndex is: " << objectIndex << "\n";
+    std::cout << "Current object is: " << currentSelected.m_modelName << "\n";
+
     pickingFramebuffer.DeactivateFrameBuffer();
   }
 
