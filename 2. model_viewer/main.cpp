@@ -200,8 +200,6 @@ void processInput(GLFWwindow* window){
     pickingFramebuffer.UseFrameBuffer();
     unsigned char pixel[3];
     glReadPixels(lastX, HEIGHT - lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
-
-    /*std::cout << (int)pixel[0] << (int)pixel[1] << (int)pixel[2] << "\n";*/
     
     // Handle picking
     unsigned long int objectIndex = (int)pixel[0];
