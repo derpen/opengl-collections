@@ -102,6 +102,9 @@ int main(){
   Shader model_select_shader = Shader();
   model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");
 
+  Shader model_stencil_shader = Shader();
+  model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
+
   //Framebuffer, and screen quad
   mainFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
   shapes::InitScreenTexture();    
@@ -113,6 +116,7 @@ int main(){
   pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
 
   glEnable(GL_DEPTH_TEST);  
+  glEnable(GL_STENCIL_TEST);  
 
   while(!glfwWindowShouldClose(window)){
     glfwPollEvents();
@@ -134,10 +138,33 @@ int main(){
     // Draw normally to offscreen buffer
     mainFramebuffer.UseFrameBuffer();
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // TODO: STENCIL, MIGHT WANNA MOVE SOMEWHERE
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glStencilMask(0x00);
+
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
     ayumuShader.use();
     ayumuShader.SetMVP(model, view, projection);
     ayumuModel.Draw(ayumuShader);
+
+    if(currentSelected.m_modelName != "default"){
+      glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+      glStencilMask(0x00);
+      glDisable(GL_DEPTH_TEST);
+      model_stencil_shader.use();
+      glm::mat4 temp_model = glm::mat4(1.0f);
+      float scale = 1.05f;
+      temp_model = glm::scale(temp_model, glm::vec3(scale, scale, scale));
+      temp_model = glm::translate(temp_model, glm::vec3(0.0f, 0.0f, 0.0f));
+      model_stencil_shader.SetMVP(temp_model, view, projection);
+      ayumuModel.Draw(model_stencil_shader);
+      glStencilMask(0xFF);
+      glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    }
+
     mainFramebuffer.DeactivateFrameBuffer();
 
     // Draw it again, but for the picking framebuffer
