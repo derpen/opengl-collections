@@ -208,6 +208,7 @@ int main(){
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
   mainFramebuffer = SceneFramebuffer(width, height);
+  pickingFramebuffer = SceneFramebuffer(width, height);
   glViewport(0, 0, width, height);
 }
 
@@ -234,11 +235,7 @@ void processInput(GLFWwindow* window){
       currentSelected = ModelsInScene[objectIndex];
     } else {
       currentSelected = Model();
-    }
-     
-    std::cout << "Models amount in scene: " << ModelsInScene.size() << "\n";
-    std::cout << "Current objectIndex is: " << objectIndex << "\n";
-    std::cout << "Current object is: " << currentSelected.m_modelName << "\n";
+    }     
 
     pickingFramebuffer.DeactivateFrameBuffer();
   }
@@ -303,6 +300,10 @@ void imguiDebugMenu(){
 
   pl::FrameMetric fm = pl::GetTimePerFrame(glfwGetTime());
   ImGui::Text("%.2f ms/frame (%d fps)", fm.sec_per_frame, fm.frames_per_sec);
+
+  ImGui::Text("Current Selected Model: %s", currentSelected.m_modelName.c_str());
+
+  ImGui::Text("Total Model In Scene: %lu", ModelsInScene.size());
 
   ImGui::End();
 }
