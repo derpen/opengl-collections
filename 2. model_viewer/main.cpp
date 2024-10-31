@@ -1,3 +1,4 @@
+#include "vendor/im3d/im3d_math.h"
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 #include <iostream>
@@ -19,6 +20,9 @@
 #include "vendor/imgui/backends/imgui_impl_glfw.h"
 #include "vendor/imgui/backends/imgui_impl_opengl3.h"
 #include "vendor/stb/stb_image.h"
+#include "vendor/im3d/im3d.h"
+
+/*TODO: CLEAN CODE BEFORE MOVING TO NEXT PHASE */
  
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
@@ -191,6 +195,49 @@ int main(){
     shapes::DisableScreenTexture();
 
     debugMenu.imguiEndFrame();
+
+    // ----------------------- TODO: IM3DDDDDDDDDDDDDDDDDDDDDDD -----------------
+    // TODO: trying im3d, What if I put on the btm
+    Im3d::Context& ctx = Im3d::GetContext();
+    Im3d::AppData& ad = Im3d::GetAppData();
+    int gizmoMode = (int)Im3d::GetContext().m_gizmoMode;
+    /*Im3d::GetContext().m_gizmoLocal = 0; // To turn into gizmo into local or global (probably )*/
+
+    // handle which mode
+    gizmoMode = Im3d::GizmoMode_Translation;
+    /*gizmoMode = Im3d::GizmoMode_Rotation;*/
+    /*gizmoMode = Im3d::GizmoMode_Scale;*/
+
+    Im3d::GetContext().m_gizmoMode = (Im3d::GizmoMode)gizmoMode;
+
+    // This part is probably for when a matrix is modified
+    static Im3d::Mat4 leTransform(1.0f);
+		// The ID passed to Gizmo() should be unique during a frame - to create gizmos in a loop use PushId()/PopId().
+    if(Im3d::Gizmo("GizmoUnified", leTransform)){
+			// if Gizmo() returns true, the transform was modified
+      switch(Im3d::GetContext().m_gizmoMode){
+        case Im3d::GizmoMode_Translation:
+          {
+            Im3d::Vec3 pos = leTransform.getTranslation();
+            break;
+          }
+        case Im3d::GizmoMode_Rotation:
+          {
+            Im3d::Vec3 euler = Im3d::ToEulerXYZ(leTransform.getRotation());
+						break;
+					}
+					case Im3d::GizmoMode_Scale:
+					{
+						Im3d::Vec3 scale = leTransform.getScale();
+						break;
+					}
+					default: break;
+      }
+
+    }
+
+    // --------------------------- IM3D DONE -------------------------------------
+
 
     //Update Mouse
     processInput(window);
