@@ -16,6 +16,7 @@
 #include "src/utils/shapes/shape_vertices.h"
 #include "src/assimp_model_loader/model.h"
 #include "src/scene_framebuffer/scene_framebuffer.h"
+#include "src/im3d/im3d_handler.hpp"
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/backends/imgui_impl_glfw.h"
 #include "vendor/imgui/backends/imgui_impl_opengl3.h"

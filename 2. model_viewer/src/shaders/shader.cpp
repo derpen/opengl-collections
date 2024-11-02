@@ -5,20 +5,85 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+Shader::Shader(){
+  m_Im3dType = NONE;
+};
+
+Shader::Shader(Im3dType value){
+  m_Im3dType = value;
+}
+
 void Shader::use(){
 	glUseProgram(ShaderID);
 }
 
-void Shader::createShaderProgram(const std::string &vertexPath, const std::string &fragmentPath){
+void Shader::createShaderProgram(const std::string &vertexPath, const std::string &fragmentPath, const std::string &geometryPath){
   std::string vertexShaderSource = readShaderSource(vertexPath);
   std::string fragmentShaderSource = readShaderSource(fragmentPath);
+  std::string geometryShaderSource;
+
+  if(!geometryPath.empty()){
+    geometryShaderSource = readShaderSource(geometryPath);
+  }
+
+  // ALL THIS GARBAGE BELOW IS TO HANDLE IM3D ------------------------
+  // This is to handle Im3d default glsl shader code which have lots of ifdefs
+  // An alternative solution would be to separate the code into multiple files
+  // TODO, optional, separate im3d.glsl file into their respective shader type and shader shapes
+  // TODO, medium prio, move these code somehow to im3d_handler.cpp, and also the enums on the constructor
+  if(m_Im3dType != NONE){
+    vertexShaderSource.insert(0, "#define VERTEX_SHADER\n");
+    fragmentShaderSource.insert(0, "#define FRAGMENT_SHADER\n");
+    if(!geometryPath.empty()){
+      geometryShaderSource.insert(0, "#define GEOMETRY_SHADER\n");
+    }
+  }
+
+  if(m_Im3dType == LINES){
+    std::string shaderShape = "#define LINES\n";
+    vertexShaderSource.insert(0, shaderShape);
+    fragmentShaderSource.insert(0, shaderShape);
+    if(!geometryPath.empty()){
+      geometryShaderSource.insert(0, shaderShape);
+    }
+  }
+
+  if(m_Im3dType == POINTS){
+    std::string shaderShape = "#define POINTS\n";
+    vertexShaderSource.insert(0, shaderShape);
+    fragmentShaderSource.insert(0, shaderShape);
+    if(!geometryPath.empty()){
+      geometryShaderSource.insert(0, shaderShape);
+    }
+  }
+
+  if(m_Im3dType == TRIANGLES){
+    std::string shaderShape = "#define TRIANGLES\n";
+    vertexShaderSource.insert(0, shaderShape);
+    fragmentShaderSource.insert(0, shaderShape);
+    if(!geometryPath.empty()){
+      geometryShaderSource.insert(0, shaderShape);
+    }
+  }
+
+  // ALL THIS GARBAGE ABOVE IS TO HANDLE IM3D ------------------------
 
   unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
   unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+  unsigned int geometryShader;
+
+  if(!geometryPath.empty()){
+    geometryShader = compileShader(GL_FRAGMENT_SHADER, geometryShaderSource);
+  }
 
   unsigned int shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
+
+  if(!geometryPath.empty()){
+    glAttachShader(shaderProgram, geometryShader);
+  }
+
   glLinkProgram(shaderProgram);
 
   int success;
@@ -31,6 +96,9 @@ void Shader::createShaderProgram(const std::string &vertexPath, const std::strin
 
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
+  if(!geometryPath.empty()){
+    glDeleteShader(geometryShader);
+  }
 
   ShaderID = shaderProgram;
 }

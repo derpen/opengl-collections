@@ -5,9 +5,18 @@
 class Shader {
 public:
 	unsigned int ShaderID;
+  enum Im3dType {
+    NONE,
+    POINTS,
+    LINES,
+    TRIANGLES
+  };
+
+  Shader();
+  Shader(Im3dType value); /* Only used for Im3d */
 
 	void use();
-  void createShaderProgram(const std::string &vertexPath, const std::string &fragmentPath);
+  void createShaderProgram(const std::string &vertexPath, const std::string &fragmentPath, const std::string &geometryPath = "");
   std::string readShaderSource(const std::string &filepath);
   unsigned int compileShader(unsigned int type, const std::string &source);
   void SetMVP(
@@ -29,4 +38,6 @@ public:
 	void setMat2(const std::string& name, const glm::mat2& mat) const;
 	void setMat3(const std::string& name, const glm::mat3& mat) const;
 	void setMat4(const std::string& name, const glm::mat4& mat) const;
+private:
+  Im3dType m_Im3dType;
 };
