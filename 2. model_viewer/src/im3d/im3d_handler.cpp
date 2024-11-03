@@ -45,7 +45,8 @@ void Im3dHandler::Im3d_NewFrame(){
 	/*ad.m_viewOrigin    = g_Example->m_camPos; // for VR use the head position*/
 	/*ad.m_viewDirection = g_Example->m_camDir;*/
 	/*ad.m_worldUp       = Vec3(0.0f, 1.0f, 0.0f); // used internally for generating orthonormal bases*/
-	/*ad.m_projOrtho     = g_Example->m_camOrtho; */
+	/**/
+	/*ad.m_projOrtho     = g_Example->m_camOrtho; // <------------- TODO: this one can be set as always false*/
 	/**/
 	/*// m_projScaleY controls how gizmos are scaled in world space to maintain a constant screen height*/
 	/*ad.m_projScaleY = g_Example->m_camOrtho*/
@@ -58,6 +59,7 @@ void Im3dHandler::Im3d_NewFrame(){
 	/*cursorPos = (cursorPos / ad.m_viewportSize) * 2.0f - 1.0f;*/
 	/*cursorPos.y = -cursorPos.y; // window origin is top-left, ndc is bottom-left*/
 	/*Vec3 rayOrigin, rayDirection;*/
+	/**/
 	/*if (g_Example->m_camOrtho)*/
 	/*{*/
 	/*	rayOrigin.x  = cursorPos.x / g_Example->m_camProj(0, 0);*/
@@ -75,6 +77,7 @@ void Im3dHandler::Im3d_NewFrame(){
 	/*	rayDirection.z  = -1.0f;*/
 	/*	rayDirection    = g_Example->m_camWorld * Vec4(Normalize(rayDirection), 0.0f);*/
 	/*}*/
+	/**/
 	/*ad.m_cursorRayOrigin = rayOrigin;*/
 	/*ad.m_cursorRayDirection = rayDirection;*/
 	/**/
@@ -98,14 +101,14 @@ void Im3dHandler::Im3d_NewFrame(){
 	/*ad.m_snapTranslation = ctrlDown ? 0.5f : 0.0f;*/
 	/*ad.m_snapRotation    = ctrlDown ? Im3d::Radians(30.0f) : 0.0f;*/
 	/*ad.m_snapScale       = ctrlDown ? 0.5f : 0.0f;*/
-	/**/
+
 	Im3d::NewFrame();
 }
 
 void Im3dHandler::Im3d_EndFrame(){
   Im3d::EndFrame();
 
-	/* // Primitive rendering.*/
+	/*// Primitive rendering.*/
 	/**/
 	/*// Typical pipeline state: enable alpha blending, disable depth test and backface culling.*/
 	/*glEnable(GL_BLEND);*/
@@ -161,7 +164,7 @@ void Im3dHandler::Im3d_EndFrame(){
 	/*	glDrawArrays(prim, 0, (GLsizei)drawList.m_vertexCount);*/
 	/*}*/
 	/**/
-	/*// Text rendering.*/
+	/*// Text rendering. TODO: NOT SURE IF THIS ONE IS NEEDED*/
 	/*// This is common to all examples since we're using ImGui to draw the text lists, see im3d_example.cpp.*/
 	/*g_Example->drawTextDrawListsImGui(Im3d::GetTextDrawLists(), Im3d::GetTextDrawListCount());*/
 

@@ -102,20 +102,20 @@ int main(){
   Model ayumuModel = Model(ayumu.c_str());
   ModelsInScene.push_back(ayumuModel);
   Shader ayumuShader = Shader();
-  /*ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");*/
+  ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
 
   Shader model_select_shader = Shader();
-  /*model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");*/
+  model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");
 
   Shader model_stencil_shader = Shader();
-  /*model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");*/
+  model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
 
   //Framebuffer, and screen quad
   mainFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
   shapes::InitScreenTexture();    
   Shader screenTexture = Shader();
-  /*screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");*/
-  /*screenTexture.setInt("screenTexture", 0);*/
+  screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
+  screenTexture.setInt("screenTexture", 0);
 
   //Second framebuffer for picking things
   pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
