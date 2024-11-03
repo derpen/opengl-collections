@@ -31,14 +31,6 @@ void Shader::createShaderProgram(const std::string &vertexPath, const std::strin
   // An alternative solution would be to separate the code into multiple files
   // TODO, optional, separate im3d.glsl file into their respective shader type and shader shapes
   // TODO, medium prio, move these code somehow to im3d_handler.cpp, and also the enums on the constructor
-  if(m_Im3dType != NONE){
-    vertexShaderSource.insert(0, "#define VERTEX_SHADER\n");
-    fragmentShaderSource.insert(0, "#define FRAGMENT_SHADER\n");
-    if(!geometryPath.empty()){
-      geometryShaderSource.insert(0, "#define GEOMETRY_SHADER\n");
-    }
-  }
-
   if(m_Im3dType == LINES){
     std::string shaderShape = "#define LINES\n";
     vertexShaderSource.insert(0, shaderShape);
@@ -66,6 +58,21 @@ void Shader::createShaderProgram(const std::string &vertexPath, const std::strin
     }
   }
 
+  if(m_Im3dType != NONE){
+    vertexShaderSource.insert(0, "#define VERTEX_SHADER\n");
+    fragmentShaderSource.insert(0, "#define FRAGMENT_SHADER\n");
+    if(!geometryPath.empty()){
+      geometryShaderSource.insert(0, "#define GEOMETRY_SHADER\n");
+    }
+
+    // Add version
+    vertexShaderSource.insert(0, "#version 460 core\n");
+    fragmentShaderSource.insert(0, "#version 460 core\n");
+    if(!geometryPath.empty()){
+      geometryShaderSource.insert(0, "#version 460 core\n");
+    }
+  }
+
   // ALL THIS GARBAGE ABOVE IS TO HANDLE IM3D ------------------------
 
   unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
@@ -73,7 +80,7 @@ void Shader::createShaderProgram(const std::string &vertexPath, const std::strin
   unsigned int geometryShader;
 
   if(!geometryPath.empty()){
-    geometryShader = compileShader(GL_FRAGMENT_SHADER, geometryShaderSource);
+    geometryShader = compileShader(GL_GEOMETRY_SHADER, geometryShaderSource);
   }
 
   unsigned int shaderProgram = glCreateProgram();

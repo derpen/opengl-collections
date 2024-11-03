@@ -6,13 +6,13 @@
 
 bool Im3dHandler::Im3d_Init(){
   s_Im3dShaderPoints = Shader(Shader::POINTS);
-  s_Im3dShaderPoints.createShaderProgram("../../vendor/im3d/im3d.glsl", "../../vendor/im3d/im3d.glsl");
+  s_Im3dShaderPoints.createShaderProgram("vendor/im3d/im3d.glsl", "vendor/im3d/im3d.glsl");
 
   s_Im3dShaderLines = Shader(Shader::LINES);
-  s_Im3dShaderLines.createShaderProgram("../../vendor/im3d/im3d.glsl", "../../vendor/im3d/im3d.glsl", "../../vendor/im3d/im3d.glsl");
+  s_Im3dShaderLines.createShaderProgram("vendor/im3d/im3d.glsl", "vendor/im3d/im3d.glsl", "vendor/im3d/im3d.glsl");
 
   s_Im3dShaderTriangles = Shader(Shader::TRIANGLES);
-  s_Im3dShaderTriangles.createShaderProgram("../../vendor/im3d/im3d.glsl", "../../vendor/im3d/im3d.glsl");
+  s_Im3dShaderTriangles.createShaderProgram("vendor/im3d/im3d.glsl", "vendor/im3d/im3d.glsl");
   
 	glGenBuffers(1, &s_Im3dVertexBuffer);
 	glGenVertexArrays(1, &s_Im3dVertexArray);	

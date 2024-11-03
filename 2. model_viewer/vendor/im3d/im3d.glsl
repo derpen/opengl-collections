@@ -13,7 +13,6 @@
 	}
 
 #define kAntialiasing 2.0
-
 #ifdef VERTEX_SHADER
 	uniform mat4 uViewProjMatrix;
 	
@@ -35,7 +34,6 @@
 		#endif
 	}
 #endif
-
 #ifdef GEOMETRY_SHADER
  // expand line -> triangle strip
 	layout(lines) in;
@@ -84,7 +82,6 @@
 		EmitVertex();
 	}
 #endif
-
 #ifdef FRAGMENT_SHADER
 	in VertexData vData;
 	
