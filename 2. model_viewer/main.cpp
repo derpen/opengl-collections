@@ -9,14 +9,12 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 #include "src/shaders/shader.h"
-#include "src/camera/fps_camera_control.h"
 #include "src/imgui_debug_menu/imgui_debug.h"
-#include "src/input/user_input.h"
 #include "src/utils/logs/performance_log.h"
 #include "src/utils/shapes/shape_vertices.h"
 #include "src/assimp_model_loader/model.h"
-#include "src/scene_framebuffer/scene_framebuffer.h"
 #include "src/im3d/im3d_handler.hpp"
+#include "src/OpenGL/opengl_config.hpp"
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/backends/imgui_impl_glfw.h"
 #include "vendor/imgui/backends/imgui_impl_opengl3.h"
@@ -24,42 +22,16 @@
 #include "vendor/im3d/im3d.h"
 
 /*TODO: CLEAN CODE BEFORE MOVING TO NEXT PHASE */
- 
-const unsigned int WIDTH = 800;
-const unsigned int HEIGHT = 600;
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xpos, double ypos);
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
-// Cam controls
-Camera cameraClass = Camera(
-  glm::vec3(6.27f, 2.89f, 6.86f)
-);
-float lastX = WIDTH / 2.0;
-float lastY = HEIGHT / 2.0;
-
-// Cube modifiers
-float cubeSize = 1.5f;
-float spacing = 0.6f;
-float cubeRotateSpeed = 50.0f;
-int gridSize = 10;
 
 float deltaTime = 0.0;
 float lastFrame = 0.0;
-
-//Input
-UserInput Input = UserInput();
 
 //Imgui initialize
 void imguiStartFrame();
 void imguiDebugMenu();
 IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
-
-// Framebuffer?
-SceneFramebuffer mainFramebuffer = SceneFramebuffer();
-SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
 
 // All Models
 std::vector<Model> ModelsInScene;
@@ -67,32 +39,17 @@ Model currentSelected = Model();
 
 int main(){
   std::cout << "The nightmare begins once more.. \n" ;
-    
-  glfwInit();
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "dEngine", NULL, NULL);
-  if(window == NULL){
-    std::cout << "Failed to create GLFW window\n";
-    glfwTerminate();
+  int success = OpenGLConfig::Init();
+  if(success < 0){
+    std::cout << "Init Failed \n";
     return -1;
   }
 
-  glfwMakeContextCurrent(window);
-
-  if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-    std::cout << "Failed to initialize GLAD\n";
-    return -1;
-  }
+  OpenGLConfig::SetCallbacks();
 
   //le callbacks
-  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-  glfwSetCursorPosCallback(window, mouse_callback);
-  glfwSetScrollCallback(window, scroll_callback);
-
-  debugMenu.imguiInit(window);
+  debugMenu.imguiInit(OpenGLConfig::g_Window);
 
   /*// Sometimes might wanna flip image for texture to work */
   /*stbi_set_flip_vertically_on_load(true);*/
@@ -111,21 +68,21 @@ int main(){
   model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
 
   //Framebuffer, and screen quad
-  mainFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
+  OpenGLConfig::mainFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
   shapes::InitScreenTexture();    
   Shader screenTexture = Shader();
   screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
   screenTexture.setInt("screenTexture", 0);
 
   //Second framebuffer for picking things
-  pickingFramebuffer = SceneFramebuffer(WIDTH, HEIGHT);
+  OpenGLConfig::pickingFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
 
   glEnable(GL_DEPTH_TEST);  
   glEnable(GL_STENCIL_TEST);  
 
   Im3dHandler::Im3d_Init();
 
-  while(!glfwWindowShouldClose(window)){
+  while(!glfwWindowShouldClose(OpenGLConfig::g_Window)){
     glfwPollEvents();
 
     imguiStartFrame();
@@ -136,14 +93,14 @@ int main(){
 
     //-----------------------Draw Osaka here-----------------
     // View/Projection Transform
-    glm::mat4 view = cameraClass.GetViewMatrix();
+    glm::mat4 view = OpenGLConfig::cameraClass.GetViewMatrix();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 projection = glm::perspective(glm::radians(cameraClass.cameraFOV), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(OpenGLConfig::cameraClass.cameraFOV), (float)OpenGLConfig::conf.m_width / (float)OpenGLConfig::conf.m_height, 0.1f, 100.0f);
 
     // Draw normally to offscreen buffer
-    mainFramebuffer.UseFrameBuffer();
+    OpenGLConfig::mainFramebuffer.UseFrameBuffer();
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 
     // TODO: STENCIL, MIGHT WANNA MOVE SOMEWHERE
@@ -172,17 +129,17 @@ int main(){
       glStencilFunc(GL_ALWAYS, 1, 0xFF);
     }
 
-    mainFramebuffer.DeactivateFrameBuffer();
+    OpenGLConfig::mainFramebuffer.DeactivateFrameBuffer();
 
     // Draw it again, but for the picking framebuffer
-    pickingFramebuffer.UseFrameBuffer();
+    OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     model_select_shader.use();
     model_select_shader.SetMVP(model, view, projection);
     model_select_shader.setFloat("modelIndex", 0.5f); /* TODO: Temporary way of storing object index */
     ayumuModel.Draw(model_select_shader);
-    pickingFramebuffer.DeactivateFrameBuffer();
+    OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
 
     //------------------------Draw done --------------------------
 
@@ -193,7 +150,7 @@ int main(){
     // Draw texture from offscreen framebuffer to  quad on screen
     screenTexture.use();
     shapes::UseScreenTexture();
-    glBindTexture(GL_TEXTURE_2D, mainFramebuffer.m_ScreenTexture);
+    glBindTexture(GL_TEXTURE_2D, OpenGLConfig::mainFramebuffer.m_ScreenTexture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     shapes::DisableScreenTexture();
 
@@ -243,9 +200,9 @@ int main(){
 
 
     //Update Mouse
-    processInput(window);
-    Input.MouseState(window);
-    glfwSwapBuffers(window);
+    processInput(OpenGLConfig::g_Window);
+    OpenGLConfig::Input.MouseState(OpenGLConfig::g_Window);
+    glfwSwapBuffers(OpenGLConfig::g_Window);
   }
 
   //TODO code to do clean up here (remove vbo, vao, etc)
@@ -256,28 +213,22 @@ int main(){
   return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height){
-  mainFramebuffer = SceneFramebuffer(width, height);
-  pickingFramebuffer = SceneFramebuffer(width, height);
-  glViewport(0, 0, width, height);
-}
-
 void processInput(GLFWwindow* window){
   if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
     glfwSetWindowShouldClose(window, true);
   }
 
-  if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)){
-    Input.ToggleCursor(window);
-  } else if (Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_RIGHT)){
-    Input.ToggleCursor(window);
+  if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_RIGHT)){
+    OpenGLConfig::Input.ToggleCursor(window);
+  } else if (OpenGLConfig::Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_RIGHT)){
+    OpenGLConfig::Input.ToggleCursor(window);
   }
 
   // Read pixel from picking framebuffer
-  if(Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
-    pickingFramebuffer.UseFrameBuffer();
+  if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
+    OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
     unsigned char pixel[3];
-    glReadPixels(lastX, HEIGHT - lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
+    glReadPixels(OpenGLConfig::lastX, OpenGLConfig::conf.m_height - OpenGLConfig::lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
     
     // Handle picking
     unsigned long int objectIndex = (int)pixel[0];
@@ -287,40 +238,10 @@ void processInput(GLFWwindow* window){
       currentSelected = Model();
     }     
 
-    pickingFramebuffer.DeactivateFrameBuffer();
+    OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
   }
 
-  Input.FlyingMovement(window, &cameraClass, deltaTime);
-}
-
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
-  float xpos = static_cast<float>(xposIn);
-  float ypos = static_cast<float>(yposIn);
-
-  if(Input.firstMouse){
-    lastX = xpos;
-    lastY = ypos;
-    Input.firstMouse = false;
-  }
-
-  float xoffset = xpos - lastX;
-  float yoffset = lastY - ypos; // Reverse since y go from up to bottom
-  lastX = xpos;
-  lastY = ypos;
-
-  if(Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)){
-    if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-      cameraClass.processMouseEditor(xoffset, yoffset);
-    } 
-  } else {
-    if(Input.cursorHidden){
-      cameraClass.processMouseFPS(xoffset, yoffset);
-    }
-  }
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
-  cameraClass.ProcessMouseScroll(static_cast<float>(yoffset));
+  OpenGLConfig::Input.FlyingMovement(window, &OpenGLConfig::cameraClass, deltaTime);
 }
 
 //Everything below is an example on how to make a menu
@@ -335,17 +256,17 @@ void imguiStartFrame(){
 void imguiDebugMenu(){
   ImGui::Begin("Debug Area", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
-  ImGui::SliderFloat("Mouse Sensitivity", &cameraClass.MouseSensitivity, 0.0f, 2.0f);
+  ImGui::SliderFloat("Mouse Sensitivity", &OpenGLConfig::cameraClass.MouseSensitivity, 0.0f, 2.0f);
 
-  ImGui::SliderFloat("Movement Speed", &cameraClass.MovementSpeed, 0.0f, 100.0f);
+  ImGui::SliderFloat("Movement Speed", &OpenGLConfig::cameraClass.MovementSpeed, 0.0f, 100.0f);
 
-  glm::vec3 camPos = cameraClass.Position;
+  glm::vec3 camPos = OpenGLConfig::cameraClass.Position;
   ImGui::Text("Camera Position  x: %.3f y: %.3f, z: %.3f", camPos.x, camPos.y, camPos.z);
 
-  glm::vec3 camFront = cameraClass.Front;
+  glm::vec3 camFront = OpenGLConfig::cameraClass.Front;
   ImGui::Text("Camera Front  x: %.3f y: %.3f, z: %.3f", camFront.x, camFront.y, camFront.z);
 
-  glm::vec3 camUp = cameraClass.Up;
+  glm::vec3 camUp = OpenGLConfig::cameraClass.Up;
   ImGui::Text("Camera Up  x: %.3f y: %.3f, z: %.3f", camUp.x, camUp.y, camUp.z);
 
   pl::FrameMetric fm = pl::GetTimePerFrame(glfwGetTime());
