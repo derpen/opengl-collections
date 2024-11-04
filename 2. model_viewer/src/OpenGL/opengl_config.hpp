@@ -13,6 +13,7 @@ namespace OpenGLConfig{
     int m_OpenGLVerMajor = 4;
     int m_OpenGLVerMinor = 6;
 
+    //default width and height
     int m_width = 800;
     int m_height = 600;
     const char* m_windowTitle = "dEngine";

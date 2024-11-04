@@ -1,6 +1,7 @@
 #include "fps_camera_control.h"
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../OpenGL/opengl_config.hpp"
 
 Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraFront) : MovementSpeed(CAMERASPEED), MouseSensitivity(FLYINGSENSITIVITY), MouseDraggingSensitivity(DRAGGINGSENSITIVITY), MouseYaw(YAW),  MousePitch(PITCH) {
   Position = cameraPos;
@@ -37,6 +38,10 @@ void Camera::processKeyboard(cameraDirection currentDir, float deltaTime) {
 
 glm::mat4 Camera::GetViewMatrix(){
     return glm::lookAt(Position, Position + Front, Up);
+}
+
+glm::mat4 Camera::GetProjMatrix(){
+    return glm::perspective(glm::radians(cameraFOV), (float)OpenGLConfig::conf.m_width / (float)OpenGLConfig::conf.m_height, 0.1f, 100.0f);
 }
 
 void Camera::ProcessMouseScroll(float yoffset){

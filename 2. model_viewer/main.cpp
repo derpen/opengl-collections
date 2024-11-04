@@ -22,6 +22,7 @@
 #include "vendor/im3d/im3d.h"
 
 /*TODO: CLEAN CODE BEFORE MOVING TO NEXT PHASE */
+// TODO: FRAMBUFFER RESIZE KIND OF BREAK ?
 
 void processInput(GLFWwindow* window);
 
@@ -45,11 +46,13 @@ int main(){
     std::cout << "Init Failed \n";
     return -1;
   }
-
   OpenGLConfig::SetCallbacks();
 
-  //le callbacks
   debugMenu.imguiInit(OpenGLConfig::g_Window);
+
+
+
+
 
   /*// Sometimes might wanna flip image for texture to work */
   /*stbi_set_flip_vertically_on_load(true);*/
@@ -94,10 +97,12 @@ int main(){
     //-----------------------Draw Osaka here-----------------
     // View/Projection Transform
     glm::mat4 view = OpenGLConfig::cameraClass.GetViewMatrix();
+    glm::mat4 projection = OpenGLConfig::cameraClass.GetProjMatrix();
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 projection = glm::perspective(glm::radians(OpenGLConfig::cameraClass.cameraFOV), (float)OpenGLConfig::conf.m_width / (float)OpenGLConfig::conf.m_height, 0.1f, 100.0f);
+    /*glm::mat4 projection = glm::perspective(glm::radians(OpenGLConfig::cameraClass.cameraFOV), (float)OpenGLConfig::conf.m_width / (float)OpenGLConfig::conf.m_height, 0.1f, 100.0f);*/
 
     // Draw normally to offscreen buffer
     OpenGLConfig::mainFramebuffer.UseFrameBuffer();
