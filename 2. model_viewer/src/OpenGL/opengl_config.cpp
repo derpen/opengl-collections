@@ -68,6 +68,7 @@ namespace OpenGLConfig{
   void SetFrameBuffers(){
     //Framebuffer, and screen quad
     mainFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
+
     shapes::InitScreenTexture();    
     screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
     screenTexture.setInt("screenTexture", 0);

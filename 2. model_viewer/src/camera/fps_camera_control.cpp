@@ -2,6 +2,7 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "../OpenGL/opengl_config.hpp"
+#include <iostream>
 
 Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraFront) : MovementSpeed(CAMERASPEED), MouseSensitivity(FLYINGSENSITIVITY), MouseDraggingSensitivity(DRAGGINGSENSITIVITY), MouseYaw(YAW),  MousePitch(PITCH) {
   Position = cameraPos;

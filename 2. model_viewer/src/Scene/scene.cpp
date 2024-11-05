@@ -53,10 +53,9 @@ namespace Scene{
       glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
       glStencilMask(0x00);
-
       glStencilFunc(GL_ALWAYS, 1, 0xFF);
       glStencilMask(0xFF);
-      
+
       Shader currentShader = g_ModelList[i].shader;
       currentShader.use();
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
@@ -87,8 +86,9 @@ namespace Scene{
       glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       OpenGLConfig::model_select_shader.use();
+
       OpenGLConfig::model_select_shader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
-      OpenGLConfig::model_select_shader.setFloat("modelIndex", 0.5f); /* TODO: Temporary way of storing object index */
+      OpenGLConfig::model_select_shader.setFloat("modelIndex", 0.0f); /* TODO: Temporary way of storing object index */
       g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_select_shader);
       OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
 

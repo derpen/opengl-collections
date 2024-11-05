@@ -34,6 +34,8 @@ namespace OpenGLCallbacks{
   void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     OpenGLConfig::mainFramebuffer = SceneFramebuffer(width, height);
     OpenGLConfig::pickingFramebuffer = SceneFramebuffer(width, height);
+    OpenGLConfig::conf.m_width = width;
+    OpenGLConfig::conf.m_height = height;
     glViewport(0, 0, width, height);
   }
 }
