@@ -4,6 +4,7 @@
 #include "../imgui_debug_menu/imgui_debug.h"
 #include "../im3d/im3d_handler.hpp"
 #include "../utils/shapes/shape_vertices.h"
+#include "../Scene/scene.hpp"
 
 namespace OpenGLConfig{
   Config conf;
@@ -53,6 +54,7 @@ namespace OpenGLConfig{
 
     SetFrameBuffers();
     SetGlobalShaders();
+    Scene::InitializeScene();
 
     return 1;
   }

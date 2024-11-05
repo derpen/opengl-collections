@@ -27,6 +27,7 @@ SOURCES = \
     $(SRC_DIR)/assimp_model_loader/model.cpp \
     $(SRC_DIR)/scene_framebuffer/scene_framebuffer.cpp \
     $(VENDOR_DIR)/im3d/im3d.cpp \
+    $(SRC_DIR)/Scene/scene.cpp \
     $(SRC_DIR)/im3d/im3d_handler.cpp \
     $(SRC_DIR)/OpenGL/opengl_config.cpp \
     $(SRC_DIR)/OpenGL/opengl_main.cpp \

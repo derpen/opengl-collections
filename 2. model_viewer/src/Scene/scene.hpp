@@ -18,8 +18,9 @@ namespace Scene{
     bool isSelected;
   };
 
-  extern std::vector<ModelDetail> ModelList;
+  extern std::vector<ModelDetail> g_ModelList;
 
   void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader);
+  void InitializeScene(); // ADD ALL MODELS HERE
   void DrawScene();
 }

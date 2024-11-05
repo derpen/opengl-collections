@@ -45,6 +45,8 @@ namespace OpenGLConfig{
   extern UserInput Input;
   extern Camera cameraClass;
   extern Shader screenTexture;
+  extern Shader model_select_shader;
+  extern Shader model_stencil_shader;
 
   // Framebuffer?
   extern SceneFramebuffer mainFramebuffer;
