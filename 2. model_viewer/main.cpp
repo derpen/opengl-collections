@@ -1,3 +1,4 @@
+#include "src/OpenGL/opengl_main.hpp"
 #include "vendor/im3d/im3d_math.h"
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
@@ -9,15 +10,9 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 #include "src/shaders/shader.h"
-#include "src/imgui_debug_menu/imgui_debug.h"
-#include "src/utils/logs/performance_log.h"
 #include "src/utils/shapes/shape_vertices.h"
 #include "src/assimp_model_loader/model.h"
-#include "src/im3d/im3d_handler.hpp"
 #include "src/OpenGL/opengl_config.hpp"
-#include "vendor/imgui/imgui.h"
-#include "vendor/imgui/backends/imgui_impl_glfw.h"
-#include "vendor/imgui/backends/imgui_impl_opengl3.h"
 #include "vendor/stb/stb_image.h"
 #include "vendor/im3d/im3d.h"
 
@@ -28,11 +23,6 @@ void processInput(GLFWwindow* window);
 
 float deltaTime = 0.0;
 float lastFrame = 0.0;
-
-//Imgui initialize
-void imguiStartFrame();
-void imguiDebugMenu();
-IMGUI_DEBUG debugMenu = IMGUI_DEBUG();
 
 // All Models
 std::vector<Model> ModelsInScene;
@@ -46,58 +36,56 @@ int main(){
     std::cout << "Init Failed \n";
     return -1;
   }
-  OpenGLConfig::SetCallbacks();
 
-  debugMenu.imguiInit(OpenGLConfig::g_Window);
-
-
-
-
+  /*IMGUI_DEBUG::imguiInit(OpenGLConfig::g_Window);*/
 
   /*// Sometimes might wanna flip image for texture to work */
   /*stbi_set_flip_vertically_on_load(true);*/
 
-  // OSAKA FROM AZUMANGA DAIOH
-  std::string ayumu = "assets/models/osaka/osaka-assimp.obj";
-  Model ayumuModel = Model(ayumu.c_str());
-  ModelsInScene.push_back(ayumuModel);
-  Shader ayumuShader = Shader();
-  ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");
+  /*// OSAKA FROM AZUMANGA DAIOH*/
+  /*std::string ayumu = "assets/models/osaka/osaka-assimp.obj";*/
+  /*Model ayumuModel = Model(ayumu.c_str());*/
+  /*ModelsInScene.push_back(ayumuModel);*/
+  /*Shader ayumuShader = Shader();*/
+  /*ayumuShader.createShaderProgram("shaders/osaka.vert", "shaders/osaka.frag");*/
 
-  Shader model_select_shader = Shader();
-  model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");
+  /*Shader model_select_shader = Shader();*/
+  /*model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");*/
+  /**/
+  /*Shader model_stencil_shader = Shader();*/
+  /*model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");*/
 
-  Shader model_stencil_shader = Shader();
-  model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
+  /*//Framebuffer, and screen quad*/
+  /*OpenGLConfig::mainFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);*/
+  /*shapes::InitScreenTexture();    */
+  /*Shader screenTexture = Shader();*/
+  /*screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");*/
+  /*screenTexture.setInt("screenTexture", 0);*/
+  /**/
+  /*//Second framebuffer for picking things*/
+  /*OpenGLConfig::pickingFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);*/
 
-  //Framebuffer, and screen quad
-  OpenGLConfig::mainFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
-  shapes::InitScreenTexture();    
-  Shader screenTexture = Shader();
-  screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
-  screenTexture.setInt("screenTexture", 0);
+  /*glEnable(GL_DEPTH_TEST);  */
+  /*glEnable(GL_STENCIL_TEST);  */
 
-  //Second framebuffer for picking things
-  OpenGLConfig::pickingFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
+  /*Im3dHandler::Im3d_Init();*/
 
-  glEnable(GL_DEPTH_TEST);  
-  glEnable(GL_STENCIL_TEST);  
-
-  Im3dHandler::Im3d_Init();
+  OpenGLLoop::mainLoop();
 
   while(!glfwWindowShouldClose(OpenGLConfig::g_Window)){
     glfwPollEvents();
 
-    imguiStartFrame();
+    /*IMGUI_DEBUG::imguiStartFrame();*/
 
     float currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    //-----------------------Draw Osaka here-----------------
     // View/Projection Transform
     glm::mat4 view = OpenGLConfig::cameraClass.GetViewMatrix();
     glm::mat4 projection = OpenGLConfig::cameraClass.GetProjMatrix();
+
+    //-----------------------Draw Osaka here-----------------
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -148,10 +136,6 @@ int main(){
 
     //------------------------Draw done --------------------------
 
-    /*// BG color (irrelevant at this point honestly)*/
-    /*glClearColor(1.0f, 1.0f, 1.0f, 1.0f);*/
-    /*glClear(GL_COLOR_BUFFER_BIT);*/
-
     // Draw texture from offscreen framebuffer to  quad on screen
     screenTexture.use();
     shapes::UseScreenTexture();
@@ -159,7 +143,7 @@ int main(){
     glDrawArrays(GL_TRIANGLES, 0, 6);
     shapes::DisableScreenTexture();
 
-    debugMenu.imguiEndFrame();
+    /*IMGUI_DEBUG::imguiEndFrame();*/
 
     // ----------------------- TODO: IM3DDDDDDDDDDDDDDDDDDDDDDD -----------------
     // TODO: trying im3d, What if I put on the btm
@@ -203,7 +187,6 @@ int main(){
 
     // --------------------------- IM3D DONE -------------------------------------
 
-
     //Update Mouse
     processInput(OpenGLConfig::g_Window);
     OpenGLConfig::Input.MouseState(OpenGLConfig::g_Window);
@@ -212,7 +195,7 @@ int main(){
 
   //TODO code to do clean up here (remove vbo, vao, etc)
 
-  debugMenu.imguiShutdown();
+  /*IMGUI_DEBUG::imguiShutdown();*/
 
   glfwTerminate();
   return 0;
@@ -247,39 +230,4 @@ void processInput(GLFWwindow* window){
   }
 
   OpenGLConfig::Input.FlyingMovement(window, &OpenGLConfig::cameraClass, deltaTime);
-}
-
-//Everything below is an example on how to make a menu
-void imguiStartFrame(){
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-  imguiDebugMenu();
-}
-
-// This one is the real shit that creates the menu
-void imguiDebugMenu(){
-  ImGui::Begin("Debug Area", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-
-  ImGui::SliderFloat("Mouse Sensitivity", &OpenGLConfig::cameraClass.MouseSensitivity, 0.0f, 2.0f);
-
-  ImGui::SliderFloat("Movement Speed", &OpenGLConfig::cameraClass.MovementSpeed, 0.0f, 100.0f);
-
-  glm::vec3 camPos = OpenGLConfig::cameraClass.Position;
-  ImGui::Text("Camera Position  x: %.3f y: %.3f, z: %.3f", camPos.x, camPos.y, camPos.z);
-
-  glm::vec3 camFront = OpenGLConfig::cameraClass.Front;
-  ImGui::Text("Camera Front  x: %.3f y: %.3f, z: %.3f", camFront.x, camFront.y, camFront.z);
-
-  glm::vec3 camUp = OpenGLConfig::cameraClass.Up;
-  ImGui::Text("Camera Up  x: %.3f y: %.3f, z: %.3f", camUp.x, camUp.y, camUp.z);
-
-  pl::FrameMetric fm = pl::GetTimePerFrame(glfwGetTime());
-  ImGui::Text("%.2f ms/frame (%d fps)", fm.sec_per_frame, fm.frames_per_sec);
-
-  ImGui::Text("Current Selected Model: %s", currentSelected.m_modelName.c_str());
-
-  ImGui::Text("Total Model In Scene: %lu", ModelsInScene.size());
-
-  ImGui::End();
 }

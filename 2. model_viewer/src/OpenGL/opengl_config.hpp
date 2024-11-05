@@ -6,6 +6,7 @@
 #include "../input/user_input.h"
 #include "../camera/fps_camera_control.h"
 #include "../scene_framebuffer/scene_framebuffer.h"
+#include "../shaders/shader.h"
 
 namespace OpenGLConfig{
   struct Config {
@@ -21,9 +22,9 @@ namespace OpenGLConfig{
     // Cam Default Pos
     glm::vec3 m_CameraDefaultPos = glm::vec3(6.27f, 2.89f, 6.86f);
 
-    // Vec2 cursorPos();
-    int cursor_x;
-    int cursor_y;
+    /*// Vec2 cursorPos();*/
+    /*int cursor_x;*/
+    /*int cursor_y;*/
 
     float m_deltaTime;
 
@@ -43,6 +44,7 @@ namespace OpenGLConfig{
   extern float lastY;
   extern UserInput Input;
   extern Camera cameraClass;
+  extern Shader screenTexture;
 
   // Framebuffer?
   extern SceneFramebuffer mainFramebuffer;
@@ -50,4 +52,6 @@ namespace OpenGLConfig{
 
   int Init();
   void SetCallbacks();
+  void SetGlobalShaders();
+  void SetFrameBuffers();
 }

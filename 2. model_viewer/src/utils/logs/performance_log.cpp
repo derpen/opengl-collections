@@ -1,6 +1,6 @@
 #include "performance_log.h"
 
-namespace pl {
+namespace PerformanceLog {
   double lastTime = 0.0;
   int nbFrames = 0;
   double time_per_frame = 0.0;

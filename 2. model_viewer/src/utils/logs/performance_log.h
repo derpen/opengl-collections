@@ -1,6 +1,6 @@
 #pragma once
 
-namespace pl {
+namespace PerformanceLog {
   extern double lastTime;
   extern int nbFrames;
   extern double time_per_frame;

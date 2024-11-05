@@ -1,6 +1,9 @@
 #include "opengl_config.hpp"
 #include "opengl_callbacks.hpp"
 #include <iostream>
+#include "../imgui_debug_menu/imgui_debug.h"
+#include "../im3d/im3d_handler.hpp"
+#include "../utils/shapes/shape_vertices.h"
 
 namespace OpenGLConfig{
   Config conf;
@@ -13,6 +16,9 @@ namespace OpenGLConfig{
   // Some other Init
   UserInput Input = UserInput();
   Camera cameraClass = Camera(conf.m_CameraDefaultPos);
+  Shader screenTexture = Shader();
+  Shader model_select_shader = Shader();
+  Shader model_stencil_shader = Shader();
   SceneFramebuffer mainFramebuffer = SceneFramebuffer();
   SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
 
@@ -36,6 +42,17 @@ namespace OpenGLConfig{
       std::cout << "OPENGL_CONFIG::ERROR::Failed to initialize GLAD\n";
       return -1;
     }
+    
+    SetCallbacks();
+
+    glEnable(GL_DEPTH_TEST);  
+    glEnable(GL_STENCIL_TEST);  
+
+    IMGUI_DEBUG::imguiInit(OpenGLConfig::g_Window);
+    Im3dHandler::Im3d_Init();
+
+    SetFrameBuffers();
+    SetGlobalShaders();
 
     return 1;
   }
@@ -44,5 +61,21 @@ namespace OpenGLConfig{
     glfwSetFramebufferSizeCallback(g_Window, OpenGLCallbacks::framebuffer_size_callback);
     glfwSetCursorPosCallback(g_Window, OpenGLCallbacks::mouse_callback);
     glfwSetScrollCallback(g_Window, OpenGLCallbacks::scroll_callback);
+  }
+
+  void SetFrameBuffers(){
+    //Framebuffer, and screen quad
+    mainFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
+    shapes::InitScreenTexture();    
+    screenTexture.createShaderProgram("shaders/screentext.vert", "shaders/screentext.frag");
+    screenTexture.setInt("screenTexture", 0);
+
+    //Second framebuffer for picking things
+    pickingFramebuffer = SceneFramebuffer(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
+  }
+
+  void SetGlobalShaders(){
+    model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");
+    model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
   }
 }
