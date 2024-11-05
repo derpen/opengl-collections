@@ -57,6 +57,7 @@ void processInput(GLFWwindow* window){
     
     // Handle picking
     unsigned long int objectIndex = (int)pixel[0];
+    std::cout << objectIndex << "\n";
     if(objectIndex < Scene::g_ModelList.size()){
       Scene::g_ModelList[objectIndex].isSelected = true;
       g_lastIndex = objectIndex;

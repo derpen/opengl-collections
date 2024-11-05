@@ -20,9 +20,9 @@ namespace Scene{
     _modelDetail.shader = ayumuShader;
 
     _modelDetail.Transform = glm::vec3(1.0f, 1.0f, 1.0f);
-    _modelDetail.RotationAxis = glm::vec3(0.0f, 0.0f, 0.0f);
+    _modelDetail.RotationAxis = glm::vec3(1.0f, 1.0f, 1.0f); // TODO: This should be non zero
     _modelDetail.Rotation = 0.0f; // Angle
-    _modelDetail.Scale = glm::vec3(0.0f, 0.0f, 0.0f);
+    _modelDetail.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     _modelDetail.isSelected = false;
 
@@ -42,7 +42,7 @@ namespace Scene{
     for(int i = 0; i < (int)g_ModelList.size(); i++){
       glm::mat4 model = glm::mat4(1.0f);
       model = glm::scale(model, g_ModelList[i].Scale);
-      model = glm::rotate(model, g_ModelList[i].Rotation, g_ModelList[i].RotationAxis);
+      // model = glm::rotate(model, g_ModelList[i].Rotation, g_ModelList[i].RotationAxis); // TODO: THIS ONE MESSES UP SOMEHOW
       model = glm::translate(model, g_ModelList[i].Transform);
 
       // Draw normally to offscreen buffer
@@ -88,7 +88,7 @@ namespace Scene{
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       OpenGLConfig::model_select_shader.use();
       OpenGLConfig::model_select_shader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
-      OpenGLConfig::model_select_shader.setFloat("modelIndex", 1.0f); /* TODO: Temporary way of storing object index */
+      OpenGLConfig::model_select_shader.setFloat("modelIndex", 0.5f); /* TODO: Temporary way of storing object index */
       g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_select_shader);
       OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
 
