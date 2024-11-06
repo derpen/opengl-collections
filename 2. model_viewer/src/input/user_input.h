@@ -16,6 +16,9 @@ public:
   bool GetMouseButtonDown(unsigned int mouseButton);
   bool GetMouseButtonUp(unsigned int mouseButton);
   void MouseState(GLFWwindow* window);
+  void GetKeyPress(unsigned int keyButton);
+  void GetKeyDown(unsigned int keyButton);
+  void GetKeyUp(unsigned int keyButton);
 
   // Everything below this is project specific, every function below this will be different for every project
   void ToggleCursor(GLFWwindow* window);

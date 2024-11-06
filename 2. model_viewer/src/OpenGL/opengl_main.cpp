@@ -1,5 +1,6 @@
 #include "opengl_main.hpp"
 #include "../imgui_debug_menu/imgui_debug.h"
+#include "../im3d/im3d_handler.hpp"
 #include "../Scene/scene.hpp"
 #include "opengl_config.hpp"
 
@@ -14,6 +15,7 @@ void mainLoop(){
     glfwPollEvents();
 
     IMGUI_DEBUG::imguiStartFrame();
+    Im3dHandler::Im3d_NewFrame();
 
     float currentFrame = glfwGetTime();
     g_DeltaTime = currentFrame - g_LastFrame;
@@ -22,6 +24,7 @@ void mainLoop(){
     Scene::DrawScene();
 
     IMGUI_DEBUG::imguiEndFrame();
+    Im3dHandler::Im3d_EndFrame();
 
     processInput(OpenGLConfig::g_Window);
     OpenGLConfig::Input.MouseState(OpenGLConfig::g_Window);

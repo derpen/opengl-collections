@@ -24,6 +24,19 @@ void UserInput::MouseState(GLFWwindow* window){
   mousePressed[1] = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
 }
 
+void UserInput::GetKeyPress(unsigned int keyButton){
+  // TODO: ALL KEYBOARD INPUT
+
+}
+
+void UserInput::GetKeyDown(unsigned int keyButton){
+
+}
+
+void UserInput::GetKeyUp(unsigned int keyButton){
+
+}
+
 void UserInput::ToggleCursor(GLFWwindow* window){
   firstMouse = true;
   if(cursorHidden){

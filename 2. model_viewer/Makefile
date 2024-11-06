@@ -31,7 +31,7 @@ SOURCES = \
     $(SRC_DIR)/im3d/im3d_handler.cpp \
     $(SRC_DIR)/OpenGL/opengl_config.cpp \
     $(SRC_DIR)/OpenGL/opengl_main.cpp \
-    $(SRC_DIR)/OpenGL/opengl_callbacks.cpp
+    $(SRC_DIR)/OpenGL/opengl_callbacks.cpp 
 
 # Object files
 OBJECTS = $(SOURCES:.cpp=.o)
