@@ -68,7 +68,7 @@ namespace Scene{
         glDisable(GL_DEPTH_TEST);
         OpenGLConfig::model_stencil_shader.use();
         glm::mat4 temp_model = glm::mat4(1.0f);
-        float scale = 1.05f;
+        float scale = 1.00f;
         temp_model = glm::scale(temp_model, glm::vec3(scale, scale, scale));
         temp_model = glm::rotate(temp_model, g_ModelList[i].Rotation, g_ModelList[i].RotationAxis);
         temp_model = glm::translate(temp_model, g_ModelList[i].Transform);
