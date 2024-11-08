@@ -7,6 +7,7 @@
 #include "../shaders/shader.h"
 #include "../OpenGL/opengl_main.hpp"
 #include "../OpenGL/opengl_config.hpp"
+#include "../../vendor/imgui/imgui.h"
 
 bool Im3dHandler::Im3d_Init(){
   s_Im3dShaderPoints = Shader(Shader::POINTS);
@@ -46,22 +47,12 @@ void Im3dHandler::Im3d_NewFrame(){
 
 	ad.m_deltaTime     = OpenGLLoop::g_DeltaTime;
 	ad.m_viewportSize  = Im3d::Vec2(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height);
-
   glm::vec3 camPos = OpenGLConfig::cameraClass.Position;
 	ad.m_viewOrigin    = Im3d::Vec3(camPos.x, camPos.y, camPos.z); // for VR use the head position
-
   glm::vec3 camDir = OpenGLConfig::cameraClass.Front;
 	ad.m_viewDirection = Im3d::Vec3(camDir.x, camDir.y, camDir.z);
 	ad.m_worldUp       = Im3d::Vec3(0.0f, 1.0f, 0.0f); // used internally for generating orthonormal bases
-
-	/*ad.m_projOrtho     = g_Example->m_camOrtho; // <------------- TODO: this one can be set as always false*/
 	ad.m_projOrtho     = false; // <------------- TODO: this one can be set as always false
-
-	/*// m_projScaleY controls how gizmos are scaled in world space to maintain a constant screen height*/
-	/*ad.m_projScaleY = g_Example->m_camOrtho*/
-	/*	? 2.0f / g_Example->m_camProj(1, 1) // use far plane height for an ortho projection*/
-	/*	: tanf(g_Example->m_camFovRad * 0.5f) * 2.0f // or vertical fov for a perspective projection*/
-	/*	;  */
 
 	// m_projScaleY controls how gizmos are scaled in world space to maintain a constant screen height
 	ad.m_projScaleY = tanf(glm::radians(OpenGLConfig::cameraClass.cameraFOV) * 0.5f) * 2.0f; // or vertical fov for a perspective projection
@@ -108,24 +99,17 @@ void Im3dHandler::Im3d_NewFrame(){
 
 	// Set cull frustum planes. This is only required if IM3D_CULL_GIZMOS or IM3D_CULL_PRIMTIIVES is enable via
 	// im3d_config.h, or if any of the IsVisible() functions are called.
-  /*Im3d::Mat4 viewProj = projMatrix * viewMatrix;*/
   Im3dHandler::s_camViewProj = projMatrix * viewMatrix;
+  s_camViewProjGLM = currentProjMatrix * currentViewMatrix;
 
 	ad.setCullFrustum(Im3dHandler::s_camViewProj, true);
 
 	// Fill the key state array; using GetAsyncKeyState here but this could equally well be done via the window proc.
 	// All key states have an equivalent (and more descriptive) 'Action_' enum.
-	/*ad.m_keyDown[Im3d::Mouse_Left] = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0; // Im3d::Action_Select*/
 	ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
 
 	// The following key states control which gizmo to use for the generic Gizmo() function. Here using the left ctrl
 	// key as an additional predicate.
-	/*bool ctrlDown = (GetAsyncKeyState(VK_LCONTROL) & 0x8000) != 0;*/
-	/*ad.m_keyDown[Im3d::Key_L] = ctrlDown && (GetAsyncKeyState(0x4c) & 0x8000) != 0; // Action_GizmoLocal*/
-	/*ad.m_keyDown[Im3d::Key_T] = ctrlDown && (GetAsyncKeyState(0x54) & 0x8000) != 0; // Action_GizmoTranslation*/
-	/*ad.m_keyDown[Im3d::Key_R] = ctrlDown && (GetAsyncKeyState(0x52) & 0x8000) != 0; // Action_GizmoRotation*/
-	/*ad.m_keyDown[Im3d::Key_S] = ctrlDown && (GetAsyncKeyState(0x53) & 0x8000) != 0; // Action_GizmoScale*/
-
 	bool ctrlDown = glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
 	ad.m_keyDown[Im3d::Key_L] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_L) == GLFW_PRESS;
 	ad.m_keyDown[Im3d::Key_T] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_T) == GLFW_PRESS;
@@ -138,6 +122,13 @@ void Im3dHandler::Im3d_NewFrame(){
 	ad.m_snapScale       = ctrlDown ? 0.5f : 0.0f;
 
 	Im3d::NewFrame();
+
+  //TODO Handle the transform here
+  //
+  //
+  //
+  //
+  //
 }
 
 void Im3dHandler::Im3d_EndFrame(){
@@ -159,28 +150,32 @@ void Im3dHandler::Im3d_EndFrame(){
 	{
 		const Im3d::DrawList& drawList = Im3d::GetDrawLists()[i];
 
-		if (drawList.m_layerId == Im3d::MakeId("NamedLayer"))
-		{
-		 // The application may group primitives into layers, which can be used to change the draw state (e.g. enable depth testing, use a different shader)
-		}
+		/*if (drawList.m_layerId == Im3d::MakeId("NamedLayer"))*/
+		/*{*/
+		/* // The application may group primitives into layers, which can be used to change the draw state (e.g. enable depth testing, use a different shader)*/
+		/*}*/
 
 		GLenum prim;
-		GLuint sh;
+		/*GLuint sh;*/
+    Shader* shader;
 		switch (drawList.m_primType)
 		{
 			case Im3d::DrawPrimitive_Points:
 				prim = GL_POINTS;
-				sh = s_Im3dShaderPoints.ShaderID;
+				/*sh = s_Im3dShaderPoints.ShaderID;*/
+        shader = &s_Im3dShaderPoints;
 				glDisable(GL_CULL_FACE); // points are view-aligned
 				break;
 			case Im3d::DrawPrimitive_Lines:
 				prim = GL_LINES;
-				sh = s_Im3dShaderLines.ShaderID;
+				/*sh = s_Im3dShaderLines.ShaderID;*/
+        shader = &s_Im3dShaderLines;
 				glDisable(GL_CULL_FACE); // lines are view-aligned
 				break;
 			case Im3d::DrawPrimitive_Triangles:
 				prim = GL_TRIANGLES;
-				sh = s_Im3dShaderTriangles.ShaderID;
+				/*sh = s_Im3dShaderTriangles.ShaderID;*/
+        shader = &s_Im3dShaderTriangles;
 				//glAssert(glEnable(GL_CULL_FACE)); // culling valid for triangles, but optional
 				break;
 			default:
@@ -192,15 +187,116 @@ void Im3dHandler::Im3d_EndFrame(){
 		glBindBuffer(GL_ARRAY_BUFFER, s_Im3dVertexBuffer);
 		glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)drawList.m_vertexCount * sizeof(Im3d::VertexData), (GLvoid*)drawList.m_vertexData, GL_STREAM_DRAW);
 
-	  Im3d::AppData& ad = Im3d::GetAppData();
-		glUseProgram(sh);
-		glUniform2f(glGetUniformLocation(sh, "uViewport"), ad.m_viewportSize.x, ad.m_viewportSize.y);
-		glUniformMatrix4fv(glGetUniformLocation(sh, "uViewProjMatrix"), 1, false, (const GLfloat*)Im3dHandler::s_camViewProj);
+	  /*Im3d::AppData& ad = Im3d::GetAppData();*/
+		/*glUseProgram(sh);*/
+		/*glUniform2f(glGetUniformLocation(sh, "uViewport"), ad.m_viewportSize.x, ad.m_viewportSize.y);*/
+		/*glUniformMatrix4fv(glGetUniformLocation(sh, "uViewProjMatrix"), 1, false, (const GLfloat*)Im3dHandler::s_camViewProj);*/
+
+    shader->use();
+    shader->setVec2("uViewport", glm::vec2(OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height));
+    shader->setMat4("uViewProjMatrix", Im3dHandler::s_camViewProjGLM);
+
 		glDrawArrays(prim, 0, (GLsizei)drawList.m_vertexCount);
 	}
 
 	/*// Text rendering. TODO: NOT SURE IF THIS ONE IS NEEDED*/
 	/*// This is common to all examples since we're using ImGui to draw the text lists, see im3d_example.cpp.*/
-	/*g_Example->drawTextDrawListsImGui(Im3d::GetTextDrawLists(), Im3d::GetTextDrawListCount());*/
+	/*Im3d_DrawTextDrawListsImgui(Im3d::GetTextDrawLists(), Im3d::GetTextDrawListCount());*/
+}
 
+void Im3dHandler::Im3d_DrawTextDrawListsImgui(const Im3d::TextDrawList _textDrawLists[], Im3d::U32 _count){
+    // Invisible ImGui window which covers the screen.
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32_BLACK_TRANS);
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2((float)OpenGLConfig::conf.m_width, (float)OpenGLConfig::conf.m_height));
+    ImGui::Begin("Invisible", nullptr, 0
+      | ImGuiWindowFlags_NoTitleBar
+      | ImGuiWindowFlags_NoResize
+      | ImGuiWindowFlags_NoScrollbar
+      | ImGuiWindowFlags_NoInputs
+      | ImGuiWindowFlags_NoSavedSettings
+      | ImGuiWindowFlags_NoFocusOnAppearing
+      | ImGuiWindowFlags_NoBringToFrontOnFocus
+      );
+
+    ImDrawList* imDrawList = ImGui::GetWindowDrawList();
+    const Im3d::Mat4 viewProj = Im3dHandler::s_camViewProj;
+    for (Im3d::U32 i = 0; i < _count; ++i) 
+    {
+      const Im3d::TextDrawList& textDrawList = Im3d::GetTextDrawLists()[i];
+      
+      /*if (textDrawList.m_layerId == Im3d::MakeId("NamedLayer")) */
+      /*{*/
+      /*  // The application may group primitives into layers, which can be used to change the draw state (e.g. enable depth testing, use a different shader)*/
+      /*}*/
+
+      for (Im3d::U32 j = 0; j < textDrawList.m_textDataCount; ++j)
+      {
+        const Im3d::TextData& textData = textDrawList.m_textData[j];
+        if (textData.m_positionSize.w == 0.0f || textData.m_color.getA() == 0.0f)
+        {
+          continue;
+        }
+
+        // Project world -> screen space.
+        Im3d::Vec4 clip = viewProj * Im3d::Vec4(textData.m_positionSize.x, textData.m_positionSize.y, textData.m_positionSize.z, 1.0f);
+        Im3d::Vec2 screen = Im3d::Vec2(clip.x / clip.w, clip.y / clip.w);
+    
+        // Cull text which falls offscreen. Note that this doesn't take into account text size but works well enough in practice.
+        if (clip.w < 0.0f || screen.x >= 1.0f || screen.y >= 1.0f)
+        {
+          continue;
+        }
+
+        // Pixel coordinates for the ImGuiWindow ImGui.
+        screen = screen * Im3d::Vec2(0.5f) + Im3d::Vec2(0.5f);
+        screen.y = 1.0f - screen.y; // screen space origin is reversed by the projection.
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        screen = screen * Im3d::Vec2(windowSize.x, windowSize.y);
+
+        // All text data is stored in a single buffer; each textData instance has an offset into this buffer.
+        const char* text = textDrawList.m_textBuffer + textData.m_textBufferOffset;
+
+        // Calculate the final text size in pixels to apply alignment flags correctly.
+        ImGui::SetWindowFontScale(textData.m_positionSize.w); // NB no CalcTextSize API which takes a font/size directly...
+        
+        ImVec2 imguiTextSize = ImGui::CalcTextSize(text, text + textData.m_textLength); 
+        Im3d::Vec2 textSize = Im3d::Vec2(imguiTextSize.x, imguiTextSize.y);
+
+        ImGui::SetWindowFontScale(1.0f);
+
+        // Generate a pixel offset based on text flags.
+        Im3d::Vec2 textOffset = Im3d::Vec2(-textSize.x * 0.5f, -textSize.y * 0.5f); // default to center
+        if ((textData.m_flags & Im3d::TextFlags_AlignLeft) != 0)
+        {
+          textOffset.x = -textSize.x;
+        }
+        else if ((textData.m_flags & Im3d::TextFlags_AlignRight) != 0)
+        {
+          textOffset.x = 0.0f;
+        }
+
+        if ((textData.m_flags & Im3d::TextFlags_AlignTop) != 0)
+        {
+          textOffset.y = -textSize.y;
+        }
+        else if ((textData.m_flags & Im3d::TextFlags_AlignBottom) != 0)
+        {
+          textOffset.y = 0.0f;
+        }
+
+        // Add text to the window draw list.
+        screen = screen + textOffset;
+
+        /*imDrawList->AddText(nullptr, textData.m_positionSize.w * ImGui::GetFontSize(),*/
+        
+        ImVec2 newScreen = ImVec2(screen.x, screen.y);
+        
+        /*imDrawList->AddText(nullptr, textData.m_positionSize.w * ImGui::GetFontSize(), screen, textData.m_color.getABGR(), text, text + textData.m_textLength);*/
+        imDrawList->AddText(nullptr, textData.m_positionSize.w * ImGui::GetFontSize(), newScreen, textData.m_color.getABGR(), text, text + textData.m_textLength);
+      }
+    }
+
+    ImGui::End();
+    ImGui::PopStyleColor(1);
 }

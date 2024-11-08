@@ -23,8 +23,8 @@ void mainLoop(){
 
     Scene::DrawScene();
 
-    IMGUI_DEBUG::imguiEndFrame();
     Im3dHandler::Im3d_EndFrame();
+    IMGUI_DEBUG::imguiEndFrame();
 
     processInput(OpenGLConfig::g_Window);
     OpenGLConfig::Input.MouseState(OpenGLConfig::g_Window);
@@ -60,7 +60,6 @@ void processInput(GLFWwindow* window){
     
     // Handle picking
     unsigned long int objectIndex = (int)pixel[0];
-    std::cout << (int)pixel[0] << (int)pixel[1] << (int)pixel[2] << "\n";
     if(objectIndex < Scene::g_ModelList.size()){
       Scene::g_ModelList[objectIndex].isSelected = true;
       g_lastIndex = objectIndex;

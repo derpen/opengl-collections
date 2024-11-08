@@ -18,7 +18,7 @@ int main(){
   std::cout << "The nightmare begins once more.. \n" ;
 
   int success = OpenGLConfig::Init();
-  if(success < 0){
+  if(success< 0){
     std::cout << "Init Failed \n";
     return -1;
   }
