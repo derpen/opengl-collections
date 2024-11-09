@@ -8,6 +8,7 @@
 #include "../OpenGL/opengl_main.hpp"
 #include "../OpenGL/opengl_config.hpp"
 #include "../../vendor/imgui/imgui.h"
+#include <iostream>
 
 bool Im3dHandler::Im3d_Init(){
   s_Im3dShaderPoints = Shader(Shader::POINTS);
@@ -43,6 +44,13 @@ void Im3dHandler::Im3d_Shutdown(){
 }
 
 void Im3dHandler::Im3d_NewFrame(){
+  // TODO: dont know what this does
+  Im3d::Context& ctx = Im3d::GetContext();
+  ctx.m_gizmoHeightPixels = 50;
+  ctx.m_gizmoSizePixels = 6;
+  Im3d::GetContext().m_gizmoMode = Im3d::GizmoMode::GizmoMode_Translation;
+  // unknown code over
+
   Im3d::AppData& ad = Im3d::GetAppData();
 
 	ad.m_deltaTime     = OpenGLLoop::g_DeltaTime;
@@ -53,7 +61,6 @@ void Im3dHandler::Im3d_NewFrame(){
 	ad.m_viewDirection = Im3d::Vec3(camDir.x, camDir.y, camDir.z);
 	ad.m_worldUp       = Im3d::Vec3(0.0f, 1.0f, 0.0f); // used internally for generating orthonormal bases
 	ad.m_projOrtho     = false; // <------------- TODO: this one can be set as always false
-
 	// m_projScaleY controls how gizmos are scaled in world space to maintain a constant screen height
 	ad.m_projScaleY = tanf(glm::radians(OpenGLConfig::cameraClass.cameraFOV) * 0.5f) * 2.0f; // or vertical fov for a perspective projection
 
@@ -61,7 +68,6 @@ void Im3dHandler::Im3d_NewFrame(){
   Im3d::Vec2 cursorPos = Im3d::Vec2(OpenGLConfig::lastX, OpenGLConfig::lastY);
 	cursorPos.x = (cursorPos.x / ad.m_viewportSize.x) * 2.0f - 1.0f;
 	cursorPos.y = (cursorPos.y / ad.m_viewportSize.y) * 2.0f - 1.0f;
-
 	cursorPos.y = -cursorPos.y; // window origin is top-left, ndc is bottom-left
   Im3d::Vec3 rayOrigin, rayDirection;
 
@@ -101,8 +107,7 @@ void Im3dHandler::Im3d_NewFrame(){
 	// im3d_config.h, or if any of the IsVisible() functions are called.
   Im3dHandler::s_camViewProj = projMatrix * viewMatrix;
   s_camViewProjGLM = currentProjMatrix * currentViewMatrix;
-
-	ad.setCullFrustum(Im3dHandler::s_camViewProj, true);
+	/*ad.setCullFrustum(Im3dHandler::s_camViewProj, true);*/
 
 	// Fill the key state array; using GetAsyncKeyState here but this could equally well be done via the window proc.
 	// All key states have an equivalent (and more descriptive) 'Action_' enum.
@@ -123,12 +128,13 @@ void Im3dHandler::Im3d_NewFrame(){
 
 	Im3d::NewFrame();
 
-  //TODO Handle the transform here
+  //TODO Handle the transform here and hand data to the appdata or whatever
   //
   //
-  //
-  //
-  //
+  Im3d::Mat4 transform(1.0f);
+  if(Im3d::Gizmo("GizmoUnified", transform)){
+    std::cout << "Is this true\n";
+  }
 }
 
 void Im3dHandler::Im3d_EndFrame(){
