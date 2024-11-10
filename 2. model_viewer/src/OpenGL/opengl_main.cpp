@@ -3,6 +3,7 @@
 #include "../im3d/im3d_handler.hpp"
 #include "../Scene/scene.hpp"
 #include "opengl_config.hpp"
+#include <GLFW/glfw3.h>
 
 namespace OpenGLLoop {
 
@@ -42,7 +43,10 @@ void shutdown(){
 }
 
 void processInput(GLFWwindow* window){
-  if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
+  if(
+    glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS ||
+    glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_PRESS
+  ){
     glfwSetWindowShouldClose(window, true);
   }
 

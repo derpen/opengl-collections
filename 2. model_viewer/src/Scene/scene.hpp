@@ -8,6 +8,9 @@
 
 namespace Scene{
   struct ModelDetail {
+
+    //TODO: clean this up, move to object.hpp
+
     std::string Name;
     glm::vec3 Transform;
     glm::vec3 Scale;
@@ -20,7 +23,9 @@ namespace Scene{
 
   extern std::vector<ModelDetail> g_ModelList;
 
-  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader);
-  void InitializeScene(); // ADD ALL MODELS HERE
+  //TODO: do a little renaming for these functions
+  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader); // ADD ALL MODELS HERE
+  void RemoveModelFromScene(std::string ModelName); 
+  void InitializeScene(); // TODO: is this needed?
   void DrawScene();
 }

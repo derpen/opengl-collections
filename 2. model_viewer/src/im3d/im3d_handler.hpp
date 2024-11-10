@@ -11,6 +11,8 @@ inline Shader s_Im3dShaderPoints;
 inline Shader s_Im3dShaderLines;
 inline Shader s_Im3dShaderTriangles;
 inline Im3d::Mat4 s_camViewProj;
+inline bool s_isGizmoUsed;
+inline bool s_isMultipleItemSelected;
 
 // TODO: HAVE A CONVERTER INSTEAD OF DOING THIS SHIT
 inline glm::mat4 s_camViewProjGLM;

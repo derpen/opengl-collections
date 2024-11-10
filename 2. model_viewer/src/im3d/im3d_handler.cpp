@@ -8,7 +8,7 @@
 #include "../OpenGL/opengl_main.hpp"
 #include "../OpenGL/opengl_config.hpp"
 #include "../../vendor/imgui/imgui.h"
-#include <iostream>
+#include "../utils/math/math.hpp"
 
 bool Im3dHandler::Im3d_Init(){
   s_Im3dShaderPoints = Shader(Shader::POINTS);
@@ -128,19 +128,33 @@ void Im3dHandler::Im3d_NewFrame(){
   //TODO Handle the transform here and hand data to the appdata or whatever
   // TODO: dont know what this does
   Im3d::Context& ctx = Im3d::GetContext();
-  ctx.m_gizmoHeightPixels = 50;
+  ctx.m_gizmoHeightPixels = 150;
   ctx.m_gizmoSizePixels = 6;
   // unknown code over
 
-  ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Translation;
-  Im3d::Mat4 transform(1.0f);
+  // TODO: input system to handle keyboard input
+  if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_Q) == GLFW_PRESS){
+    ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Translation;
+  }
+  else if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_W) == GLFW_PRESS){
+    ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Scale;
+  }
+  else if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_E) == GLFW_PRESS){
+    ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Rotation;
+  }
+
+  Im3d::Mat4 transform(1.0f); // TODO: this transform is (i think) the one that actually changes the gizmos
 
   if(Im3d::Gizmo("GizmoUnified", transform)){
     Im3d::Vec3 pos = transform.getTranslation();
-    /*ImGui::Text("Position: %.3f, %.3f, %.3f", pos.x, pos.y, pos.z); // Todo: <-- How can I show this*/
+    Im3d::Vec3 rot = Im3d::ToEulerXYZ(transform.getRotation());
+    Im3d::Vec3 sca = transform.getScale();
 
-    //Use the transform here to edit the active model transform
-    //
+    //TODO: Use the transform here to edit the active model transform
+    Transform newTransform;
+    newTransform.position = glm::vec3(pos.x, pos.y, pos.z);
+    newTransform.rotation = glm::vec3(rot.x, rot.y, rot.z);
+    newTransform.scale = glm::vec3(sca.x, sca.y, sca.z);
   }
 }
 
