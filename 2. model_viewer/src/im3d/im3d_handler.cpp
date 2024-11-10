@@ -44,13 +44,6 @@ void Im3dHandler::Im3d_Shutdown(){
 }
 
 void Im3dHandler::Im3d_NewFrame(){
-  // TODO: dont know what this does
-  Im3d::Context& ctx = Im3d::GetContext();
-  ctx.m_gizmoHeightPixels = 50;
-  ctx.m_gizmoSizePixels = 6;
-  Im3d::GetContext().m_gizmoMode = Im3d::GizmoMode::GizmoMode_Translation;
-  // unknown code over
-
   Im3d::AppData& ad = Im3d::GetAppData();
 
 	ad.m_deltaTime     = OpenGLLoop::g_DeltaTime;
@@ -69,9 +62,10 @@ void Im3dHandler::Im3d_NewFrame(){
 	cursorPos.x = (cursorPos.x / ad.m_viewportSize.x) * 2.0f - 1.0f;
 	cursorPos.y = (cursorPos.y / ad.m_viewportSize.y) * 2.0f - 1.0f;
 	cursorPos.y = -cursorPos.y; // window origin is top-left, ndc is bottom-left
-  Im3d::Vec3 rayOrigin, rayDirection;
 
-  rayOrigin = ad.m_viewOrigin;
+  // Old code for raycasting
+  /*Im3d::Vec3 rayOrigin, rayDirection;*/
+  /*rayOrigin = ad.m_viewOrigin;*/
 
   glm::mat4 currentProjMatrix = OpenGLConfig::cameraClass.GetProjMatrix();
 
@@ -83,9 +77,9 @@ void Im3dHandler::Im3d_NewFrame(){
       }
   }
 
-  rayDirection.x  = cursorPos.x / projMatrix(0, 0);
-  rayDirection.y  = cursorPos.y / projMatrix(1, 1);
-  rayDirection.z  = -1.0f;
+  /*rayDirection.x  = cursorPos.x / projMatrix(0, 0);*/
+  /*rayDirection.y  = cursorPos.y / projMatrix(1, 1);*/
+  /*rayDirection.z  = 1.0f;*/
 
   glm::mat4 currentViewMatrix = OpenGLConfig::cameraClass.GetViewMatrix();
 
@@ -97,11 +91,14 @@ void Im3dHandler::Im3d_NewFrame(){
       }
   }
 
-  Im3d::Mat4 camWorld = Im3d::Inverse(viewMatrix);
-  rayDirection    = camWorld * Im3d::Vec4(Normalize(rayDirection), 0.0f);
+	/* Im3d::Mat4 camWorld = Im3d::Inverse(viewMatrix);*/
+	/* rayDirection    = camWorld * Im3d::Vec4(Normalize(rayDirection), 0.0f);*/
+	/*ad.m_cursorRayOrigin = rayOrigin;*/
+	/*ad.m_cursorRayDirection = rayDirection;*/
 
-	ad.m_cursorRayOrigin = rayOrigin;
-	ad.m_cursorRayDirection = rayDirection;
+  glm::vec3 mouseRay = GetMouseRay(OpenGLConfig::cameraClass.GetProjMatrix(), OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::conf.m_width, OpenGLConfig::conf.m_height, OpenGLConfig::lastX, OpenGLConfig::lastY);
+	ad.m_cursorRayOrigin = { camPos.x, camPos.y, camPos.z };
+	ad.m_cursorRayDirection = {mouseRay.x, mouseRay.y, mouseRay.z};
 
 	// Set cull frustum planes. This is only required if IM3D_CULL_GIZMOS or IM3D_CULL_PRIMTIIVES is enable via
 	// im3d_config.h, or if any of the IsVisible() functions are called.
@@ -111,15 +108,15 @@ void Im3dHandler::Im3d_NewFrame(){
 
 	// Fill the key state array; using GetAsyncKeyState here but this could equally well be done via the window proc.
 	// All key states have an equivalent (and more descriptive) 'Action_' enum.
-	ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+	ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
 
 	// The following key states control which gizmo to use for the generic Gizmo() function. Here using the left ctrl
 	// key as an additional predicate.
 	bool ctrlDown = glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
-	ad.m_keyDown[Im3d::Key_L] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_L) == GLFW_PRESS;
-	ad.m_keyDown[Im3d::Key_T] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_T) == GLFW_PRESS;
-	ad.m_keyDown[Im3d::Key_R] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_R) == GLFW_PRESS;
-	ad.m_keyDown[Im3d::Key_S] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_S) == GLFW_PRESS;
+	/*ad.m_keyDown[Im3d::Key_L] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_L) == GLFW_PRESS;*/
+	/*ad.m_keyDown[Im3d::Key_T] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_T) == GLFW_PRESS;*/
+	/*ad.m_keyDown[Im3d::Key_R] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_R) == GLFW_PRESS;*/
+	/*ad.m_keyDown[Im3d::Key_S] = ctrlDown && glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_S) == GLFW_PRESS;*/
 
 	// Enable gizmo snapping by setting the translation/rotation/scale increments to be > 0
 	ad.m_snapTranslation = ctrlDown ? 0.5f : 0.0f;
@@ -129,11 +126,21 @@ void Im3dHandler::Im3d_NewFrame(){
 	Im3d::NewFrame();
 
   //TODO Handle the transform here and hand data to the appdata or whatever
-  //
-  //
+  // TODO: dont know what this does
+  Im3d::Context& ctx = Im3d::GetContext();
+  ctx.m_gizmoHeightPixels = 50;
+  ctx.m_gizmoSizePixels = 6;
+  // unknown code over
+
+  ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Translation;
   Im3d::Mat4 transform(1.0f);
+
   if(Im3d::Gizmo("GizmoUnified", transform)){
-    std::cout << "Is this true\n";
+    Im3d::Vec3 pos = transform.getTranslation();
+    /*ImGui::Text("Position: %.3f, %.3f, %.3f", pos.x, pos.y, pos.z); // Todo: <-- How can I show this*/
+
+    //Use the transform here to edit the active model transform
+    //
   }
 }
 
@@ -305,4 +312,20 @@ void Im3dHandler::Im3d_DrawTextDrawListsImgui(const Im3d::TextDrawList _textDraw
 
     ImGui::End();
     ImGui::PopStyleColor(1);
+}
+
+glm::vec3 Im3dHandler::GetMouseRay(glm::mat4 projection, glm::mat4 view, int windowWidth, int windowHeight, int mouseX, int mouseY) {
+  // Thank you tokyospliff
+  // https://github.com/livinamuk/Hell2024/blob/main/Hell2024/Hell2024/src/Editor/Gizmo.hpp#L162
+  float x = (2.0f * mouseX) / (float)windowWidth - 1.0f;
+  float y = 1.0f - (2.0f * mouseY) / (float)windowHeight;
+  float z = 1.0f;
+  glm::vec3 ray_nds = glm::vec3(x, y, z);
+  glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, ray_nds.z, 1.0f);
+  glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+  ray_eye = glm::vec4(ray_eye.x, ray_eye.y, ray_eye.z, 0.0f);
+  glm::vec4 inv_ray_wor = (inverse(view) * ray_eye);
+  glm::vec3 ray_wor = glm::vec3(inv_ray_wor.x, inv_ray_wor.y, inv_ray_wor.z);
+  ray_wor = normalize(ray_wor);
+  return ray_wor;
 }

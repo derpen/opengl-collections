@@ -20,5 +20,6 @@ void Im3d_Shutdown();
 void Im3d_NewFrame();
 void Im3d_EndFrame();
 void Im3d_DrawTextDrawListsImgui(const Im3d::TextDrawList _textDrawLists[], Im3d::U32 _count);
+glm::vec3 GetMouseRay(glm::mat4 projection, glm::mat4 view, int windowWidth, int windowHeight, int mouseX, int mouseY);
 
 }
