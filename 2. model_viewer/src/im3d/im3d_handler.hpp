@@ -14,6 +14,9 @@ inline Im3d::Mat4 s_camViewProj;
 inline bool s_isGizmoUsed;
 inline bool s_isMultipleItemSelected;
 
+inline Im3d::Mat4 s_GizmoTransform = (1.0f);
+inline bool s_GizmoInUse;
+
 // TODO: HAVE A CONVERTER INSTEAD OF DOING THIS SHIT
 inline glm::mat4 s_camViewProjGLM;
 

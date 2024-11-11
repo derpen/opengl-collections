@@ -26,4 +26,10 @@ struct ObjectDetail {
     model = glm::translate(model, positionVec);
     return model;
   };
+
+  inline void SetModelTransform(Transform model){
+    transform.position = model.position;
+    transform.rotation = model.rotation;
+    transform.scale = model.scale;
+  }
 };

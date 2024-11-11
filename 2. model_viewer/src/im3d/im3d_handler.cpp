@@ -9,6 +9,7 @@
 #include "../OpenGL/opengl_config.hpp"
 #include "../../vendor/imgui/imgui.h"
 #include "../utils/math/math.hpp"
+#include <iostream>
 
 bool Im3dHandler::Im3d_Init(){
   s_Im3dShaderPoints = Shader(Shader::POINTS);
@@ -143,14 +144,14 @@ void Im3dHandler::Im3d_NewFrame(){
     ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Rotation;
   }
 
-  Im3d::Mat4 transform(1.0f); // TODO: this transform is (i think) the one that actually changes the gizmos
+  s_GizmoInUse = Im3d::Gizmo("GizmoUnified", s_GizmoTransform);
 
-  if(Im3d::Gizmo("GizmoUnified", transform)){
-    Im3d::Vec3 pos = transform.getTranslation();
-    Im3d::Vec3 rot = Im3d::ToEulerXYZ(transform.getRotation());
-    Im3d::Vec3 sca = transform.getScale();
+  if(s_GizmoInUse){
+    Im3d::Vec3 pos = s_GizmoTransform.getTranslation();
+    Im3d::Vec3 rot = Im3d::ToEulerXYZ(s_GizmoTransform.getRotation());
+    Im3d::Vec3 sca = s_GizmoTransform.getScale();
 
-    //TODO: Use the transform here to edit the active model transform
+    //TODO: Use the transform here to edit this gizmo transform.
     Transform newTransform;
     newTransform.position = glm::vec3(pos.x, pos.y, pos.z);
     newTransform.rotation = glm::vec3(rot.x, rot.y, rot.z);
