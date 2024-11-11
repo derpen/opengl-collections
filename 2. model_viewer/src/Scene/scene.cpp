@@ -5,11 +5,11 @@
 #include "../utils/shapes/shape_vertices.h"
 
 namespace Scene{
-  std::vector<ModelDetail> g_ModelList;
+  std::vector<ObjectDetail> g_ModelList;
 
   void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader){
     // add model
-    ModelDetail _modelDetail;
+    ObjectDetail _modelDetail;
     _modelDetail.Name = ModelName.c_str();
     
     Model currentModel = Model(ModelName.c_str());
@@ -19,10 +19,10 @@ namespace Scene{
     ayumuShader.createShaderProgram(VertexShader, FragmentShader);
     _modelDetail.shader = ayumuShader;
 
-    _modelDetail.Transform = glm::vec3(1.0f, 1.0f, 1.0f);
-    _modelDetail.RotationAxis = glm::vec3(1.0f, 1.0f, 1.0f); // TODO: This should be non zero
+    _modelDetail.transform.position = glm::vec3(1.0f, 1.0f, 1.0f);
+    _modelDetail.transform.rotation = glm::vec3(1.0f, 1.0f, 1.0f); // TODO: This should be non zero
     _modelDetail.Rotation = 0.0f; // Angle
-    _modelDetail.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     _modelDetail.isSelected = false;
 
@@ -40,10 +40,7 @@ namespace Scene{
   void DrawScene(){
     // draw all
     for(int i = 0; i < (int)g_ModelList.size(); i++){
-      glm::mat4 model = glm::mat4(1.0f);
-      model = glm::scale(model, g_ModelList[i].Scale);
-      // model = glm::rotate(model, g_ModelList[i].Rotation, g_ModelList[i].RotationAxis); // TODO: THIS ONE MESSES UP SOMEHOW
-      model = glm::translate(model, g_ModelList[i].Transform);
+      glm::mat4 model = g_ModelList[i].GetModelMatrix();
 
       // Draw normally to offscreen buffer
       OpenGLConfig::mainFramebuffer.UseFrameBuffer();
@@ -67,11 +64,10 @@ namespace Scene{
         glStencilMask(0x00);
         glDisable(GL_DEPTH_TEST);
         OpenGLConfig::model_stencil_shader.use();
-        glm::mat4 temp_model = glm::mat4(1.0f);
+
         float scale = 1.00f;
-        temp_model = glm::scale(temp_model, glm::vec3(scale, scale, scale));
-        temp_model = glm::rotate(temp_model, g_ModelList[i].Rotation, g_ModelList[i].RotationAxis);
-        temp_model = glm::translate(temp_model, g_ModelList[i].Transform);
+        g_ModelList[i].transform.scale = glm::vec3(scale);
+        glm::mat4 temp_model = g_ModelList[i].GetModelMatrix();
 
         OpenGLConfig::model_stencil_shader.SetMVP(temp_model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
         g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_stencil_shader);

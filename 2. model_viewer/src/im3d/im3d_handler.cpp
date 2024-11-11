@@ -136,7 +136,7 @@ void Im3dHandler::Im3d_NewFrame(){
   if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_Q) == GLFW_PRESS){
     ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Translation;
   }
-  else if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_W) == GLFW_PRESS){
+  else if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_W) == GLFW_PRESS && !OpenGLConfig::Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT)){
     ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Scale;
   }
   else if(glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_E) == GLFW_PRESS){
