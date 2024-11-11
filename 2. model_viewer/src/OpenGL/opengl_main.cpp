@@ -9,11 +9,12 @@ namespace OpenGLLoop {
 
 float g_DeltaTime = 0.0;
 float g_LastFrame = 0.0;
-int g_lastIndex = 0;
 
 void mainLoop(){
   while(!glfwWindowShouldClose(OpenGLConfig::g_Window)){
     glfwPollEvents();
+
+    //TODO: a bit messy tbh, might wanna group together stuff that are similiar
 
     IMGUI_DEBUG::imguiStartFrame();
     Im3dHandler::Im3d_NewFrame();
@@ -22,6 +23,7 @@ void mainLoop(){
     g_DeltaTime = currentFrame - g_LastFrame;
     g_LastFrame = currentFrame;
 
+    Scene::PickModelFromScene();
     Scene::DrawScene();
 
     Im3dHandler::Im3d_EndFrame();
@@ -54,24 +56,6 @@ void processInput(GLFWwindow* window){
     OpenGLConfig::Input.ToggleCursor(window);
   } else if (OpenGLConfig::Input.GetMouseButtonUp(GLFW_MOUSE_BUTTON_RIGHT)){
     OpenGLConfig::Input.ToggleCursor(window);
-  }
-
-  // Read pixel from picking framebuffer
-  if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
-    OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
-    unsigned char pixel[3];
-    glReadPixels(OpenGLConfig::lastX, OpenGLConfig::conf.m_height - OpenGLConfig::lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
-    
-    // Handle picking
-    unsigned long int objectIndex = (int)pixel[0];
-    if(objectIndex < Scene::g_ModelList.size()){
-      Scene::g_ModelList[objectIndex].isSelected = true;
-      g_lastIndex = objectIndex;
-    } else {
-      Scene::g_ModelList[g_lastIndex].isSelected = false;
-    }     
-
-    OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
   }
 
   OpenGLConfig::Input.FlyingMovement(window, &OpenGLConfig::cameraClass, g_DeltaTime);

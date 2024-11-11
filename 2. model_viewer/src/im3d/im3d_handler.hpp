@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../shaders/shader.h"
+#include "../utils/math/math.hpp"
 #include "../../vendor/im3d/im3d_math.h"
 
 namespace Im3dHandler {
@@ -15,6 +16,7 @@ inline bool s_isGizmoUsed;
 inline bool s_isMultipleItemSelected;
 
 inline Im3d::Mat4 s_GizmoTransform = (1.0f);
+inline Transform s_ObjectTransform;
 inline bool s_GizmoInUse;
 
 // TODO: HAVE A CONVERTER INSTEAD OF DOING THIS SHIT

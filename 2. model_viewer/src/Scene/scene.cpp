@@ -6,6 +6,8 @@
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;
+  bool g_IsSelecting = false;
+  unsigned int g_SelectedObjectIndex = 0;
 
   void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader){
     // add model
@@ -40,8 +42,6 @@ namespace Scene{
   void DrawScene(){
     // draw all
     for(int i = 0; i < (int)g_ModelList.size(); i++){
-      glm::mat4 model = g_ModelList[i].GetModelMatrix();
-
       // Draw normally to offscreen buffer
       OpenGLConfig::mainFramebuffer.UseFrameBuffer();
       glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
@@ -55,6 +55,7 @@ namespace Scene{
 
       Shader currentShader = g_ModelList[i].shader;
       currentShader.use();
+      glm::mat4 model = g_ModelList[i].GetModelMatrix();
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
       g_ModelList[i].ModelMesh.Draw(currentShader);
 
@@ -98,6 +99,29 @@ namespace Scene{
       shapes::DisableScreenTexture();
     }
   }
+
+  void PickModelFromScene(){
+    // Read pixel from picking framebuffer
+    if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
+      OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
+      unsigned char pixel[3];
+      glReadPixels(OpenGLConfig::lastX, OpenGLConfig::conf.m_height - OpenGLConfig::lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
+      
+      // Handle picking
+      unsigned long int objectIndex = (int)pixel[0];
+      if(objectIndex < Scene::g_ModelList.size()){
+        Scene::g_ModelList[objectIndex].isSelected = true;
+        Scene::g_IsSelecting = true;
+        Scene::g_SelectedObjectIndex = objectIndex;
+      } else {
+        Scene::g_ModelList[g_SelectedObjectIndex].isSelected = false;
+        Scene::g_IsSelecting = false;
+      }     
+
+      OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
+    }
+  }
 }
+
 
 

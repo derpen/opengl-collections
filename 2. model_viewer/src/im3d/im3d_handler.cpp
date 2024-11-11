@@ -9,7 +9,7 @@
 #include "../OpenGL/opengl_config.hpp"
 #include "../../vendor/imgui/imgui.h"
 #include "../utils/math/math.hpp"
-#include <iostream>
+#include "../Scene/scene.hpp"
 
 bool Im3dHandler::Im3d_Init(){
   s_Im3dShaderPoints = Shader(Shader::POINTS);
@@ -109,7 +109,8 @@ void Im3dHandler::Im3d_NewFrame(){
 
 	// Fill the key state array; using GetAsyncKeyState here but this could equally well be done via the window proc.
 	// All key states have an equivalent (and more descriptive) 'Action_' enum.
-	ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
+	/*ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);*/
+	ad.m_keyDown[Im3d::Mouse_Left] = glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_X) == GLFW_PRESS; // TODO: handle left click properly
 
 	// The following key states control which gizmo to use for the generic Gizmo() function. Here using the left ctrl
 	// key as an additional predicate.
@@ -144,18 +145,24 @@ void Im3dHandler::Im3d_NewFrame(){
     ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Rotation;
   }
 
-  s_GizmoInUse = Im3d::Gizmo("GizmoUnified", s_GizmoTransform);
+  if(Scene::g_IsSelecting){
+    s_GizmoInUse = Im3d::Gizmo("GizmoUnified", s_GizmoTransform);
 
-  if(s_GizmoInUse){
-    Im3d::Vec3 pos = s_GizmoTransform.getTranslation();
-    Im3d::Vec3 rot = Im3d::ToEulerXYZ(s_GizmoTransform.getRotation());
-    Im3d::Vec3 sca = s_GizmoTransform.getScale();
+    if(s_GizmoInUse){
+      Im3d::Vec3 pos = s_GizmoTransform.getTranslation();
+      Im3d::Vec3 rot = Im3d::ToEulerXYZ(s_GizmoTransform.getRotation());
+      Im3d::Vec3 sca = s_GizmoTransform.getScale();
 
-    //TODO: Use the transform here to edit this gizmo transform.
-    Transform newTransform;
-    newTransform.position = glm::vec3(pos.x, pos.y, pos.z);
-    newTransform.rotation = glm::vec3(rot.x, rot.y, rot.z);
-    newTransform.scale = glm::vec3(sca.x, sca.y, sca.z);
+      //TODO: Use the transform here to edit this gizmo transform.
+      Transform newTransform;
+      newTransform.position = glm::vec3(pos.x, pos.y, pos.z);
+      newTransform.rotation = glm::vec3(rot.x, rot.y, rot.z);
+      newTransform.scale = glm::vec3(sca.x, sca.y, sca.z);
+
+      /*s_ObjectTransform = newTransform;*/
+
+      Scene::g_ModelList[Scene::g_SelectedObjectIndex].transform = newTransform;
+    }
   }
 }
 
