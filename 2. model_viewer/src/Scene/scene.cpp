@@ -22,8 +22,8 @@ namespace Scene{
     _modelDetail.shader = ayumuShader;
 
     _modelDetail.transform.position = glm::vec3(1.0f, 1.0f, 1.0f);
-    _modelDetail.transform.rotation = glm::vec3(1.0f, 1.0f, 1.0f); // TODO: This should be non zero
-    _modelDetail.Rotation = 0.0f; // Angle
+    _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
+    /*_modelDetail.Rotation = 1.0f; // Angle*/
     _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     _modelDetail.isSelected = false;
@@ -65,11 +65,7 @@ namespace Scene{
         glStencilMask(0x00);
         glDisable(GL_DEPTH_TEST);
         OpenGLConfig::model_stencil_shader.use();
-
-        float scale = 1.00f;
-        g_ModelList[i].transform.scale = glm::vec3(scale);
         glm::mat4 temp_model = g_ModelList[i].GetModelMatrix();
-
         OpenGLConfig::model_stencil_shader.SetMVP(temp_model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
         g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_stencil_shader);
         glStencilMask(0xFF);

@@ -132,6 +132,8 @@ void Im3dHandler::Im3d_NewFrame(){
   Im3d::Context& ctx = Im3d::GetContext();
   ctx.m_gizmoHeightPixels = 150;
   ctx.m_gizmoSizePixels = 6;
+  // Always global transform
+  ctx.m_gizmoLocal = false;
   // unknown code over
 
   // TODO: input system to handle keyboard input
@@ -161,7 +163,7 @@ void Im3dHandler::Im3d_NewFrame(){
 
       /*s_ObjectTransform = newTransform;*/
 
-      Scene::g_ModelList[Scene::g_SelectedObjectIndex].transform = newTransform;
+      Scene::g_ModelList[Scene::g_SelectedObjectIndex].SetModelTransform(newTransform);
     }
   }
 }

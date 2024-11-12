@@ -22,7 +22,9 @@ struct ObjectDetail {
     glm::vec3 rotationVec = transform.rotation;
     glm::vec3 positionVec = transform.position;
     model = glm::scale(model, scaleVec);
-    model = glm::rotate(model, Rotation, rotationVec);
+    model = glm::rotate(model, rotationVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, rotationVec.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, rotationVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::translate(model, positionVec);
     return model;
   };
