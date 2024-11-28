@@ -147,6 +147,7 @@ void Im3dHandler::Im3d_NewFrame(){
     ctx.m_gizmoMode = Im3d::GizmoMode::GizmoMode_Rotation;
   }
 
+  //TODO: handle deselecting properly
   if(Scene::g_IsSelecting){
     s_GizmoInUse = Im3d::Gizmo("GizmoUnified", s_GizmoTransform);
 

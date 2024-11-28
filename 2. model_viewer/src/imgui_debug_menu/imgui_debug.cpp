@@ -38,6 +38,25 @@ void IMGUI_DEBUG::imguiDebugMenu(){
   PerformanceLog::FrameMetric fm = PerformanceLog::GetTimePerFrame(glfwGetTime());
   ImGui::Text("%.2f ms/frame (%d fps)", fm.sec_per_frame, fm.frames_per_sec);
 
+  ImGui::SeparatorText("Transform");
+  ImGui::Text("Currently Selected Model: Osaka");
+  ImGui::Text("Position");
+  static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+  static float drag_f = 0.5f;
+  ImGui::DragFloat("X", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  ImGui::DragFloat("Y", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  ImGui::DragFloat("Z", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+
+  ImGui::Text("Rotation");
+  ImGui::DragFloat("X", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  ImGui::DragFloat("Y", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  ImGui::DragFloat("Z", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+
+  ImGui::Text("Scale");
+  ImGui::DragFloat("X", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  ImGui::DragFloat("Y", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  ImGui::DragFloat("Z", &drag_f, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+
   /*ImGui::Text("Current Selected Model: %s", currentSelected.m_modelName.c_str());*/
   /**/
   /*ImGui::Text("Total Model In Scene: %lu", ModelsInScene.size());*/
