@@ -162,8 +162,6 @@ void Im3dHandler::Im3d_NewFrame(){
       newTransform.rotation = glm::vec3(rot.x, rot.y, rot.z);
       newTransform.scale = glm::vec3(sca.x, sca.y, sca.z);
 
-      /*s_ObjectTransform = newTransform;*/
-
       Scene::g_ModelList[Scene::g_SelectedObjectIndex].SetModelTransform(newTransform);
     }
   }

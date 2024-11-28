@@ -21,7 +21,7 @@ namespace Scene{
     ayumuShader.createShaderProgram(VertexShader, FragmentShader);
     _modelDetail.shader = ayumuShader;
 
-    _modelDetail.transform.position = glm::vec3(1.0f, 1.0f, 1.0f);
+    _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
     /*_modelDetail.Rotation = 1.0f; // Angle*/
     _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -96,6 +96,9 @@ namespace Scene{
     }
   }
 
+  // TODO
+  // This left click always happen, regardless if currently picking is active or not
+  // Disable this somehow when user is trying to drag and drop some stuff around (gizmos, ImGui, etc)
   void PickModelFromScene(){
     // Read pixel from picking framebuffer
     if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){

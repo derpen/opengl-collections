@@ -6,6 +6,7 @@
 #include "../Scene/scene.hpp"
 #include "../Scene/object.hpp"
 #include "../utils/math/math.hpp"
+#include "../im3d/im3d_handler.hpp"
 
 void IMGUI_DEBUG::imguiInit(GLFWwindow* window){
   IMGUI_CHECKVERSION();
@@ -53,27 +54,30 @@ void IMGUI_DEBUG::imguiDebugMenu(){
   Transform modelTransform = currentModel.transform;
 
   ImGui::Text("Currently Selected Model: %s", objectName.c_str());
-  ImGui::Text("Position");
   static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-  static float drag_f = 0.5f;
 
-  glm::vec3 modelPos = modelTransform.position;
-  glm::vec3 modelRot = modelTransform.rotation;
-  glm::vec3 modelSca = modelTransform.scale;
+  if(Scene::g_IsSelecting){
+    ImGui::Text("Position");
 
-  ImGui::DragFloat("Position X", &modelPos.x, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
-  ImGui::DragFloat("Position Y", &modelPos.y, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
-  ImGui::DragFloat("Position Z", &modelPos.z, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    glm::vec3 modelPos = modelTransform.position;
+    glm::vec3 modelRot = modelTransform.rotation;
+    glm::vec3 modelSca = modelTransform.scale;
+    /*Transform newTransform = Im3dHandler::s_ObjectTransform;*/
 
-  ImGui::Text("Rotation");
-  ImGui::DragFloat("Rotation X", &modelRot.x, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
-  ImGui::DragFloat("Rotation Y", &modelRot.y, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
-  ImGui::DragFloat("Rotation Z", &modelRot.z, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Position X", &modelPos.x, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Position Y", &modelPos.y, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Position Z", &modelPos.z, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
 
-  ImGui::Text("Scale");
-  ImGui::DragFloat("Scale X", &modelSca.x, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
-  ImGui::DragFloat("Scale Y", &modelSca.y, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
-  ImGui::DragFloat("Scale Z", &modelSca.z, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::Text("Rotation");
+    ImGui::DragFloat("Rotation X", &modelRot.x, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Rotation Y", &modelRot.y, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Rotation Z", &modelRot.z, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+
+    ImGui::Text("Scale");
+    ImGui::DragFloat("Scale X", &modelSca.x, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Scale Y", &modelSca.y, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+    ImGui::DragFloat("Scale Z", &modelSca.z, 0.005f, 0.0f, FLT_MAX, "%.3f", flags);
+  }
 
   /*ImGui::Text("Current Selected Model: %s", currentSelected.m_modelName.c_str());*/
   /**/
