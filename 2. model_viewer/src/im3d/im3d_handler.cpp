@@ -109,8 +109,8 @@ void Im3dHandler::Im3d_NewFrame(){
 
 	// Fill the key state array; using GetAsyncKeyState here but this could equally well be done via the window proc.
 	// All key states have an equivalent (and more descriptive) 'Action_' enum.
-	/*ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);*/
-	ad.m_keyDown[Im3d::Mouse_Left] = glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_X) == GLFW_PRESS; // TODO: handle left click properly
+	ad.m_keyDown[Im3d::Mouse_Left] = OpenGLConfig::Input.GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
+	/*ad.m_keyDown[Im3d::Mouse_Left] = glfwGetKey(OpenGLConfig::g_Window, GLFW_KEY_X) == GLFW_PRESS; */
 
 	// The following key states control which gizmo to use for the generic Gizmo() function. Here using the left ctrl
 	// key as an additional predicate.

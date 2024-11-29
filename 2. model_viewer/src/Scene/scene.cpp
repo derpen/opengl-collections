@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../OpenGL/opengl_config.hpp"
 #include "../utils/shapes/shape_vertices.h"
+#include "../../vendor/imgui/imgui.h"
+#include "../im3d/im3d_handler.hpp"
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;
@@ -102,6 +104,10 @@ namespace Scene{
   void PickModelFromScene(){
     // Read pixel from picking framebuffer
     if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
+      if(ImGui::GetIO().WantCaptureMouse || Im3dHandler::s_GizmoInUse){
+        std::cout << "Hi :3 \n";
+        return;
+      }
       OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
       unsigned char pixel[3];
       glReadPixels(OpenGLConfig::lastX, OpenGLConfig::conf.m_height - OpenGLConfig::lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
