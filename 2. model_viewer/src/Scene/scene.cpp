@@ -5,6 +5,7 @@
 #include "../utils/shapes/shape_vertices.h"
 #include "../../vendor/imgui/imgui.h"
 #include "../im3d/im3d_handler.hpp"
+#include "../../vendor/im3d/im3d.h"
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;
@@ -98,16 +99,20 @@ namespace Scene{
     }
   }
 
-  // TODO
-  // This left click always happen, regardless if currently picking is active or not
-  // Disable this somehow when user is trying to drag and drop some stuff around (gizmos, ImGui, etc)
   void PickModelFromScene(){
     // Read pixel from picking framebuffer
     if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
-      if(Im3dHandler::s_GizmoInUse || ImGui::GetIO().WantCaptureMouse){
-        std::cout << "Hi :3 " << Im3dHandler::s_GizmoInUse << "\n";
+
+      /* TOOD: dogpee solution to prevent accidental deselecting, find better way soon */
+      bool testGizmo;
+      if(g_IsSelecting){
+        testGizmo = Im3d::Gizmo("GizmoUnified", Im3dHandler::s_GizmoTransform);
+      }
+
+      if(testGizmo || ImGui::GetIO().WantCaptureMouse){
         return;
       }
+      /* TOOD: dogpee solution done */
 
       OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
       unsigned char pixel[3];
