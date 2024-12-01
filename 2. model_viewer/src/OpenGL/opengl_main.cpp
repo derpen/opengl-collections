@@ -15,6 +15,7 @@ void mainLoop(){
     glfwPollEvents();
 
     //TODO: a bit messy tbh, might wanna group together stuff that are similiar
+    // and maybe group them into different files
 
     IMGUI_DEBUG::imguiStartFrame();
     Im3dHandler::Im3d_NewFrame();

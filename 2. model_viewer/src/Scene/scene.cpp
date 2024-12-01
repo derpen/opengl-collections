@@ -104,10 +104,11 @@ namespace Scene{
   void PickModelFromScene(){
     // Read pixel from picking framebuffer
     if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
-      if(ImGui::GetIO().WantCaptureMouse || Im3dHandler::s_GizmoInUse){
-        std::cout << "Hi :3 \n";
+      if(Im3dHandler::s_GizmoInUse || ImGui::GetIO().WantCaptureMouse){
+        std::cout << "Hi :3 " << Im3dHandler::s_GizmoInUse << "\n";
         return;
       }
+
       OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
       unsigned char pixel[3];
       glReadPixels(OpenGLConfig::lastX, OpenGLConfig::conf.m_height - OpenGLConfig::lastY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
