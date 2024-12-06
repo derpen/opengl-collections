@@ -7,6 +7,7 @@
 #include "../Scene/object.hpp"
 #include "../utils/math/math.hpp"
 #include "../im3d/im3d_handler.hpp"
+#include <filesystem>
 
 void IMGUI_DEBUG::imguiInit(GLFWwindow* window){
   IMGUI_CHECKVERSION();
@@ -84,6 +85,44 @@ void IMGUI_DEBUG::imguiDebugMenu(){
   /*ImGui::Text("Total Model In Scene: %lu", ModelsInScene.size());*/
 
   ImGui::End();
+
+  // New Window for directory listing
+  ImGui::Begin("Directory");
+
+  ImGui::Text("Current directory: %s", currentDirectory.string().c_str());
+
+  if(currentDirectory.has_parent_path() && ImGui::Button("..")){
+    currentDirectory = currentDirectory.parent_path();
+  }
+
+  auto entries = _ListDirectoryContent(currentDirectory);
+
+  for(const auto& entry : entries) {
+    if(entry.is_directory()){
+      if(ImGui::TreeNode(entry.path().filename().string().c_str())){
+        if(ImGui::IsItemClicked()){
+          currentDirectory = entry.path();
+        }
+
+        ImGui::TreePop();
+      }
+    } else if (entry.is_regular_file()) {
+      if(ImGui::Selectable(entry.path().filename().string().c_str())){
+        std::string selectedFile = entry.path().string();
+        ImGui::Text("Selected File: %s", selectedFile.c_str());
+      }
+    }
+  }
+
+  ImGui::End();
+}
+
+std::vector<std::filesystem::directory_entry> IMGUI_DEBUG::_ListDirectoryContent(const std::filesystem::path& path){
+  std::vector<std::filesystem::directory_entry> entries;
+  for(const auto& entry : std::filesystem::directory_iterator(path)){
+    entries.push_back(entry);
+  }
+  return entries;
 }
 
 void IMGUI_DEBUG::imguiEndFrame(){
@@ -96,7 +135,6 @@ void IMGUI_DEBUG::imguiShutdown(){
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
 }
-
 
 void IMGUI_DEBUG::HelpMarker(const char* desc)
 {
