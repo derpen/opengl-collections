@@ -6,7 +6,6 @@
 #include "../Scene/scene.hpp"
 #include "../Scene/object.hpp"
 #include "../utils/math/math.hpp"
-#include "../im3d/im3d_handler.hpp"
 #include <algorithm>
 #include <filesystem>
 
@@ -111,6 +110,7 @@ void IMGUI_DEBUG::imguiDebugMenu(){
       if(ImGui::Selectable(entry.path().filename().string().c_str())){
         std::string selectedFile = entry.path().string();
         ImGui::Text("Selected File: %s", selectedFile.c_str());
+        /*Scene::AddModelToScene(selectedFile, "shaders/osaka.vert",  "shaders/osaka.frag");*/
       }
     }
   }

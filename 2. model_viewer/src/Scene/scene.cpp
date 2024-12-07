@@ -6,21 +6,28 @@
 #include "../../vendor/imgui/imgui.h"
 #include "../im3d/im3d_handler.hpp"
 #include "../../vendor/im3d/im3d.h"
+#include "../../vendor/stb/stb_image.h"
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;
   bool g_IsSelecting = false;
   unsigned int g_SelectedObjectIndex = 0;
 
-  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader){
+  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage){
     // add model
     ObjectDetail _modelDetail;
     _modelDetail.Name = ModelName.c_str();
     
+    if(flipImage){
+      // Sometimes might wanna flip image for texture to work
+      stbi_set_flip_vertically_on_load(true);
+    }
+
     Model currentModel = Model(ModelName.c_str());
     _modelDetail.ModelMesh = currentModel;
 
     Shader ayumuShader = Shader();
+
     ayumuShader.createShaderProgram(VertexShader, FragmentShader);
     _modelDetail.shader = ayumuShader;
 
@@ -32,29 +39,41 @@ namespace Scene{
     _modelDetail.isSelected = false;
 
     g_ModelList.push_back(_modelDetail);
+
+    if(flipImage){
+      // Turn off again after everything
+      stbi_set_flip_vertically_on_load(false);
+    }
   }
 
   void InitializeScene(){
-    // Sometimes might wanna flip image for texture to work
-    // stbi_set_flip_vertically_on_load(true);
-
     // Add models here
-    AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag");
+    AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);
+    AddModelToScene("assets/models/backpack/backpack.obj", "shaders/backpack.vert",  "shaders/backpack.frag", true);
   }
 
   void DrawScene(){
     // draw all
+    // Clear everything from last frame
+    // TODO: clean this shit
+    OpenGLConfig::mainFramebuffer.UseFrameBuffer();
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    // TODO: STENCIL, MIGHT WANNA MOVE SOMEWHERE
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilMask(0x00);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
+    OpenGLConfig::mainFramebuffer.DeactivateFrameBuffer();
+
+    OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
+
     for(int i = 0; i < (int)g_ModelList.size(); i++){
       // Draw normally to offscreen buffer
       OpenGLConfig::mainFramebuffer.UseFrameBuffer();
-      glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-
-      // TODO: STENCIL, MIGHT WANNA MOVE SOMEWHERE
-      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      glStencilMask(0x00);
-      glStencilFunc(GL_ALWAYS, 1, 0xFF);
-      glStencilMask(0xFF);
 
       Shader currentShader = g_ModelList[i].shader;
       currentShader.use();
@@ -79,12 +98,14 @@ namespace Scene{
 
       // Draw it again, but for the picking framebuffer
       OpenGLConfig::pickingFramebuffer.UseFrameBuffer();
-      glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       OpenGLConfig::model_select_shader.use();
 
       OpenGLConfig::model_select_shader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
-      OpenGLConfig::model_select_shader.setFloat("modelIndex", 0.0f); /* TODO: Temporary way of storing object index */
+
+      // TODO: 255 because pixel color can only go up to 255, and so far only using the Red channel
+      // Can maybe made it so that other channel is also used if number is higher than 255 or whatever
+      OpenGLConfig::model_select_shader.setFloat("modelIndex", static_cast<float>(i * 255)); 
+
       g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_select_shader);
       OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
 
@@ -99,6 +120,8 @@ namespace Scene{
     }
   }
 
+  // TODO: need to change this method. This is not extensible
+  // Switch to raycasting from mouse and collision instead
   void PickModelFromScene(){
     // Read pixel from picking framebuffer
     if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){

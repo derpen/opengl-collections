@@ -17,7 +17,7 @@ namespace Scene{
   extern unsigned int g_SelectedObjectIndex;
 
   //TODO: do a little renaming for these functions
-  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader); // ADD ALL MODELS HERE
+  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage); // ADD ALL MODELS HERE
   void RemoveModelFromScene(std::string ModelName); 
   void PickModelFromScene();
   void InitializeScene(); // TODO: is this needed?
