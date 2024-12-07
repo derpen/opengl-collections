@@ -102,9 +102,7 @@ namespace Scene{
 
       OpenGLConfig::model_select_shader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
 
-      // TODO: 255 because pixel color can only go up to 255, and so far only using the Red channel
-      // Can maybe made it so that other channel is also used if number is higher than 255 or whatever
-      OpenGLConfig::model_select_shader.setFloat("modelIndex", static_cast<float>(i * 255)); 
+      OpenGLConfig::model_select_shader.setFloat("modelIndex", static_cast<float>(i)); 
 
       g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_select_shader);
       OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
@@ -144,6 +142,7 @@ namespace Scene{
       // Handle picking
       unsigned long int objectIndex = (int)pixel[0];
       if(objectIndex < Scene::g_ModelList.size()){
+        Scene::g_ModelList[g_SelectedObjectIndex].isSelected = false;
         Scene::g_ModelList[objectIndex].isSelected = true;
         Scene::g_IsSelecting = true;
         Scene::g_SelectedObjectIndex = objectIndex;
