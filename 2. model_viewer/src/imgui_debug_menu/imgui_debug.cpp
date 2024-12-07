@@ -7,6 +7,7 @@
 #include "../Scene/object.hpp"
 #include "../utils/math/math.hpp"
 #include "../im3d/im3d_handler.hpp"
+#include <algorithm>
 #include <filesystem>
 
 void IMGUI_DEBUG::imguiInit(GLFWwindow* window){
@@ -120,7 +121,16 @@ void IMGUI_DEBUG::imguiDebugMenu(){
 std::vector<std::filesystem::directory_entry> IMGUI_DEBUG::_ListDirectoryContent(const std::filesystem::path& path){
   std::vector<std::filesystem::directory_entry> entries;
   for(const auto& entry : std::filesystem::directory_iterator(path)){
-    entries.push_back(entry);
+    if(entry.is_directory()){
+      entries.push_back(entry);
+    } else if (entry.is_regular_file()) {
+      std::string extension = entry.path().extension().string();
+      std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower); // Turn into lower case
+
+      if(allowedExtensions.find(extension) != allowedExtensions.end()){
+        entries.push_back(entry);
+      }
+    }
   }
   return entries;
 }

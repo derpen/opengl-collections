@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <filesystem>
 #include <vector>
+#include <set>
 
 namespace IMGUI_DEBUG{
   void imguiInit(GLFWwindow* window);
@@ -14,4 +15,6 @@ namespace IMGUI_DEBUG{
   std::vector<std::filesystem::directory_entry> _ListDirectoryContent(const std::filesystem::path& path);
 
   static std::filesystem::path currentDirectory = "assets";
+
+  static std::set<std::string> allowedExtensions = { ".obj", ".fbx"};
 };
