@@ -149,6 +149,8 @@ void Im3dHandler::Im3d_NewFrame(){
 
   //TODO: handle deselecting properly
   if(Scene::g_IsSelecting){
+    glm::mat4 object_transform = Scene::g_ModelList[Scene::g_SelectedObjectIndex].GetModelMatrix();
+    s_GizmoTransform = glmMat4ToIm3dMat4(object_transform);
     s_GizmoInUse = Im3d::Gizmo("GizmoUnified", s_GizmoTransform);
 
     if(s_GizmoInUse){
@@ -163,6 +165,7 @@ void Im3dHandler::Im3d_NewFrame(){
       newTransform.scale = glm::vec3(sca.x, sca.y, sca.z);
 
       Scene::g_ModelList[Scene::g_SelectedObjectIndex].SetModelTransform(newTransform);
+      s_GizmoTransform = glmMat4ToIm3dMat4(Scene::g_ModelList[Scene::g_SelectedObjectIndex].GetModelMatrix());
     }
   }
 }
@@ -234,107 +237,27 @@ void Im3dHandler::Im3d_EndFrame(){
 
 		glDrawArrays(prim, 0, (GLsizei)drawList.m_vertexCount);
 	}
-
-	/*// Text rendering. TODO: NOT SURE IF THIS ONE IS NEEDED*/
-	/*// This is common to all examples since we're using ImGui to draw the text lists, see im3d_example.cpp.*/
-	/*Im3d_DrawTextDrawListsImgui(Im3d::GetTextDrawLists(), Im3d::GetTextDrawListCount());*/
 }
 
-void Im3dHandler::Im3d_DrawTextDrawListsImgui(const Im3d::TextDrawList _textDrawLists[], Im3d::U32 _count){
-    // Invisible ImGui window which covers the screen.
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32_BLACK_TRANS);
-    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowSize(ImVec2((float)OpenGLConfig::conf.m_width, (float)OpenGLConfig::conf.m_height));
-    ImGui::Begin("Invisible", nullptr, 0
-      | ImGuiWindowFlags_NoTitleBar
-      | ImGuiWindowFlags_NoResize
-      | ImGuiWindowFlags_NoScrollbar
-      | ImGuiWindowFlags_NoInputs
-      | ImGuiWindowFlags_NoSavedSettings
-      | ImGuiWindowFlags_NoFocusOnAppearing
-      | ImGuiWindowFlags_NoBringToFrontOnFocus
-      );
-
-    ImDrawList* imDrawList = ImGui::GetWindowDrawList();
-    const Im3d::Mat4 viewProj = Im3dHandler::s_camViewProj;
-    for (Im3d::U32 i = 0; i < _count; ++i) 
-    {
-      const Im3d::TextDrawList& textDrawList = Im3d::GetTextDrawLists()[i];
-      
-      /*if (textDrawList.m_layerId == Im3d::MakeId("NamedLayer")) */
-      /*{*/
-      /*  // The application may group primitives into layers, which can be used to change the draw state (e.g. enable depth testing, use a different shader)*/
-      /*}*/
-
-      for (Im3d::U32 j = 0; j < textDrawList.m_textDataCount; ++j)
-      {
-        const Im3d::TextData& textData = textDrawList.m_textData[j];
-        if (textData.m_positionSize.w == 0.0f || textData.m_color.getA() == 0.0f)
-        {
-          continue;
-        }
-
-        // Project world -> screen space.
-        Im3d::Vec4 clip = viewProj * Im3d::Vec4(textData.m_positionSize.x, textData.m_positionSize.y, textData.m_positionSize.z, 1.0f);
-        Im3d::Vec2 screen = Im3d::Vec2(clip.x / clip.w, clip.y / clip.w);
-    
-        // Cull text which falls offscreen. Note that this doesn't take into account text size but works well enough in practice.
-        if (clip.w < 0.0f || screen.x >= 1.0f || screen.y >= 1.0f)
-        {
-          continue;
-        }
-
-        // Pixel coordinates for the ImGuiWindow ImGui.
-        screen = screen * Im3d::Vec2(0.5f) + Im3d::Vec2(0.5f);
-        screen.y = 1.0f - screen.y; // screen space origin is reversed by the projection.
-        ImVec2 windowSize = ImGui::GetWindowSize();
-        screen = screen * Im3d::Vec2(windowSize.x, windowSize.y);
-
-        // All text data is stored in a single buffer; each textData instance has an offset into this buffer.
-        const char* text = textDrawList.m_textBuffer + textData.m_textBufferOffset;
-
-        // Calculate the final text size in pixels to apply alignment flags correctly.
-        ImGui::SetWindowFontScale(textData.m_positionSize.w); // NB no CalcTextSize API which takes a font/size directly...
-        
-        ImVec2 imguiTextSize = ImGui::CalcTextSize(text, text + textData.m_textLength); 
-        Im3d::Vec2 textSize = Im3d::Vec2(imguiTextSize.x, imguiTextSize.y);
-
-        ImGui::SetWindowFontScale(1.0f);
-
-        // Generate a pixel offset based on text flags.
-        Im3d::Vec2 textOffset = Im3d::Vec2(-textSize.x * 0.5f, -textSize.y * 0.5f); // default to center
-        if ((textData.m_flags & Im3d::TextFlags_AlignLeft) != 0)
-        {
-          textOffset.x = -textSize.x;
-        }
-        else if ((textData.m_flags & Im3d::TextFlags_AlignRight) != 0)
-        {
-          textOffset.x = 0.0f;
-        }
-
-        if ((textData.m_flags & Im3d::TextFlags_AlignTop) != 0)
-        {
-          textOffset.y = -textSize.y;
-        }
-        else if ((textData.m_flags & Im3d::TextFlags_AlignBottom) != 0)
-        {
-          textOffset.y = 0.0f;
-        }
-
-        // Add text to the window draw list.
-        screen = screen + textOffset;
-
-        /*imDrawList->AddText(nullptr, textData.m_positionSize.w * ImGui::GetFontSize(),*/
-        
-        ImVec2 newScreen = ImVec2(screen.x, screen.y);
-        
-        /*imDrawList->AddText(nullptr, textData.m_positionSize.w * ImGui::GetFontSize(), screen, textData.m_color.getABGR(), text, text + textData.m_textLength);*/
-        imDrawList->AddText(nullptr, textData.m_positionSize.w * ImGui::GetFontSize(), newScreen, textData.m_color.getABGR(), text, text + textData.m_textLength);
-      }
+glm::mat4 Im3dHandler::im3dMat4toGlmMat4(Im3d::Mat4 transform){
+  glm::mat4 glmMat(1.0f); 
+  for (int col = 0; col < 4; ++col) {
+    for (int row = 0; row < 4; ++row) {
+      glmMat[col][row] = transform.m[col * 4 + row];
     }
+  }
+  return glmMat;
+}
 
-    ImGui::End();
-    ImGui::PopStyleColor(1);
+Im3d::Mat4 Im3dHandler::glmMat4ToIm3dMat4(glm::mat4 transform){
+  Im3d::Mat4 matrix;
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      matrix.m[i * 4 + j] = transform[i][j];
+    }
+  }
+
+  return matrix;
 }
 
 glm::vec3 Im3dHandler::GetMouseRay(glm::mat4 projection, glm::mat4 view, int windowWidth, int windowHeight, int mouseX, int mouseY) {
