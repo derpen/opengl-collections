@@ -44,10 +44,10 @@ void Mesh::Draw(Shader &shader){
     }
   } else {
     // Right now, assuming everything is array of size 1
-    /*shader.setVec3("Diffuse", Materials[0].Diffuse);*/
-    /*shader.setVec3("Specular", Materials[0].Specular);*/
-    /*shader.setVec3("Highlight", Materials[0].Highlight);*/
-    /*shader.setFloat("Shininess", Materials[0].Shininess);*/
+    shader.setVec3("Diffuse", Materials[0].Diffuse);
+    shader.setVec3("Specular", Materials[0].Specular);
+    shader.setVec3("Highlight", Materials[0].Highlight);
+    shader.setFloat("Shininess", Materials[0].Shininess);
   }
 
   //Draw le Mesh

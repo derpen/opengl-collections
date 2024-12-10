@@ -5,10 +5,10 @@ in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
 
-in vec3 Diffuse;
-in vec3 Specular;
-in vec3 Highlight;
-in float Shininess;
+uniform vec3 Diffuse;
+uniform vec3 Specular;
+uniform vec3 Highlight;
+uniform float Shininess;
 
 void main()
 {    

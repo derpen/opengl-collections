@@ -4,10 +4,6 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
 out vec2 TexCoords;
-out vec3 Diffuse;
-out vec3 Specular;
-out vec3 Highlight;
-out float Shininess;
 
 uniform mat4 model;
 uniform mat4 view;
