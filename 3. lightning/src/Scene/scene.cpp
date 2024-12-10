@@ -48,8 +48,7 @@ namespace Scene{
 
   void InitializeScene(){
     // Add models here
-    AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);
-    /*AddModelToScene("assets/models/backpack/backpack.obj", "shaders/backpack.vert",  "shaders/backpack.frag", true);*/
+    AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);
   }
 
   void DrawScene(){

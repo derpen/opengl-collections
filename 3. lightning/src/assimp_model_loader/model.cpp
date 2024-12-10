@@ -99,10 +99,33 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
 
     std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+  } else {
+    // Called if there is no texture
+    aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+    loadMaterial(material);
   }
 
-
   return Mesh(vertices, indices, textures);
+}
+
+Material Model::loadMaterial(aiMaterial* mat){
+  Material material;
+  aiColor3D color(0.f, 0.f, 0.f);
+  float shininess;
+
+  mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+  material.Diffuse = glm::vec3(color.r, color.b, color.g);
+
+  /*mat->Get(AI_MATKEY_COLOR_AMBIENT, color);*/
+  /*material.Ambient = glm::vec3(color.r, color.b, color.g);*/
+
+  mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+  material.Specular = glm::vec3(color.r, color.b, color.g);
+
+  mat->Get(AI_MATKEY_SHININESS, shininess);
+  material.Shininess = shininess;
+
+  return material;
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName){
