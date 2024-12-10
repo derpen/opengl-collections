@@ -91,6 +91,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     }
   }
 
+  std::vector<Material> materials;
   //Process material
   if(mesh->mMaterialIndex >= 0){
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
@@ -99,13 +100,16 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
 
     std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-  } else {
+  } 
+  else {
     // Called if there is no texture
+    // TODO: I think this is wrong
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-    loadMaterial(material);
+    Material theMat = loadMaterial(material);
+    materials.push_back(theMat);
   }
 
-  return Mesh(vertices, indices, textures);
+  return Mesh(vertices, indices, textures, materials);
 }
 
 Material Model::loadMaterial(aiMaterial* mat){

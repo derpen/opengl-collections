@@ -7,13 +7,6 @@
 #include <vector>
 #include <unordered_map>
 
-struct Material {
-  glm::vec3 Diffuse;
-  glm::vec3 Specular;
-  glm::vec3 Highlight;
-  float Shininess;
-};
-
 class Model{
 public:
   std::vector<Mesh> m_Meshes;
