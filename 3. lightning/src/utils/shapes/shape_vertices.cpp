@@ -23,49 +23,50 @@ unsigned int indices[] = {
   4, 5, 6, 6, 7, 4,  // Back face
 };
 
-float verticesNoEBO[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
+/*float verticesNoEBO[] = {*/
+/*    // Positions          //TexCoor           //Normals*/
+/*    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,*/
+/*     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,*/
+/*     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,*/
+/*     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,*/
+/*    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,*/
+/*    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,*/
+/**/
+/*    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,*/
+/*     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,*/
+/*     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,*/
+/*     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,*/
+/*    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,*/
+/*    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,*/
+/**/
+/*    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,*/
+/*    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,*/
+/*    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,*/
+/*    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,*/
+/*    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,*/
+/*    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,*/
+/**/
+/*     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,*/
+/*     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,*/
+/*     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,*/
+/*     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,*/
+/*     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,*/
+/*     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,*/
+/**/
+/*    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,*/
+/*     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,*/
+/*     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,*/
+/*     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,*/
+/*    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,*/
+/*    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,*/
+/**/
+/*    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,*/
+/*     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,*/
+/*     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,*/
+/*     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,*/
+/*    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,*/
+/*    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f*/
+/*};*/
 
 // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 float screenTextureQuad[] = { 
@@ -77,6 +78,51 @@ float screenTextureQuad[] = {
   -1.0f,  1.0f,  0.0f, 1.0f,
   1.0f, -1.0f,  1.0f, 0.0f,
   1.0f,  1.0f,  1.0f, 1.0f
+};
+
+float verticesNoEBO[] = {
+    // Positions          // Normals          // Texture Coords
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 };
 
 // Explicit array sizes
@@ -111,11 +157,13 @@ namespace shapes{
       glGenBuffers(1, &m_CUBEvbo);
       glBindVertexArray(m_CUBEvao);
       glBindBuffer(GL_ARRAY_BUFFER, m_CUBEvbo);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(verticesNoEBO), &verticesNoEBO, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, vertexNOEBOSize, &verticesNoEBO, GL_STATIC_DRAW);
       glEnableVertexAttribArray(0);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)3);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
       glEnableVertexAttribArray(1);
-      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(2 * sizeof(float)));
+      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+      glEnableVertexAttribArray(2);
+      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
       glBindBuffer(GL_ARRAY_BUFFER, 0);
       glBindVertexArray(0);
   }

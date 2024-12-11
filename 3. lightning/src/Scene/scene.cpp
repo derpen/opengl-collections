@@ -33,7 +33,6 @@ namespace Scene{
 
     _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
-    /*_modelDetail.Rotation = 1.0f; // Angle*/
     _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     _modelDetail.isSelected = false;
@@ -92,7 +91,7 @@ namespace Scene{
 
     for(int i = 0; i < (int)g_ModelList.size(); i++){
       bool isModel = false;
-      if(g_ModelList[i].ModelMesh.m_modelName == "default"){
+      if(g_ModelList[i].ModelMesh.m_modelName != "default"){
         isModel = true;
       }
 
@@ -105,6 +104,11 @@ namespace Scene{
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
 
       g_ModelList[i].ModelMesh.Draw(currentShader);
+      if(!isModel){
+        shapes::UseCube();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shapes::DisableCube();
+      }
 
       // If model selected, draw an overline
       if(g_ModelList[i].isSelected){
@@ -115,6 +119,11 @@ namespace Scene{
         glm::mat4 temp_model = g_ModelList[i].GetModelMatrix();
         OpenGLConfig::model_stencil_shader.SetMVP(temp_model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
         g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_stencil_shader);
+        if(!isModel){
+          shapes::UseCube();
+          glDrawArrays(GL_TRIANGLES, 0, 36);
+          shapes::DisableCube();
+        }
         glStencilMask(0xFF);
         glStencilFunc(GL_ALWAYS, 1, 0xFF);
       }
@@ -130,6 +139,11 @@ namespace Scene{
       OpenGLConfig::model_select_shader.setFloat("modelIndex", static_cast<float>(i)); 
 
       g_ModelList[i].ModelMesh.Draw(OpenGLConfig::model_select_shader);
+      if(!isModel){
+        shapes::UseCube();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shapes::DisableCube();
+      }
       OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
 
       //------------------------Draw done --------------------------
