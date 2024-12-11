@@ -46,9 +46,29 @@ namespace Scene{
     }
   }
 
+  void AddModelToScene(std::string ModelName, Shader objectShader){
+    // add model
+    ObjectDetail _modelDetail;
+    _modelDetail.Name = ModelName.c_str();
+
+    Model currentModel = Model();
+    _modelDetail.ModelMesh = currentModel; // Empty
+
+    _modelDetail.shader = objectShader;
+    _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
+    _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    _modelDetail.isSelected = false;
+
+    g_ModelList.push_back(_modelDetail);
+  }
+
   void InitializeScene(){
     // Add models here
+    /*AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);*/
     AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);
+    AddModelToScene("Cube", OpenGLConfig::cube_shader);
   }
 
   void DrawScene(){
@@ -71,6 +91,11 @@ namespace Scene{
     OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
 
     for(int i = 0; i < (int)g_ModelList.size(); i++){
+      bool isModel = false;
+      if(g_ModelList[i].ModelMesh.m_modelName == "default"){
+        isModel = true;
+      }
+
       // Draw normally to offscreen buffer
       OpenGLConfig::mainFramebuffer.UseFrameBuffer();
 
@@ -78,6 +103,7 @@ namespace Scene{
       currentShader.use();
       glm::mat4 model = g_ModelList[i].GetModelMatrix();
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
+
       g_ModelList[i].ModelMesh.Draw(currentShader);
 
       // If model selected, draw an overline

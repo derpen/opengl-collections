@@ -15,8 +15,12 @@ extern size_t screenTextureQuadSize;
 
 namespace shapes{
   extern unsigned int m_STvao, m_STvbo;
+  extern unsigned int m_CUBEvao, m_CUBEvbo;
 
   void InitScreenTexture();
+  void InitCube();
+  void UseCube();
+  void DisableCube();
   void UseScreenTexture();
   void DisableScreenTexture();
 }

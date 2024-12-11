@@ -89,6 +89,7 @@ size_t screenTextureQuadSize = sizeof(screenTextureQuad);
 
 namespace shapes{
   unsigned int m_STvao, m_STvbo;
+  unsigned int m_CUBEvao, m_CUBEvbo;
 
   void InitScreenTexture(){
       glGenVertexArrays(1, &m_STvao);
@@ -103,6 +104,28 @@ namespace shapes{
 
       glBindBuffer(GL_ARRAY_BUFFER, 0);
       glBindVertexArray(0);
+  }
+
+  void InitCube(){
+      glGenVertexArrays(1, &m_CUBEvao);
+      glGenBuffers(1, &m_CUBEvbo);
+      glBindVertexArray(m_CUBEvao);
+      glBindBuffer(GL_ARRAY_BUFFER, m_CUBEvbo);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(verticesNoEBO), &verticesNoEBO, GL_STATIC_DRAW);
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)3);
+      glEnableVertexAttribArray(1);
+      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(2 * sizeof(float)));
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindVertexArray(0);
+  }
+
+  void UseCube(){
+      glBindVertexArray(m_CUBEvao);
+  }
+
+  void DisableCube(){
+      glBindVertexArray(0); // Honestly not needed since this is duplciate with DisableScreenTexture()
   }
 
   void UseScreenTexture(){
