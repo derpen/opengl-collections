@@ -5,5 +5,5 @@ in vec2 TexCoord;
 in vec3 Normal;
 
 void main(){
-  FragColor = vec4(1.0, 1.0, 1.0, 1.0); // White color
+  FragColor = vec4(vec3(1.0), 1.0); // White color
 }
