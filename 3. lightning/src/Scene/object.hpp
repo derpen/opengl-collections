@@ -8,8 +8,16 @@
 #include "../shaders/shader.h"
 #include "../assimp_model_loader/model.h"
 
+enum ObjectType {
+  OBJECT,
+  LIGHT
+};
+
 struct ObjectDetail {
   std::string Name;
+  ObjectType Type;
+
+  bool visible = true;
   Transform transform;
   float Rotation; // TODO: needed ?
   Model ModelMesh;

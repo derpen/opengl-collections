@@ -7,6 +7,7 @@
 #include "../im3d/im3d_handler.hpp"
 #include "../../vendor/im3d/im3d.h"
 #include "../../vendor/stb/stb_image.h"
+#include "object.hpp"
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;
@@ -17,6 +18,7 @@ namespace Scene{
     // add model
     ObjectDetail _modelDetail;
     _modelDetail.Name = ModelName.c_str();
+    _modelDetail.Type = OBJECT;
     
     if(flipImage){
       // Sometimes might wanna flip image for texture to work
@@ -49,11 +51,33 @@ namespace Scene{
     // add model
     ObjectDetail _modelDetail;
     _modelDetail.Name = ModelName.c_str();
+    _modelDetail.Type = OBJECT;
 
     Model currentModel = Model();
     _modelDetail.ModelMesh = currentModel; // Empty
-
+  //
     _modelDetail.shader = objectShader;
+
+    _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
+    _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    _modelDetail.isSelected = false;
+
+    g_ModelList.push_back(_modelDetail);
+  }
+
+  void AddOmniLightToScene(std::string LightName){
+    // add model
+    ObjectDetail _modelDetail;
+    _modelDetail.Name = LightName.c_str();
+    _modelDetail.Type = LIGHT;
+
+    Model currentModel = Model();
+    _modelDetail.ModelMesh = currentModel;
+
+    _modelDetail.shader = OpenGLConfig::light_shader;
+
     _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
     _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -66,8 +90,9 @@ namespace Scene{
   void InitializeScene(){
     // Add models here
     /*AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);*/
-    AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);
-    AddModelToScene("Cube", OpenGLConfig::cube_shader);
+    /*AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);*/
+    /*AddModelToScene("Cube", OpenGLConfig::cube_shader);*/
+    AddOmniLightToScene("OmniLight");
   }
 
   void DrawScene(){

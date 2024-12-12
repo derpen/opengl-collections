@@ -48,6 +48,7 @@ namespace OpenGLConfig{
   extern Shader model_select_shader;
   extern Shader model_stencil_shader;
   extern Shader cube_shader;
+  extern Shader light_shader;
 
   // Framebuffer?
   extern SceneFramebuffer mainFramebuffer;

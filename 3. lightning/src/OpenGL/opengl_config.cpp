@@ -21,6 +21,7 @@ namespace OpenGLConfig{
   Shader model_select_shader = Shader();
   Shader model_stencil_shader = Shader();
   Shader cube_shader = Shader();
+  Shader light_shader = Shader();
   SceneFramebuffer mainFramebuffer = SceneFramebuffer();
   SceneFramebuffer pickingFramebuffer = SceneFramebuffer();
 
@@ -84,5 +85,6 @@ namespace OpenGLConfig{
     model_select_shader.createShaderProgram("shaders/model_select.vert", "shaders/model_select.frag");
     model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
     cube_shader.createShaderProgram("shaders/cube.vert", "shaders/cube.frag");
+    light_shader.createShaderProgram("shaders/light_shader.vert", "shaders/light_shader.frag");
   }
 }
