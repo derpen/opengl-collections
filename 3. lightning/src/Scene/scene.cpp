@@ -95,8 +95,8 @@ namespace Scene{
   void InitializeScene(){
     // Add models here
     /*AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);*/
-    /*AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);*/
-    AddModelToScene("Cube", OpenGLConfig::cube_shader);
+    AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);
+    /*AddModelToScene("Cube", OpenGLConfig::cube_shader);*/
     AddOmniLightToScene("OmniLight", glm::vec3(0.0f, 3.4f, -7.8f));
   }
 
@@ -230,7 +230,7 @@ namespace Scene{
   void LightningShaderHandler(Shader lightShader){
     lightShader.use();
     lightShader.setVec3("viewPos", OpenGLConfig::cameraClass.Position);
-    lightShader.setVec3("material.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+    lightShader.setVec3("material.diffuse", glm::vec3(1.0f, 0.0f, 0.0f)); // Colors n shit
     lightShader.setVec3("material.specular", glm::vec3(1.0f, 1.0f, 1.0f));
     lightShader.setFloat("material.shininess", 32.0f);
 
