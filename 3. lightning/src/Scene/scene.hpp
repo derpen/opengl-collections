@@ -21,12 +21,18 @@ namespace Scene{
   void AddModelToScene(std::string ModelName, Shader objectShader); // This one is for objects that is already defined in shapes_vertices.cpp
 
   // Make light naming convention automatic
-  void AddOmniLightToScene(std::string LightName);
+  void AddOmniLightToScene(
+    std::string LightName,
+    glm::vec3 position = glm::vec3(0.0f),
+    glm::vec3 rotation = glm::vec3(0.0f),
+    glm::vec3 scale = glm::vec3(1.0f)
+  );
   void AddDirectionalLightToScene(std::string LightName);
   void AddFlashLightToScene(std::string LightName);
 
   void RemoveModelFromScene(std::string ModelName); 
   void PickModelFromScene();
+  void LightningShaderHandler(Shader lightShader);
   void InitializeScene(); // TODO: is this needed?
   void DrawScene();
 }

@@ -67,7 +67,12 @@ namespace Scene{
     g_ModelList.push_back(_modelDetail);
   }
 
-  void AddOmniLightToScene(std::string LightName){
+  void AddOmniLightToScene(
+    std::string LightName,
+    glm::vec3 position,
+    glm::vec3 rotation,
+    glm::vec3 scale
+    ){
     // add model
     ObjectDetail _modelDetail;
     _modelDetail.Name = LightName.c_str();
@@ -78,9 +83,9 @@ namespace Scene{
 
     _modelDetail.shader = OpenGLConfig::light_shader;
 
-    _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
-    _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
-    _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    _modelDetail.transform.position = position;
+    _modelDetail.transform.rotation = rotation;
+    _modelDetail.transform.scale = scale;
 
     _modelDetail.isSelected = false;
 
@@ -91,8 +96,8 @@ namespace Scene{
     // Add models here
     /*AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);*/
     /*AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);*/
-    /*AddModelToScene("Cube", OpenGLConfig::cube_shader);*/
-    AddOmniLightToScene("OmniLight");
+    AddModelToScene("Cube", OpenGLConfig::cube_shader);
+    AddOmniLightToScene("OmniLight", glm::vec3(0.0f, 3.4f, -7.8f));
   }
 
   void DrawScene(){
@@ -127,6 +132,9 @@ namespace Scene{
       currentShader.use();
       glm::mat4 model = g_ModelList[i].GetModelMatrix();
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
+
+      //Handle light here ?
+      LightningShaderHandler(g_ModelList[i].shader);
 
       g_ModelList[i].ModelMesh.Draw(currentShader);
       if(!isModel){
@@ -217,6 +225,40 @@ namespace Scene{
 
       OpenGLConfig::pickingFramebuffer.DeactivateFrameBuffer();
     }
+  }
+
+  void LightningShaderHandler(Shader lightShader){
+    lightShader.use();
+    lightShader.setVec3("viewPos", OpenGLConfig::cameraClass.Position);
+    lightShader.setVec3("material.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+    lightShader.setVec3("material.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    lightShader.setFloat("material.shininess", 32.0f);
+
+    // TODO: handle this properly so you can add one global directional light
+    // directional light
+    lightShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    lightShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    lightShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    lightShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+    // point light 1
+    lightShader.setVec3("pointLights.position", g_ModelList[1].transform.position); // TODO: handle this automatically
+    lightShader.setVec3("pointLights.ambient", 0.05f, 0.05f, 0.05f);
+    lightShader.setVec3("pointLights.diffuse", 0.8f, 0.8f, 0.8f);
+    lightShader.setVec3("pointLights.specular", 1.0f, 1.0f, 1.0f);
+    lightShader.setFloat("pointLights.constant", 1.0f);
+    lightShader.setFloat("pointLights.linear", 0.09f);
+    lightShader.setFloat("pointLights.quadratic", 0.032f);
+    // spotLight
+    lightShader.setVec3("spotLight.position", OpenGLConfig::cameraClass.Position);
+    lightShader.setVec3("spotLight.direction", OpenGLConfig::cameraClass.Front);
+    lightShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+    lightShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+    lightShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+    lightShader.setFloat("spotLight.constant", 1.0f);
+    lightShader.setFloat("spotLight.linear", 0.09f);
+    lightShader.setFloat("spotLight.quadratic", 0.032f);
+    lightShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    lightShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));     
   }
 }
 
