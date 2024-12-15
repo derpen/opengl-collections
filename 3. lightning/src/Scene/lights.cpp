@@ -2,22 +2,35 @@
 #include "../OpenGL/opengl_config.hpp"
 #include <string>
 
-namespace AllLight {
-  extern std::vector<LightList> g_LightList;
+namespace AllLights {
+  std::vector<LightList> g_LightList;
 
   void ApplyLights(Shader currentObjectShader){
     currentObjectShader.use();
+    for(int i = 0; i < (int)g_LightList.size(); i++){
+      if(g_LightList[i].light_type == POINT){
+        _ApplyPointLight(currentObjectShader, g_LightList[i].object_detail.transform.position);
+      } else if(g_LightList[i].light_type == SPOTLIGHT){
+        _ApplySpotlight(currentObjectShader);
+      } else {
+        _ApplyDirectionalLight(currentObjectShader);
+      }
+    }
+
+    // TODO: remove this thing
+    //Temporarily add one directional light
+    _ApplyDirectionalLight(currentObjectShader);
   }
 
-  void AddLightIntoScene(LightType type){
+  void AddLightIntoScene(LightType type, glm::vec3 position){
     // add model
     ObjectDetail _modelDetail;
     std::string current_index = std::to_string(g_LightList.size());
     std::string light_type;
     if(type == POINT){
       light_type = "Point Light ";
-    } else if (type == OMNI){
-      light_type = "Omni Light ";
+    } else if (type == SPOTLIGHT){
+      light_type = "Spot Light ";
     } else {
       light_type = "Directional Light ";
     }
@@ -26,7 +39,7 @@ namespace AllLight {
     Model currentModel = Model();
     _modelDetail.ModelMesh = currentModel;
 
-    _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    _modelDetail.transform.position = position;
     _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
     _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
@@ -60,6 +73,7 @@ namespace AllLight {
   }
 
   void _ApplyPointLight(Shader currentObjectShader, glm::vec3 point_light_position){
+    std::cout << point_light_position.x << " " << point_light_position.y << " " << point_light_position.z << " \n";
     currentObjectShader.setVec3("pointLights.position", point_light_position);
     currentObjectShader.setVec3("pointLights.ambient", 0.05f, 0.05f, 0.05f);
     currentObjectShader.setVec3("pointLights.diffuse", 0.8f, 0.8f, 0.8f);

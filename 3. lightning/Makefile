@@ -30,6 +30,7 @@ SOURCES = \
     $(SRC_DIR)/scene_framebuffer/scene_framebuffer.cpp \
     $(SRC_DIR)/Scene/scene.cpp \
     $(SRC_DIR)/Scene/object.cpp \
+    $(SRC_DIR)/Scene/lights.cpp \
     $(SRC_DIR)/im3d/im3d_handler.cpp \
     $(SRC_DIR)/OpenGL/opengl_config.cpp \
     $(SRC_DIR)/OpenGL/opengl_main.cpp \
