@@ -8,6 +8,7 @@
 #include "../../vendor/im3d/im3d.h"
 #include "../../vendor/stb/stb_image.h"
 #include "object.hpp"
+#include "lights.hpp"
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;

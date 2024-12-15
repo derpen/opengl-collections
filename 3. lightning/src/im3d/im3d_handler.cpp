@@ -148,8 +148,9 @@ void Im3dHandler::Im3d_NewFrame(){
   }
 
   if(Scene::g_IsSelecting){
-    /*glm::mat4 object_transform = Scene::g_ModelList[Scene::g_SelectedObjectIndex].GetModelMatrix();*/
-    /*s_GizmoTransform = glmMat4ToIm3dMat4(object_transform);*/
+    // TODO HANDLE THIS THING PROPERLY MAN
+    glm::mat4 object_transform = Scene::g_ModelList[Scene::g_SelectedObjectIndex].GetModelMatrix();
+    s_GizmoTransform = glmMat4ToIm3dMat4(object_transform);
     s_GizmoInUse = Im3d::Gizmo("GizmoUnified", s_GizmoTransform);
 
     if(s_GizmoInUse){
