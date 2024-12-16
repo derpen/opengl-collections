@@ -98,8 +98,8 @@ namespace Scene{
     AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);
     /*AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);*/
     /*AddModelToScene("Cube", OpenGLConfig::cube_shader);*/
-    /*AllLights::AddLightIntoScene(POINT, glm::vec3(0.0f, 3.4f, -7.8f));*/
-    AddOmniLightToScene("OmniLight", glm::vec3(0.0f, 3.4f, -7.8f));
+    AllLights::AddLightIntoScene(POINT, glm::vec3(0.0f, 3.4f, -7.8f));
+    /*AddOmniLightToScene("OmniLight", glm::vec3(0.0f, 3.4f, -7.8f));*/
   }
 
   void DrawScene(){
@@ -136,7 +136,8 @@ namespace Scene{
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
 
       //Handle light here ?
-      LightningShaderHandler(g_ModelList[i].shader);
+      /*LightningShaderHandler(g_ModelList[i].shader);*/
+      AllLights::ApplyLights(g_ModelList[i].shader);
 
       g_ModelList[i].ModelMesh.Draw(currentShader);
       if(!isModel){
@@ -198,7 +199,8 @@ namespace Scene{
     // Read pixel from picking framebuffer
     if(OpenGLConfig::Input.GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)){
 
-      /* TOOD: dogpee solution to prevent accidental deselecting, find better way soon */
+      /* TOOD: dogpee solution to prevent accidental deselecting, find better way soon
+       * This might be also whats causing the issue when rotating/scaling */
       bool testGizmo;
       if(g_IsSelecting){
         testGizmo = Im3d::Gizmo("GizmoUnified", Im3dHandler::s_GizmoTransform);
@@ -229,6 +231,7 @@ namespace Scene{
     }
   }
 
+  // TODO: hopefully not needed anymore
   void LightningShaderHandler(Shader lightShader){
     lightShader.use();
     lightShader.setVec3("viewPos", OpenGLConfig::cameraClass.Position);

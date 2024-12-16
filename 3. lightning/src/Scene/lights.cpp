@@ -7,6 +7,16 @@ namespace AllLights {
 
   void ApplyLights(Shader currentObjectShader){
     currentObjectShader.use();
+
+    currentObjectShader.setVec3("viewPos", OpenGLConfig::cameraClass.Position);
+    currentObjectShader.setVec3("material.diffuse", glm::vec3(1.0f, 0.0f, 0.0f)); // Colors n shit
+    currentObjectShader.setVec3("material.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    currentObjectShader.setFloat("material.shininess", 32.0f);
+
+    // TODO: remove this thing
+    //Temporarily add one directional light
+    _ApplyDirectionalLight(currentObjectShader);
+
     for(int i = 0; i < (int)g_LightList.size(); i++){
       if(g_LightList[i].light_type == POINT){
         _ApplyPointLight(currentObjectShader, g_LightList[i].object_detail.transform.position);
@@ -16,10 +26,6 @@ namespace AllLights {
         _ApplyDirectionalLight(currentObjectShader);
       }
     }
-
-    // TODO: remove this thing
-    //Temporarily add one directional light
-    _ApplyDirectionalLight(currentObjectShader);
   }
 
   void AddLightIntoScene(LightType type, glm::vec3 position){
@@ -73,7 +79,7 @@ namespace AllLights {
   }
 
   void _ApplyPointLight(Shader currentObjectShader, glm::vec3 point_light_position){
-    std::cout << point_light_position.x << " " << point_light_position.y << " " << point_light_position.z << " \n";
+    /*std::cout << point_light_position.x << " " << point_light_position.y << " " << point_light_position.z << " \n";*/
     currentObjectShader.setVec3("pointLights.position", point_light_position);
     currentObjectShader.setVec3("pointLights.ambient", 0.05f, 0.05f, 0.05f);
     currentObjectShader.setVec3("pointLights.diffuse", 0.8f, 0.8f, 0.8f);
