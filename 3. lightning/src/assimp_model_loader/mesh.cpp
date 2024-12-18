@@ -43,6 +43,7 @@ void Mesh::Draw(Shader &shader){
       glBindTexture(GL_TEXTURE_2D, Textures[i].id);
     }
   } else {
+    // TODO: what is this ??
     // Right now, assuming everything is array of size 1
     shader.setVec3("Diffuse", Materials[0].Diffuse);
     shader.setVec3("Specular", Materials[0].Specular);

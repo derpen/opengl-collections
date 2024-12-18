@@ -116,6 +116,20 @@ void IMGUI_DEBUG::imguiDebugMenu(){
   }
 
   ImGui::End();
+
+  /*// New Window for Lightning*/
+  /*ImGui::Begin("Lightning");*/
+  /**/
+  /*//TODO: Wishlist*/
+  /*// Enable spotlight*/
+  /*// Change global ambient light / directional light attributes*/
+  /*// Change selected object materials (diffuse, specular, shininess)*/
+  /*// Enable fog */
+  /*// Add more point light into the scene (will require shader to dynamically change to accomodate multiple point lights)*/
+  /*// Remove point light from scene*/
+  /*// Change point light attributes*/
+  /**/
+  /*ImGui::End();*/
 }
 
 std::vector<std::filesystem::directory_entry> IMGUI_DEBUG::_ListDirectoryContent(const std::filesystem::path& path){
