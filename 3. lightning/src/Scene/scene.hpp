@@ -17,8 +17,12 @@ namespace Scene{
   extern unsigned int g_SelectedObjectIndex;
 
   //TODO: do a little renaming for these functions
-  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage); // ADD ALL MODELS HERE
-  void AddModelToScene(std::string ModelName, Shader objectShader); // This one is for objects that is already defined in shapes_vertices.cpp
+//
+  // ADD ALL MODELS HERE
+  void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage);
+
+  // This one is for objects that is already defined in shapes_vertices.cpp
+  void AddModelToScene(std::string ModelName, Shader objectShader); 
 
   // Make light naming convention automatic
   void AddOmniLightToScene(
@@ -35,4 +39,5 @@ namespace Scene{
   void LightningShaderHandler(Shader lightShader);
   void InitializeScene(); // TODO: is this needed?
   void DrawScene();
+  void DrawShader(Shader currentShader);
 }

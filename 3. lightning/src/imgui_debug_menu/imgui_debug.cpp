@@ -5,6 +5,7 @@
 #include "../utils/logs/performance_log.h"
 #include "../Scene/scene.hpp"
 #include "../Scene/object.hpp"
+#include "../Scene/lighting_setting.hpp"
 #include "../utils/math/math.hpp"
 #include <algorithm>
 #include <filesystem>
@@ -117,19 +118,22 @@ void IMGUI_DEBUG::imguiDebugMenu(){
 
   ImGui::End();
 
-  /*// New Window for Lightning*/
-  /*ImGui::Begin("Lightning");*/
-  /**/
-  /*//TODO: Wishlist*/
-  /*// Enable spotlight*/
-  /*// Change global ambient light / directional light attributes*/
-  /*// Change selected object materials (diffuse, specular, shininess)*/
-  /*// Enable fog */
-  /*// Add more point light into the scene (will require shader to dynamically change to accomodate multiple point lights)*/
-  /*// Remove point light from scene*/
-  /*// Change point light attributes*/
-  /**/
-  /*ImGui::End();*/
+  // New Window for Lightning
+  ImGui::Begin("Lightning");
+
+  //TODO: Wishlist
+  // Enable spotlight
+  // Change global ambient light / directional light attributes
+  // Change selected object materials (diffuse, specular, shininess)
+  // Enable fog 
+  // Add more point light into the scene (will require shader to dynamically change to accomodate multiple point lights)
+  // Remove point light from scene
+  // Change point light attributes
+  // Toggle visibility of selected light cube
+
+  ImGui::Checkbox("Enable Depth Shader", &LightingSetting::depthShaderEnabled);
+
+  ImGui::End();
 }
 
 std::vector<std::filesystem::directory_entry> IMGUI_DEBUG::_ListDirectoryContent(const std::filesystem::path& path){

@@ -9,6 +9,7 @@
 #include "../../vendor/stb/stb_image.h"
 #include "object.hpp"
 #include "lights.hpp"
+#include "lighting_setting.hpp"
 
 namespace Scene{
   std::vector<ObjectDetail> g_ModelList;
@@ -36,7 +37,8 @@ namespace Scene{
 
     _modelDetail.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     _modelDetail.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f); // TODO: Should be non zero?
-    _modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    /*_modelDetail.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f); */
+    _modelDetail.transform.scale = glm::vec3(0.01f, 0.01f, 0.01f); // For sponza only
 
     _modelDetail.isSelected = false;
 
@@ -95,10 +97,10 @@ namespace Scene{
 
   void InitializeScene(){
     // Add models here
-    AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);
+    /*AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);*/
+    AddModelToScene("assets/models/sponza/sponza.obj", "shaders/template.vert",  "shaders/template.frag", false);
     /*AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);*/
-    /*AddModelToScene("Cube", OpenGLConfig::cube_shader);*/
-    AllLights::AddLightIntoScene(POINT, glm::vec3(0.0f, 3.4f, -7.8f));
+    /*AllLights::AddLightIntoScene(POINT, glm::vec3(0.0f, 0.0f, 0.0f));*/
     /*AddOmniLightToScene("OmniLight", glm::vec3(0.0f, 3.4f, -7.8f));*/
   }
 
@@ -135,9 +137,15 @@ namespace Scene{
       glm::mat4 model = g_ModelList[i].GetModelMatrix();
       currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
 
-      //Handle light here ?
-      /*LightningShaderHandler(g_ModelList[i].shader);*/
-      AllLights::ApplyLights(g_ModelList[i].shader);
+      if(LightingSetting::depthShaderEnabled){
+        currentShader = OpenGLConfig::depth_shader;
+        currentShader.use();
+        glm::mat4 model = g_ModelList[i].GetModelMatrix();
+        currentShader.SetMVP(model, OpenGLConfig::cameraClass.GetViewMatrix(), OpenGLConfig::cameraClass.GetProjMatrix());
+      } else {
+      }
+
+      AllLights::ApplyLights(currentShader);
 
       g_ModelList[i].ModelMesh.Draw(currentShader);
       if(!isModel){
@@ -264,6 +272,10 @@ namespace Scene{
     lightShader.setFloat("spotLight.quadratic", 0.032f);
     lightShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
     lightShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));     
+  }
+
+  void DrawShader(Shader currentShader){
+
   }
 }
 

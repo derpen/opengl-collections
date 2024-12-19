@@ -49,6 +49,7 @@ namespace OpenGLConfig{
   extern Shader model_stencil_shader;
   extern Shader cube_shader;
   extern Shader light_shader;
+  extern Shader depth_shader;
 
   // Framebuffer?
   extern SceneFramebuffer mainFramebuffer;

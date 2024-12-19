@@ -42,7 +42,8 @@ glm::mat4 Camera::GetViewMatrix(){
 }
 
 glm::mat4 Camera::GetProjMatrix(){
-    return glm::perspective(glm::radians(cameraFOV), (float)OpenGLConfig::conf.m_width / (float)OpenGLConfig::conf.m_height, 0.1f, 100.0f);
+    //TODO: change far plane properly
+    return glm::perspective(glm::radians(cameraFOV), (float)OpenGLConfig::conf.m_width / (float)OpenGLConfig::conf.m_height, 0.1f, 100000.0f);
 }
 
 void Camera::ProcessMouseScroll(float yoffset){

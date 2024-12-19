@@ -28,6 +28,7 @@ SOURCES = \
     $(SRC_DIR)/assimp_model_loader/mesh.cpp \
     $(SRC_DIR)/assimp_model_loader/model.cpp \
     $(SRC_DIR)/scene_framebuffer/scene_framebuffer.cpp \
+    $(SRC_DIR)/Scene/lighting_setting.cpp \
     $(SRC_DIR)/Scene/scene.cpp \
     $(SRC_DIR)/Scene/object.cpp \
     $(SRC_DIR)/Scene/lights.cpp \
