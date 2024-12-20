@@ -87,6 +87,7 @@ namespace OpenGLConfig{
     model_stencil_shader.createShaderProgram("shaders/model_stencil.vert", "shaders/model_stencil.frag");
     cube_shader.createShaderProgram("shaders/cube.vert", "shaders/cube.frag");
     light_shader.createShaderProgram("shaders/light_shader.vert", "shaders/light_shader.frag");
-    depth_shader.createShaderProgram("shaders/depth.vert", "shaders/depth.frag");
+    /*depth_shader.createShaderProgram("shaders/depth.vert", "shaders/depth.frag");*/
+    depth_shader.createShaderProgram("shaders/depth.vert", "shaders/depth_fog.frag");
   }
 }
