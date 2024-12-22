@@ -161,6 +161,11 @@ void Im3dHandler::Im3d_NewFrame(){
       //TODO: Use the transform here to edit this gizmo transform.
       Transform newTransform;
       newTransform.position = glm::vec3(pos.x, pos.y, pos.z);
+
+      rot.x = Im3d::Degrees(rot.x);
+      rot.y = Im3d::Degrees(rot.y);
+      rot.z = Im3d::Degrees(rot.z);
+        
       newTransform.rotation = glm::vec3(rot.x, rot.y, rot.z);
       newTransform.scale = glm::vec3(sca.x, sca.y, sca.z);
 

@@ -100,7 +100,7 @@ namespace Scene{
     /*AddModelToScene("assets/models/osaka/osaka-assimp.obj", "shaders/osaka.vert",  "shaders/osaka.frag", false);*/
     AddModelToScene("assets/models/sponza/sponza.obj", "shaders/template.vert",  "shaders/template.frag", false);
     /*AddModelToScene("assets/models/testscene/TestScene.obj", "shaders/testscene.vert",  "shaders/testscene.frag", false);*/
-    /*AllLights::AddLightIntoScene(POINT, glm::vec3(0.0f, 0.0f, 0.0f));*/
+    AllLights::AddLightIntoScene(POINT, glm::vec3(0.0f, 0.0f, 0.0f));
     /*AddOmniLightToScene("OmniLight", glm::vec3(0.0f, 3.4f, -7.8f));*/
   }
 

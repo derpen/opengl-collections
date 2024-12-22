@@ -125,13 +125,13 @@ void IMGUI_DEBUG::imguiDebugMenu(){
   // Enable spotlight
   // Change global ambient light / directional light attributes
   // Change selected object materials (diffuse, specular, shininess)
-  // Enable fog 
+  // Enable fog (done)
   // Add more point light into the scene (will require shader to dynamically change to accomodate multiple point lights)
   // Remove point light from scene
   // Change point light attributes
   // Toggle visibility of selected light cube
 
-  ImGui::Checkbox("Enable Depth Shader", &LightingSetting::depthShaderEnabled);
+  ImGui::Checkbox("Enable Depth Shader (Fog)", &LightingSetting::depthShaderEnabled);
 
   ImGui::End();
 }
