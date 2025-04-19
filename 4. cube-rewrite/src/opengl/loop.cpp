@@ -1,5 +1,8 @@
 #include "loop.hpp"
 #include "iostream"
+#include <GLFW/glfw3.h>
+#include "../shaders/shaders.hpp"
+#include "../utils/shapes/shapes.hpp"
 
 namespace gl_loop {
 
@@ -28,15 +31,25 @@ int init_gl(int width, int height, const char* title){
   glViewport(0, 0, 800, 600);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+  Shader triangle_shader("src/utils/shapes/shaders/triangle.vert", "src/utils/shapes/shaders/triangle.frag"); // This path sucks
+  unsigned int triangle = shapes::init_triangle();
+
   while(!glfwWindowShouldClose(window)){
     process_input(window);
 
-    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    //render triangle
+    triangle_shader.use();
+    glBindVertexArray(triangle);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
+
+  shapes::clean_up();
 
   glfwTerminate();
   return 0;
@@ -47,7 +60,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height){
 }
 
 void process_input(GLFWwindow *window){
-  if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+  if(glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
 }
 

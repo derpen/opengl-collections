@@ -7,8 +7,9 @@ LIB_DIR = lib
 
 SOURCES = \
 	$(LIB_DIR)/glad/glad.c \
+	$(SRC_DIR)/opengl/loop.cpp \
+	$(SRC_DIR)/utils/shapes/shapes.cpp \
 	$(SRC_DIR)/main.cpp \
-	$(SRC_DIR)/opengl/loop.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS := $(OBJECTS:.c=.o)
