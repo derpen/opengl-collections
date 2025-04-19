@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "../shaders/shaders.hpp"
 #include "../utils/shapes/shapes.hpp"
+#include "../utils/textures/textures.hpp"
 
 namespace gl_loop {
 
@@ -31,8 +32,12 @@ int init_gl(int width, int height, const char* title){
   glViewport(0, 0, 800, 600);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  Shader triangle_shader("src/utils/shapes/shaders/triangle.vert", "src/utils/shapes/shaders/triangle.frag"); // This path sucks
-  unsigned int triangle = shapes::init_triangle();
+  Shader plane_shader("src/utils/shapes/shaders/planes.vert", "src/utils/shapes/shaders/planes.frag"); // This path sucks
+  unsigned int plane = shapes::init_plane();
+  unsigned int texture1 = texture::read_texture("assets/images/yotsuba.jpg");
+
+  plane_shader.use();
+  plane_shader.setInt("texture1", 0);
 
   while(!glfwWindowShouldClose(window)){
     process_input(window);
@@ -40,10 +45,14 @@ int init_gl(int width, int height, const char* title){
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //render triangle
-    triangle_shader.use();
-    glBindVertexArray(triangle);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    // render triangle
+    // bind textures on corresponding texture units
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    plane_shader.use();
+    glBindVertexArray(plane);
+    /*glDrawArrays(GL_TRIANGLES, 0, 3);*/
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
