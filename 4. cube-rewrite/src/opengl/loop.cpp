@@ -42,7 +42,7 @@ int init_gl(int width, int height, const char* title){
   while(!glfwWindowShouldClose(window)){
     process_input(window);
 
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // render triangle
@@ -51,7 +51,7 @@ int init_gl(int width, int height, const char* title){
     glBindTexture(GL_TEXTURE_2D, texture1);
     plane_shader.use();
     glBindVertexArray(plane);
-    /*glDrawArrays(GL_TRIANGLES, 0, 3);*/
+    /*glDrawArrays(GL_TRIANGLES, 0, 6);*/
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);

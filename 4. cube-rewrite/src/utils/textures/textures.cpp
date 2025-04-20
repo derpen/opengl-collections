@@ -23,16 +23,15 @@ unsigned int read_texture(const char* texture_path){
   // load image, create texture and generate mipmaps
   int width, height, nrChannels;
   stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-  // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-  unsigned char *data = stbi_load(texture_path, &width, &height, &nrChannels, 0);
+  unsigned char *data = stbi_load(texture_path, &width, &height, &nrChannels, 4);
   if (data)
   {
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-      glGenerateMipmap(GL_TEXTURE_2D);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
   }
   else
   {
-      std::cout << "Failed to load texture" << std::endl;
+    std::cout << "Failed to load texture" << std::endl;
   }
   stbi_image_free(data);
   return texture1;
