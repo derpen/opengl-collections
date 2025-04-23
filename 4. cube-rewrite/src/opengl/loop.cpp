@@ -1,5 +1,4 @@
 #include "loop.hpp"
-#include "iostream"
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include "../shaders/shaders.hpp"
@@ -13,6 +12,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 int init_gl(int width, int height, const char* title){
+  std::cout << "Oh..boy, I'm doing OpenGL again... Great... \n";
   std::cout << "Initializing gl...\n";
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -50,17 +50,19 @@ int init_gl(int width, int height, const char* title){
 
   while(!glfwWindowShouldClose(window)){
     process_input(window);
+    glfwPollEvents();
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Time
-    float currentFrame = glfwGetTime();
+    float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
+    // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
     // pass projection matrix to shader (note that in this case it could change every frame)
-    glm::mat4 projection = glm::perspective(glm::radians(Camera::fov), (float)width / (float)height, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(Camera::FOV), (float)width / (float)height, 0.001f, 100000.0f);
     plane_shader.setMat4("projection", projection);
 
     // camera/view transformation
@@ -68,7 +70,7 @@ int init_gl(int width, int height, const char* title){
     plane_shader.setMat4("view", view);
     
     // Model matrix
-    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    glm::mat4 model = glm::mat4(1.0f); // not doing anything to it, just pass it as is
     plane_shader.setMat4("model", model);
 
     // render triangle
@@ -80,7 +82,6 @@ int init_gl(int width, int height, const char* title){
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);
-    glfwPollEvents();
   }
 
   shapes::clean_up();
@@ -94,7 +95,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height){
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos){
-  Camera::ProcessMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
+  Camera::ProcessMouseMovement(xpos, ypos);
 }
 
 void process_input(GLFWwindow *window){

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "fps_camera_control.h"
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -44,6 +45,10 @@ void Camera::processMouse(float xoffset, float yoffset, GLboolean constrainPitch
 
   MouseYaw += xoffset;
   MousePitch += yoffset;
+
+  /*std::cout << "-----    \n";*/
+  /*std::cout << xoffset << " " << yoffset << "\n";*/
+  /*std::cout << MouseYaw << " " << MousePitch << "\n";*/
 
   if(constrainPitch){
     if(MousePitch > 89.0f){

@@ -101,7 +101,7 @@ int main(){
   // Le Perspective/Projection
   glUseProgram(shaderProgram);
   glm::mat4 projection;
-  projection = glm::perspective(glm::radians(45.0f), (float)WIDTH/(float)HEIGHT, 0.1f, 100.0f);
+  projection = glm::perspective(glm::radians(45.0f), (float)WIDTH/(float)HEIGHT, 0.1f, 1000000.0f);
   glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projection[0][0]);
 
   unsigned int texture = loadTexture("assets/textures/osaka.jpg");

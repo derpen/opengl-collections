@@ -15,26 +15,26 @@ enum MoveDirection {
 
 namespace Camera {
 
-extern CameraMode cameraMode;
-extern glm::vec3 position;
-extern glm::vec3 front;
-extern glm::vec3 right;
-extern glm::vec3 up;
+extern CameraMode Mode;
+extern glm::vec3 Position;
+extern glm::vec3 Front;
+extern glm::vec3 Right;
+extern glm::vec3 Up;
 
-extern float yaw;
-extern float pitch;
-extern float speed;
-extern float sensitivity;
-extern float fov;
+extern float Yaw;
+extern float Pitch;
+extern float Speed;
+extern float Sensitivity;
+extern float FOV;
 
-extern bool firstMouse;
-extern bool lastX;
-extern bool lastY;
+extern bool FirstMouse;
+extern float LastX;
+extern float LastY;
 
 void InitCamera();
 glm::mat4 GetViewMatrix();
 void ProcessKeyboard(MoveDirection direction, float deltaTime);
-void ProcessMouseMovement(float xPosIn, float yPosIn);
+void ProcessMouseMovement(double xoffset, double yoffset);
 void UpdateCameraVector();
 
 }

@@ -1,82 +1,92 @@
 #include "camera.hpp"
+#include <iostream>
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Camera {
-CameraMode cameraMode = PERSPECTIVE;
-glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
-glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-float yaw = -90.0f;
-float pitch = 0.0f;
-float speed = 2.5f;
-float sensitivity = 0.0001f;
-float fov = 45.0f;
+CameraMode Mode = PERSPECTIVE;
+glm::vec3 Position = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 Right = glm::vec3(1.0f, 0.0f, 0.0f);
+glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+float Yaw = -90.0f;
+float Pitch = 0.0f;
+float Speed = 2.5f;
+float Sensitivity = 0.1f;
+float FOV = 45.0f;
 
-bool firstMouse = true;
+bool FirstMouse = true;
 // TODO: make this flexible
-bool lastX = 800.0f / 2.0;
-bool lastY = 600.0f / 2.0;
+float LastX = 800.0f / 2.0f;
+float LastY = 600.0f / 2.0f;
 
 void InitCamera(){
-
+  UpdateCameraVector();
 }
 
 glm::mat4 GetViewMatrix(){
-  return glm::lookAt(position, position + front, up);
+  return glm::lookAt(Position, Position + Front, Up);
 }
 
 void ProcessKeyboard(MoveDirection direction, float deltaTime){
-  float velocity = speed * deltaTime;
+  float velocity = Speed * deltaTime;
   if(direction == FORWARD)
-    position += front * velocity;
+    Position += Front * velocity;
 
   if(direction == BACKWARD)
-    position -= front * velocity;
+    Position -= Front * velocity;
 
   if(direction == RIGHT)
-    position += right * velocity;
+    Position += Right * velocity;
 
   if(direction == LEFT)
-    position -= right * velocity;
+    Position -= Right * velocity;
 }
 
-void ProcessMouseMovement(float xPosIn, float yPosIn){
-  if(firstMouse){
-    lastX = xPosIn;
-    lastY = yPosIn;
-    firstMouse = false;
+void ProcessMouseMovement(double xPosIn, double yPosIn){
+  float xpos = static_cast<float>(xPosIn);
+  float ypos = static_cast<float>(yPosIn);
+
+  if(FirstMouse){
+    LastX = xpos;
+    LastY = ypos;
+    FirstMouse = false;
   }
 
-  float xoffset = xPosIn - lastX;
-  float yoffset = lastY - yPosIn;
-  lastX = xPosIn;
-  lastY = yPosIn;
+  float xoffset = xpos - LastX;
+  float yoffset = LastY - ypos;
+  LastX = xpos;
+  LastY = ypos;
 
-  xoffset *= sensitivity;
-  yoffset *= sensitivity;
+  xoffset *= Sensitivity;
+  yoffset *= Sensitivity;
 
-  yaw += xoffset;
-  pitch += yoffset;
+  Yaw += xoffset;
+  Pitch += yoffset;
 
-  if(pitch > 89.0f)
-    pitch = 89.0f;
+  /*std::cout << "-----    \n";*/
+  /*std::cout << xoffset << " " << yoffset << "\n";*/
+  /*std::cout << Yaw << " " << Pitch << "\n";*/
 
-  if(pitch < -89.0f)
-    pitch = -89.0f;
+  if(Pitch > 89.0f){
+    Pitch = 89.0f;
+  }
+
+  if(Pitch < -89.0f){
+    Pitch = -89.0f;
+  }
   
   UpdateCameraVector();
 }
 
 void UpdateCameraVector(){
   glm::vec3 direction;
-  direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-  direction.y = sin(glm::radians(pitch));
-  direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-  front = glm::normalize(direction);
-  right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f))); // world up
-  up = glm::normalize(glm::cross(right, front));
+  direction.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+  direction.y = sin(glm::radians(Pitch));
+  direction.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+  Front = glm::normalize(direction);
+  Right = glm::normalize(glm::cross(Front, glm::vec3(0.0f, 1.0f, 0.0f))); // world up
+  Up = glm::normalize(glm::cross(Right, Front));
 }
 
 }
