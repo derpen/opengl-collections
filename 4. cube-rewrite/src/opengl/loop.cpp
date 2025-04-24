@@ -41,12 +41,12 @@ int init_gl(int width, int height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
-  Shader plane_shader("src/utils/shapes/shaders/planes.vert", "src/utils/shapes/shaders/planes.frag"); // This path sucks
-  unsigned int plane = shapes::init_plane();
+  Shader cube_shader("src/utils/shapes/shaders/cube.vert", "src/utils/shapes/shaders/cube.frag");
+  unsigned int cube = shapes::init_cube();
   unsigned int texture1 = texture::read_texture("assets/images/yotsuba.jpg");
 
-  plane_shader.use();
-  plane_shader.setInt("texture1", 0);
+  cube_shader.use();
+  cube_shader.setInt("texture1", 0);
 
   while(!glfwWindowShouldClose(window)){
     process_input(window);
@@ -63,23 +63,22 @@ int init_gl(int width, int height, const char* title){
     // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
     // pass projection matrix to shader (note that in this case it could change every frame)
     glm::mat4 projection = glm::perspective(glm::radians(Camera::FOV), (float)width / (float)height, 0.001f, 100000.0f);
-    plane_shader.setMat4("projection", projection);
+    cube_shader.setMat4("projection", projection);
 
     // camera/view transformation
     glm::mat4 view = Camera::GetViewMatrix();
-    plane_shader.setMat4("view", view);
+    cube_shader.setMat4("view", view);
     
     // Model matrix
     glm::mat4 model = glm::mat4(1.0f); // not doing anything to it, just pass it as is
-    plane_shader.setMat4("model", model);
+    cube_shader.setMat4("model", model);
 
     // render triangle
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
-    glBindVertexArray(plane);
-    /*glDrawArrays(GL_TRIANGLES, 0, 6);*/
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(cube);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glfwSwapBuffers(window);
   }

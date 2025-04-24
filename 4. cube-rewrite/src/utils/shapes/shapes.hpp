@@ -12,5 +12,10 @@ extern unsigned int plane_VBO;
 extern unsigned int plane_EBO;
 unsigned int init_plane();
 
+extern float cube_vertices[];
+extern unsigned int cube_VAO;
+extern unsigned int cube_VBO;
+unsigned int init_cube();
+
 void clean_up();
 }
