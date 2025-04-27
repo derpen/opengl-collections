@@ -1,6 +1,8 @@
 #include "loop.hpp"
 #include <GLFW/glfw3.h>
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/trigonometric.hpp>
 #include "../shaders/shaders.hpp"
 #include "../utils/shapes/shapes.hpp"
 #include "../utils/textures/textures.hpp"
@@ -45,8 +47,7 @@ int init_gl(int width, int height, const char* title){
   unsigned int cube = shapes::init_cube();
   unsigned int texture1 = texture::read_texture("assets/images/yotsuba.jpg");
 
-  cube_shader.use();
-  cube_shader.setInt("texture1", 0);
+  Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
 
   while(!glfwWindowShouldClose(window)){
     process_input(window);
@@ -60,15 +61,16 @@ int init_gl(int width, int height, const char* title){
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
+    // --------------------------------- Handle cube drawing and shit
     // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
     // pass projection matrix to shader (note that in this case it could change every frame)
+    cube_shader.use();
+    cube_shader.setInt("texture1", 0);
     glm::mat4 projection = glm::perspective(glm::radians(Camera::FOV), (float)width / (float)height, 0.001f, 100000.0f);
     cube_shader.setMat4("projection", projection);
-
     // camera/view transformation
     glm::mat4 view = Camera::GetViewMatrix();
     cube_shader.setMat4("view", view);
-    
     // Model matrix
     glm::mat4 model = glm::mat4(1.0f); // not doing anything to it, just pass it as is
     cube_shader.setMat4("model", model);
@@ -78,6 +80,20 @@ int init_gl(int width, int height, const char* title){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
     glBindVertexArray(cube);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // --------------------------------- End of drawing cube here, start to handle light source
+    
+    // Light source, a point light
+    point_light.use();
+    point_light.setMat4("projection", projection);
+    point_light.setMat4("view", view);
+    glm::mat4 light_model = glm::mat4(1.0f);
+    // we make it orbit
+    light_model = glm::rotate(light_model, glm::radians(static_cast<float>(glfwGetTime()) * 150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    light_model = glm::translate(light_model, glm::vec3(3.0f, 0.0f, 0.0f));
+    point_light.setMat4("model", light_model);
+    glBindVertexArray(cube); // For now, just make the light as a cube
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glfwSwapBuffers(window);
