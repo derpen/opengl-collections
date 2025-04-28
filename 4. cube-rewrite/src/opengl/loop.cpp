@@ -49,6 +49,12 @@ int init_gl(int width, int height, const char* title){
 
   Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
 
+  cube_shader.use();
+  cube_shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+  cube_shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+  cube_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+  cube_shader.setFloat("material.shininess", 32.0f);
+
   while(!glfwWindowShouldClose(window)){
     process_input(window);
     glfwPollEvents();
@@ -61,32 +67,11 @@ int init_gl(int width, int height, const char* title){
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    // --------------------------------- Handle cube drawing and shit
-    // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
-    // pass projection matrix to shader (note that in this case it could change every frame)
-    cube_shader.use();
-    cube_shader.setInt("texture1", 0);
-    glm::mat4 projection = glm::perspective(glm::radians(Camera::FOV), (float)width / (float)height, 0.001f, 100000.0f);
-    cube_shader.setMat4("projection", projection);
-    // camera/view transformation
-    glm::mat4 view = Camera::GetViewMatrix();
-    cube_shader.setMat4("view", view);
-    // Model matrix
-    glm::mat4 model = glm::mat4(1.0f); // not doing anything to it, just pass it as is
-    cube_shader.setMat4("model", model);
-
-    // render triangle
-    // bind textures on corresponding texture units
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glBindVertexArray(cube);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    // --------------------------------- End of drawing cube here, start to handle light source
-    
-    // Light source, a point light
+    // --------------------------------- We handle Light first
     point_light.use();
+    glm::mat4 projection = glm::perspective(glm::radians(Camera::FOV), (float)width / (float)height, 0.001f, 100000.0f);
     point_light.setMat4("projection", projection);
+    glm::mat4 view = Camera::GetViewMatrix();
     point_light.setMat4("view", view);
     glm::mat4 light_model = glm::mat4(1.0f);
     // we make it orbit
@@ -94,6 +79,34 @@ int init_gl(int width, int height, const char* title){
     light_model = glm::translate(light_model, glm::vec3(3.0f, 0.0f, 0.0f));
     point_light.setMat4("model", light_model);
     glBindVertexArray(cube); // For now, just make the light as a cube
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // --------------------------------- Now we handle cube drawing and shit
+    // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
+    // pass projection matrix to shader (note that in this case it could change every frame)
+    cube_shader.use();
+    cube_shader.setInt("texture1", 0); // <-- TODO: what is this
+    cube_shader.setMat4("projection", projection);
+    cube_shader.setMat4("view", view);
+    // Model matrix
+    glm::mat4 model = glm::mat4(1.0f); // not doing anything to it, just pass it as is
+    cube_shader.setMat4("model", model);
+
+    // Handle lighting for the cube
+    cube_shader.setVec3("pointLight.position", glm::vec3(light_model[3]));
+    cube_shader.setVec3("viewPos", Camera::Position);
+    glm::vec3 lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+    cube_shader.setVec3("pointLight.ambient", ambientColor);
+    cube_shader.setVec3("pointLight.diffuse", diffuseColor);
+    cube_shader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
+
+    // render triangle
+    // bind textures on corresponding texture units
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glBindVertexArray(cube);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glfwSwapBuffers(window);
