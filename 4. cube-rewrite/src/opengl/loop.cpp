@@ -50,8 +50,6 @@ int init_gl(int width, int height, const char* title){
   Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
 
   cube_shader.use();
-  cube_shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-  cube_shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
   cube_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
   cube_shader.setFloat("material.shininess", 32.0f);
 
@@ -85,7 +83,7 @@ int init_gl(int width, int height, const char* title){
     // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
     // pass projection matrix to shader (note that in this case it could change every frame)
     cube_shader.use();
-    cube_shader.setInt("texture1", 0); // <-- TODO: what is this
+    cube_shader.setInt("material.diffuse", 0); // <-- TODO: what is this
     cube_shader.setMat4("projection", projection);
     cube_shader.setMat4("view", view);
     // Model matrix
@@ -95,12 +93,15 @@ int init_gl(int width, int height, const char* title){
     // Handle lighting for the cube
     cube_shader.setVec3("pointLight.position", glm::vec3(light_model[3]));
     cube_shader.setVec3("viewPos", Camera::Position);
-    glm::vec3 lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
     glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
     cube_shader.setVec3("pointLight.ambient", ambientColor);
     cube_shader.setVec3("pointLight.diffuse", diffuseColor);
     cube_shader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
+    cube_shader.setFloat("pointLight.constant", 1.0f);
+    cube_shader.setFloat("pointLight.linear", 0.09f);
+    cube_shader.setFloat("pointLight.quadratic", 0.032f);
 
     // render triangle
     // bind textures on corresponding texture units
