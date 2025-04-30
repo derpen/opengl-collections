@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-namespace shapes {
+namespace Shapes {
 float triangles_vertices[] = {
     // positions         // colors
      0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right

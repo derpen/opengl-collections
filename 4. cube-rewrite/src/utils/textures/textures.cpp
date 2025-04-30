@@ -4,7 +4,7 @@
 #include <iostream>
 #include "../../../lib/stb/stb_image.h"
 
-namespace texture {
+namespace Texture {
 
 unsigned int read_texture(const char* texture_path){
   // load and create a texture 

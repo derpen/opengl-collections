@@ -2,11 +2,13 @@
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/matrix.hpp>
 #include <glm/trigonometric.hpp>
 #include "../shaders/shaders.hpp"
 #include "../utils/shapes/shapes.hpp"
 #include "../utils/textures/textures.hpp"
 #include "../scene/camera.hpp"
+#include "../scene/scene.hpp"
 
 namespace gl_loop {
 
@@ -43,15 +45,13 @@ int init_gl(int width, int height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
-  Shader cube_shader("src/utils/shapes/shaders/cube.vert", "src/utils/shapes/shaders/cube.frag");
-  unsigned int cube = shapes::init_cube();
-  unsigned int texture1 = texture::read_texture("assets/images/yotsuba.jpg");
-
   Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
 
   cube_shader.use();
   cube_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
   cube_shader.setFloat("material.shininess", 32.0f);
+
+  Scene::AddCube("cube1", "assets/images/yotsuba.jpg");
 
   while(!glfwWindowShouldClose(window)){
     process_input(window);
@@ -87,7 +87,7 @@ int init_gl(int width, int height, const char* title){
     cube_shader.setMat4("projection", projection);
     cube_shader.setMat4("view", view);
     // Model matrix
-    glm::mat4 model = glm::mat4(1.0f); // not doing anything to it, just pass it as is
+    glm::mat4 model = glm::mat4(1.0f); 
     cube_shader.setMat4("model", model);
 
     // Handle lighting for the cube
@@ -113,7 +113,7 @@ int init_gl(int width, int height, const char* title){
     glfwSwapBuffers(window);
   }
 
-  shapes::clean_up();
+  Shapes::clean_up();
 
   glfwTerminate();
   return 0;

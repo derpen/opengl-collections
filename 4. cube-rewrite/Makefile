@@ -14,6 +14,7 @@ SOURCES = \
 	$(SRC_DIR)/scene/scene.cpp \
 	$(SRC_DIR)/input/input.cpp \
 	$(SRC_DIR)/utils/shapes/shapes.cpp \
+	$(SRC_DIR)/utils/glm_utils/utils.cpp \
 	$(SRC_DIR)/utils/textures/textures.cpp \
 	$(SRC_DIR)/main.cpp \
 

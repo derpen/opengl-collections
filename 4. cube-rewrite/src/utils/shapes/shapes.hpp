@@ -1,6 +1,6 @@
 #pragma once
 
-namespace shapes {
+namespace Shapes {
 extern float triangles_vertices[];
 extern unsigned int triangle_VAO;
 extern unsigned int triangle_VBO;
