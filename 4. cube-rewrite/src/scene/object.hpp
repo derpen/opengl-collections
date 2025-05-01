@@ -6,7 +6,6 @@ struct Material {
   unsigned int diffuseMap;
   float object_shininess;
   glm::vec3 object_specular;
-  glm::vec3 object_ambient;
   glm::vec3 object_diffuse;
 };
 

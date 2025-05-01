@@ -42,6 +42,7 @@ void AddCube(
   Shader new_shader("src/utils/shapes/shaders/cube.vert", "src/utils/shapes/shaders/cube.frag");
 
   // TODO: need a way to handle textureless object, do it in the shader
+  // Also this probably should be moved to the Material struct
   unsigned int texture1;
   if(useTexture){
     texture1 = Texture::read_texture(texturePath.c_str());
@@ -65,6 +66,14 @@ void AddCube(
   new_object.ObjectShader = new_shader;
   new_object.model = model;
 
+  Material object_material;
+
+  object_material.object_shininess = 32.0f;
+  object_material.object_specular = glm::vec3(1.0f);
+  object_material.object_diffuse = glm::vec3(1.0f, 0.0f, 0.0f);
+
+  new_object.material = object_material;
+
   Objects.push_back(new_object);
 }
 
@@ -82,7 +91,11 @@ void AddPointLight(glm::vec3 position){
   new_model.rotation = glm::vec3(0.0f);
   new_model.scale = glm::vec3(1.0f);
 
+  new_light.model = new_model;
+
+  // TODO
   // Should not be needed later
+  // Its not even used now lol
   Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
   new_light.lightShader = point_light;
 
@@ -99,17 +112,26 @@ void AddPointLight(glm::vec3 position){
   default_mat.light_linear = 0.09f;
   default_mat.light_quadratic = 0.032f;
 
+  new_light.material = default_mat;
+
   Lights.push_back(new_light);
 }
 
 void DrawObjects(){
-  for(int i=0; i<Objects.size(); i++){
+  for(long unsigned int i=0; i<Objects.size(); i++){
     GameObject currentObject = Objects[i];
     HandleShaderUniforms(currentObject);
-    if(currentObject.texture != 0){
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, currentObject.texture);
-    }
+
+    /* ---------------------- */
+    /*if(currentObject.texture != 0){*/
+    /*  glActiveTexture(GL_TEXTURE0);*/
+    /*  glBindTexture(GL_TEXTURE_2D, currentObject.texture);*/
+    /*}*/
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, currentObject.texture);
+    /* ---------------------- */
+
     glBindVertexArray(currentObject.ObjectVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes
     /*glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
@@ -132,7 +154,7 @@ void HandleShaderUniforms(GameObject currentObject){
   glm::mat4 model = currentObject.model.GetModelMatrix();
   currentShader.setMat4("model", model);
 
-  for(int i=0; i<Lights.size(); i++){
+  for(long unsigned int i=0; i<Lights.size(); i++){
     HandleLightingUniforms(currentShader, Lights[i], currentObject);
   }
 }

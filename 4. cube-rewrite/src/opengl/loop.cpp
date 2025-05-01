@@ -68,6 +68,8 @@ int init_gl(float width, float height, const char* title){
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
+    Scene::DrawScene();
+
     glfwSwapBuffers(window);
   }
 
