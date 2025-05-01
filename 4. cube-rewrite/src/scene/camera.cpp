@@ -2,6 +2,7 @@
 #include <iostream>
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../opengl/config.hpp"
 
 namespace Camera {
 CameraMode Mode = PERSPECTIVE;
@@ -21,11 +22,17 @@ float LastX = 800.0f / 2.0f;
 float LastY = 600.0f / 2.0f;
 
 void InitCamera(){
+  LastX = Config::Height / 2.0f;
+  LastY = Config::Width / 2.0f;
   UpdateCameraVector();
 }
 
 glm::mat4 GetViewMatrix(){
   return glm::lookAt(Position, Position + Front, Up);
+}
+
+glm::mat4 GetProjectionMatrix(){
+    return glm::perspective(glm::radians(Camera::FOV), (float)Config::Height / (float)Config::Width, 0.001f, 100000.0f);
 }
 
 void ProcessKeyboard(MoveDirection direction, float deltaTime){

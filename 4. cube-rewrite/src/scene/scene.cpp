@@ -1,5 +1,7 @@
 #include "scene.hpp"
 #include <glad/glad.h>
+#include <string>
+#include "../scene/camera.hpp"
 #include "../utils/glm_utils/utils.hpp"
 #include "../utils/shapes/shapes.hpp"
 #include "../utils/textures/textures.hpp"
@@ -7,18 +9,12 @@
 namespace Scene {
 
 std::vector<GameObject> Objects;
+std::vector<Light> Lights;
+
 void DrawScene(){
 
-  for(int i=0; i<Objects.size(); i++){
-    GameObject currentObject = Objects[i];
-    currentObject.ObjectShader.use();
-    HandleShaderUniforms(currentObject);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, currentObject.texture);
-    glBindVertexArray(currentObject.ObjectVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes
-    /*glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
-  }
+  // TODO: why did I do this again?
+  DrawObjects();
 
 }
 
@@ -35,7 +31,7 @@ void AddCube(
 ){
   // If not initialized
   if(Shapes::cube_VAO == 0){
-    (void)Shapes::init_cube(); // return value not used
+    (void)Shapes::init_cube(); // (void) because return value not used
   }
 
   bool useTexture;
@@ -44,6 +40,8 @@ void AddCube(
   }
 
   Shader new_shader("src/utils/shapes/shaders/cube.vert", "src/utils/shapes/shaders/cube.frag");
+
+  // TODO: need a way to handle textureless object, do it in the shader
   unsigned int texture1;
   if(useTexture){
     texture1 = Texture::read_texture(texturePath.c_str());
@@ -70,8 +68,93 @@ void AddCube(
   Objects.push_back(new_object);
 }
 
-void HandleShaderUniforms(GameObject currentObject){
+void AddPointLight(glm::vec3 position){
+  /*bool enabled = true;*/
+  /*std::string name;*/
+  /*Model model;*/
+  /*Shader lightShader; // Probably not exactly important, ideally light is not rendered as cube*/
+  /*LightMaterial material;*/
+  Light new_light;
+  new_light.name = "Light1";
 
+  Model new_model;
+  new_model.position = position;
+  new_model.rotation = glm::vec3(0.0f);
+  new_model.scale = glm::vec3(1.0f);
+
+  // Should not be needed later
+  Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
+  new_light.lightShader = point_light;
+
+  LightMaterial default_mat;
+  default_mat.light_specular = glm::vec3(1.0f);
+
+  glm::vec3 lightColor = glm::vec3(1.0f);
+  glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+  glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+  default_mat.diffuseColor = diffuseColor;
+  default_mat.ambientColor = ambientColor;
+
+  default_mat.light_constant = 1.0f;
+  default_mat.light_linear = 0.09f;
+  default_mat.light_quadratic = 0.032f;
+
+  Lights.push_back(new_light);
+}
+
+void DrawObjects(){
+  for(int i=0; i<Objects.size(); i++){
+    GameObject currentObject = Objects[i];
+    HandleShaderUniforms(currentObject);
+    if(currentObject.texture != 0){
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, currentObject.texture);
+    }
+    glBindVertexArray(currentObject.ObjectVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes
+    /*glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
+  }
+}
+
+/*void HandleLights(){*/
+/*  for(int i=0; i<Lights.size(); i++){*/
+/**/
+/*  }*/
+/*}*/
+
+void HandleShaderUniforms(GameObject currentObject){
+  Shader currentShader = currentObject.ObjectShader;
+  currentShader.use();
+  currentShader.setMat4("projection", Camera::GetProjectionMatrix());
+  currentShader.setMat4("view", Camera::GetViewMatrix());
+  currentShader.setInt("material.diffuse", 0);
+
+  glm::mat4 model = currentObject.model.GetModelMatrix();
+  currentShader.setMat4("model", model);
+
+  for(int i=0; i<Lights.size(); i++){
+    HandleLightingUniforms(currentShader, Lights[i], currentObject);
+  }
+}
+
+void HandleLightingUniforms(Shader currentShader, Light currentLight, GameObject currentObject){
+  // BIG TODO:
+  // For now we just assume one point ligth in the Scene
+  // Later will have to handle multiple ones
+  // and multiple ligth casters too
+  // Oh boy...
+  currentShader.use(); // Is using it again necessary lol
+  currentShader.setVec3("material.specular", currentObject.material.object_specular);
+  currentShader.setFloat("material.shininess", currentObject.material.object_shininess);
+  glm::mat4 lightModel = currentLight.model.GetModelMatrix(); // This feels so ugly lol
+  currentShader.setVec3("pointLight.position", glm::vec3(lightModel[3]));
+  currentShader.setVec3("viewPos", Camera::Position); // TODO: can this be cached somehow?
+  currentShader.setVec3("pointLight.diffuse", currentLight.material.diffuseColor);
+  currentShader.setVec3("pointLight.ambient", currentLight.material.ambientColor);
+  currentShader.setVec3("pointLight.specular", currentLight.material.light_specular);
+  currentShader.setFloat("pointLight.constant", currentLight.material.light_constant);
+  currentShader.setFloat("pointLight.linear", currentLight.material.light_linear);
+  currentShader.setFloat("pointLight.quadratic", currentLight.material.light_quadratic);
 }
 
 }

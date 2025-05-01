@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/matrix.hpp>
 #include <glm/trigonometric.hpp>
+#include "config.hpp"
 #include "../shaders/shaders.hpp"
 #include "../utils/shapes/shapes.hpp"
 #include "../utils/textures/textures.hpp"
@@ -15,7 +16,7 @@ namespace gl_loop {
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-int init_gl(int width, int height, const char* title){
+int init_gl(float width, float height, const char* title){
   std::cout << "Oh..boy, I'm doing OpenGL again... Great... \n";
   std::cout << "Initializing gl...\n";
   glfwInit();
@@ -31,6 +32,8 @@ int init_gl(int width, int height, const char* title){
     return -1;
   }
 
+  Config::SetWindowSize(width, height);
+
   glfwMakeContextCurrent(window);
 
   if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
@@ -45,13 +48,13 @@ int init_gl(int width, int height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
-  Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
-
-  cube_shader.use();
-  cube_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
-  cube_shader.setFloat("material.shininess", 32.0f);
-
   Scene::AddCube("cube1", "assets/images/yotsuba.jpg");
+
+  glm::vec3 lightPos = glm::vec3(5.0f, 0.0f, 0.0f);
+  Scene::AddCube("thisoneislight", "assets/images/yotsuba.jpg", lightPos);
+  Scene::AddPointLight(lightPos);
+
+  Camera::InitCamera();
 
   while(!glfwWindowShouldClose(window)){
     process_input(window);
@@ -64,51 +67,6 @@ int init_gl(int width, int height, const char* title){
     float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
-
-    // --------------------------------- We handle Light first
-    point_light.use();
-    glm::mat4 projection = glm::perspective(glm::radians(Camera::FOV), (float)width / (float)height, 0.001f, 100000.0f);
-    point_light.setMat4("projection", projection);
-    glm::mat4 view = Camera::GetViewMatrix();
-    point_light.setMat4("view", view);
-    glm::mat4 light_model = glm::mat4(1.0f);
-    // we make it orbit
-    light_model = glm::rotate(light_model, glm::radians(static_cast<float>(glfwGetTime()) * 150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    light_model = glm::translate(light_model, glm::vec3(3.0f, 0.0f, 0.0f));
-    point_light.setMat4("model", light_model);
-    glBindVertexArray(cube); // For now, just make the light as a cube
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    // --------------------------------- Now we handle cube drawing and shit
-    // TODO: move this somewhere else, maybe in camera class, along with the width and ehigth
-    // pass projection matrix to shader (note that in this case it could change every frame)
-    cube_shader.use();
-    cube_shader.setInt("material.diffuse", 0); // <-- TODO: what is this
-    cube_shader.setMat4("projection", projection);
-    cube_shader.setMat4("view", view);
-    // Model matrix
-    glm::mat4 model = glm::mat4(1.0f); 
-    cube_shader.setMat4("model", model);
-
-    // Handle lighting for the cube
-    cube_shader.setVec3("pointLight.position", glm::vec3(light_model[3]));
-    cube_shader.setVec3("viewPos", Camera::Position);
-    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
-    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
-    cube_shader.setVec3("pointLight.ambient", ambientColor);
-    cube_shader.setVec3("pointLight.diffuse", diffuseColor);
-    cube_shader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
-    cube_shader.setFloat("pointLight.constant", 1.0f);
-    cube_shader.setFloat("pointLight.linear", 0.09f);
-    cube_shader.setFloat("pointLight.quadratic", 0.032f);
-
-    // render triangle
-    // bind textures on corresponding texture units
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glBindVertexArray(cube);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glfwSwapBuffers(window);
   }

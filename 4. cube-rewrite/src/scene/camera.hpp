@@ -33,6 +33,8 @@ extern float LastY;
 
 void InitCamera();
 glm::mat4 GetViewMatrix();
+glm::mat4 GetProjectionMatrix();
+
 void ProcessKeyboard(MoveDirection direction, float deltaTime);
 void ProcessMouseMovement(double xoffset, double yoffset);
 void UpdateCameraVector();

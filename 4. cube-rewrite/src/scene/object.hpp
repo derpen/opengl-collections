@@ -4,14 +4,20 @@
 
 struct Material {
   unsigned int diffuseMap;
-  float light_constant;
-  float light_linear;
-  float light_quadratic;
   float object_shininess;
-  glm::vec3 light_specular;
   glm::vec3 object_specular;
   glm::vec3 object_ambient;
   glm::vec3 object_diffuse;
+};
+
+struct LightMaterial {
+  float light_constant;
+  float light_linear;
+  float light_quadratic;
+  glm::vec3 light_specular;
+  glm::vec3 lightColor;
+  glm::vec3 diffuseColor;
+  glm::vec3 ambientColor;
 };
 
 struct Model {

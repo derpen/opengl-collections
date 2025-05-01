@@ -9,6 +9,7 @@ SOURCES = \
 	$(LIB_DIR)/glad/glad.c \
 	$(LIB_DIR)/stb/stb_image.cpp \
 	$(SRC_DIR)/opengl/loop.cpp \
+	$(SRC_DIR)/opengl/config.cpp \
 	$(SRC_DIR)/scene/camera.cpp \
 	$(SRC_DIR)/scene/object.cpp \
 	$(SRC_DIR)/scene/scene.cpp \
