@@ -43,7 +43,7 @@ void AddCube(
 
   // TODO: need a way to handle textureless object, do it in the shader
   // Also this probably should be moved to the Material struct
-  unsigned int texture1;
+  unsigned int texture1 = 0;
   if(useTexture){
     texture1 = Texture::read_texture(texturePath.c_str());
   }
@@ -62,12 +62,12 @@ void AddCube(
   }
 
   new_object.ObjectVAO = Shapes::cube_VAO;
-  new_object.texture = texture1;
   new_object.ObjectShader = new_shader;
   new_object.model = model;
 
   Material object_material;
 
+  object_material.diffuseMap = texture1;
   object_material.object_shininess = 32.0f;
   object_material.object_specular = glm::vec3(1.0f);
   object_material.object_diffuse = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -78,11 +78,9 @@ void AddCube(
 }
 
 void AddPointLight(glm::vec3 position){
-  /*bool enabled = true;*/
-  /*std::string name;*/
-  /*Model model;*/
-  /*Shader lightShader; // Probably not exactly important, ideally light is not rendered as cube*/
-  /*LightMaterial material;*/
+  // Also create a cube to represent light for now
+  Scene::AddCube("light", "", position);
+
   Light new_light;
   new_light.name = "Light1";
 
@@ -122,15 +120,10 @@ void DrawObjects(){
     GameObject currentObject = Objects[i];
     HandleShaderUniforms(currentObject);
 
-    /* ---------------------- */
-    /*if(currentObject.texture != 0){*/
-    /*  glActiveTexture(GL_TEXTURE0);*/
-    /*  glBindTexture(GL_TEXTURE_2D, currentObject.texture);*/
-    /*}*/
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, currentObject.texture);
-    /* ---------------------- */
+    if(currentObject.material.diffuseMap!= 0){
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, currentObject.material.diffuseMap);
+    }
 
     glBindVertexArray(currentObject.ObjectVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes

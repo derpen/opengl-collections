@@ -13,7 +13,6 @@ struct GameObject {
   bool enabled = true;
   std::string name;
   unsigned int ObjectVAO;
-  unsigned int texture; // assuming we only have one texture per object for now
   Shader ObjectShader;
   Model model;
   Material material; // Where do I set the values for this thing

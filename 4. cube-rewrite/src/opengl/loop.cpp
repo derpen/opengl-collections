@@ -49,12 +49,7 @@ int init_gl(float width, float height, const char* title){
   glEnable(GL_DEPTH_TEST);
 
   Scene::AddCube("cube1", "assets/images/yotsuba.jpg");
-
-  // A Point Light
-  // For now drawn as a cube since editor does not yet exist
-  glm::vec3 lightPos = glm::vec3(5.0f, 0.0f, 0.0f);
-  Scene::AddCube("thisoneislight", "assets/images/yotsuba.jpg", lightPos);
-  Scene::AddPointLight(lightPos);
+  Scene::AddPointLight(glm::vec3(5.0f, 0.0f, 0.0f));
 
   Camera::InitCamera();
 
