@@ -50,6 +50,8 @@ int init_gl(float width, float height, const char* title){
 
   Scene::AddCube("cube1", "assets/images/yotsuba.jpg");
 
+  // A Point Light
+  // For now drawn as a cube since editor does not yet exist
   glm::vec3 lightPos = glm::vec3(5.0f, 0.0f, 0.0f);
   Scene::AddCube("thisoneislight", "assets/images/yotsuba.jpg", lightPos);
   Scene::AddPointLight(lightPos);
@@ -81,6 +83,9 @@ int init_gl(float width, float height, const char* title){
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height){
   glViewport(0, 0, width, height);
+
+  // TODO: Should I keep it as an int?
+  Config::SetWindowSize(static_cast<float>(width), static_cast<float>(height)); 
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos){
