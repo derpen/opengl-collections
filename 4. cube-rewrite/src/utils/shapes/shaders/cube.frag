@@ -2,18 +2,18 @@
 out vec4 FragColor;
 
 struct Material {
+    float shininess;
     sampler2D diffuse;
     vec3 specular;
-    float shininess;
 }; 
 
-struct PointLight {
-    vec3 position;
-    
+struct PointLight { 
     float constant;
     float linear;
     float quadratic;
 	
+    vec3 position;
+    vec3 lightColor;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -39,8 +39,8 @@ void main()
 
   if(checkDiffuse.x == 0.0){
     // There isn't any diffuse map
-    // Probably a light, set it as all white
-	  FragColor = vec4(vec3(1.0), 1.0);
+    // Probably a light, set it as its ambient color
+	  FragColor = vec4(pointLight.lightColor, 1.0);
   } else {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);

@@ -100,9 +100,11 @@ void AddPointLight(glm::vec3 position){
   LightMaterial default_mat;
   default_mat.light_specular = glm::vec3(1.0f);
 
+  // For now just white
   glm::vec3 lightColor = glm::vec3(1.0f);
   glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
   glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+  default_mat.lightColor = lightColor;
   default_mat.diffuseColor = diffuseColor;
   default_mat.ambientColor = ambientColor;
 
@@ -164,6 +166,7 @@ void HandleLightingUniforms(Shader currentShader, Light currentLight, GameObject
   glm::mat4 lightModel = currentLight.model.GetModelMatrix(); // This feels so ugly lol
   currentShader.setVec3("pointLight.position", glm::vec3(lightModel[3]));
   currentShader.setVec3("viewPos", Camera::Position); // TODO: can this be cached somehow?
+  currentShader.setVec3("pointLight.lightColor", currentLight.material.lightColor);
   currentShader.setVec3("pointLight.diffuse", currentLight.material.diffuseColor);
   currentShader.setVec3("pointLight.ambient", currentLight.material.ambientColor);
   currentShader.setVec3("pointLight.specular", currentLight.material.light_specular);
