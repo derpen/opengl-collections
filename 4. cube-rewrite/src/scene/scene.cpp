@@ -2,7 +2,6 @@
 #include <glad/glad.h>
 #include <string>
 #include "../scene/camera.hpp"
-#include "../utils/glm_utils/utils.hpp"
 #include "../utils/shapes/shapes.hpp"
 #include "../utils/textures/textures.hpp"
 
@@ -42,7 +41,6 @@ void AddCube(
   Shader new_shader("src/utils/shapes/shaders/cube.vert", "src/utils/shapes/shaders/cube.frag");
 
   // TODO: need a way to handle textureless object, do it in the shader
-  // Also this probably should be moved to the Material struct
   unsigned int texture1 = 0;
   if(useTexture){
     texture1 = Texture::read_texture(texturePath.c_str());
@@ -78,9 +76,6 @@ void AddCube(
 }
 
 void AddPointLight(glm::vec3 position){
-  // Also create a cube to represent light for now
-  Scene::AddCube("light", "", position);
-
   Light new_light;
   new_light.name = "Light1";
 
@@ -95,7 +90,7 @@ void AddPointLight(glm::vec3 position){
   // Should not be needed later
   // Its not even used now lol
   Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
-  new_light.lightShader = point_light;
+  new_light.ObjectShader = point_light;
 
   LightMaterial default_mat;
   default_mat.light_specular = glm::vec3(1.0f);
@@ -131,6 +126,14 @@ void DrawObjects(){
     glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes
     /*glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
   }
+
+  for(long unsigned int i=0; i<Lights.size(); i++){
+    Light currentLight = Lights[i];
+    HandleShaderUniforms(currentLight);
+
+    glBindVertexArray(currentLight.ObjectVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+  }
 }
 
 /*void HandleLights(){*/
@@ -152,6 +155,17 @@ void HandleShaderUniforms(GameObject currentObject){
   for(long unsigned int i=0; i<Lights.size(); i++){
     HandleLightingUniforms(currentShader, Lights[i], currentObject);
   }
+}
+
+void HandleShaderUniforms(Light currentLight){
+  Shader currentShader = currentLight.ObjectShader;
+  currentShader.use();
+  currentShader.setMat4("projection", Camera::GetProjectionMatrix());
+  currentShader.setMat4("view", Camera::GetViewMatrix());
+  currentShader.setInt("material.diffuse", 0);
+
+  glm::mat4 model = currentLight.model.GetModelMatrix();
+  currentShader.setMat4("model", model);
 }
 
 void HandleLightingUniforms(Shader currentShader, Light currentLight, GameObject currentObject){

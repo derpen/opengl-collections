@@ -16,14 +16,22 @@ struct GameObject {
   Shader ObjectShader;
   Model model;
   Material material; // Where do I set the values for this thing
+  void Update();
 };
 
 struct Light {
   // Should have an ID so I can modify existing light on runtime
+  /*Model model;*/
+  /*Shader lightShader; // Probably not exactly important, ideally light is not rendered as cube*/
+  /*LightMaterial material;*/
+
+  // THIS IS BASICALLY JUST GameObject, but instead in a different vector
+  // VERY DIRTY HACK UNTIL I LEARN HOW TO MAKE SCENETREE PROPERLY
   bool enabled = true;
   std::string name;
+  unsigned int ObjectVAO;
+  Shader ObjectShader;
   Model model;
-  Shader lightShader; // Probably not exactly important, ideally light is not rendered as cube
   LightMaterial material;
 };
 
@@ -48,5 +56,7 @@ void DrawObjects();
 void HandleLights();
 
 void HandleShaderUniforms(GameObject currentObject);
+void HandleShaderUniforms(Light currentLight);
+
 void HandleLightingUniforms(Shader currentShader, Light currentLight, GameObject currentObject);
 }

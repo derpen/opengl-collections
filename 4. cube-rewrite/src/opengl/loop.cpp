@@ -5,9 +5,7 @@
 #include <glm/matrix.hpp>
 #include <glm/trigonometric.hpp>
 #include "config.hpp"
-#include "../shaders/shaders.hpp"
 #include "../utils/shapes/shapes.hpp"
-#include "../utils/textures/textures.hpp"
 #include "../scene/camera.hpp"
 #include "../scene/scene.hpp"
 
