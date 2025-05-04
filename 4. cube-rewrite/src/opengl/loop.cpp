@@ -46,7 +46,9 @@ int init_gl(float width, float height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
-  Scene::AddCube("cube1", "assets/images/yotsuba.jpg");
+  Scene::AddCube("cube1");
+  Scene::AddCube("cube2", "assets/images/yotsuba.jpg", glm::vec3(0.0f, 3.0f, 0.0f));
+  Scene::AddCube("cube3", "assets/images/yotsuba.jpg", glm::vec3(0.0f, -3.0f, 0.0f));
   Scene::AddPointLight(glm::vec3(5.0f, 0.0f, 0.0f));
 
   Camera::InitCamera();
