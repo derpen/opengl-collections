@@ -33,7 +33,7 @@ void AddCube(
     (void)Shapes::init_cube(); // (void) because return value not used
   }
 
-  bool useTexture;
+  bool useTexture = false;
   if(!texturePath.empty()) {
     useTexture = true;
   }
@@ -120,6 +120,8 @@ void DrawObjects(){
     if(currentObject.material.diffuseMap!= 0){
       glActiveTexture(GL_TEXTURE0);
       glBindTexture(GL_TEXTURE_2D, currentObject.material.diffuseMap);
+    } else {
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     glBindVertexArray(currentObject.ObjectVAO);
