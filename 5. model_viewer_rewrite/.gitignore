@@ -1,2 +1,3 @@
-cube
+assets/models/*
+model
 *.o

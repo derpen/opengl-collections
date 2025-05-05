@@ -112,6 +112,10 @@ void AddPointLight(glm::vec3 position){
   Lights.push_back(new_light);
 }
 
+void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage){
+
+}
+
 void DrawObjects(){
   for(long unsigned int i=0; i<Objects.size(); i++){
     GameObject currentObject = Objects[i];

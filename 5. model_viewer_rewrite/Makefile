@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall
-LIBS = -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGLEW
+LIBS = -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGLEW -lassimp
 
 SRC_DIR = src
 LIB_DIR = lib
@@ -8,6 +8,8 @@ LIB_DIR = lib
 SOURCES = \
 	$(LIB_DIR)/glad/glad.c \
 	$(LIB_DIR)/stb/stb_image.cpp \
+	$(SRC_DIR)/assimp/mesh.cpp \
+	$(SRC_DIR)/assimp/model.cpp \
 	$(SRC_DIR)/opengl/loop.cpp \
 	$(SRC_DIR)/opengl/config.cpp \
 	$(SRC_DIR)/scene/camera.cpp \
@@ -22,7 +24,7 @@ SOURCES = \
 OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS := $(OBJECTS:.c=.o)
 
-EXECUTABLE = cube
+EXECUTABLE = model
 
 all: $(EXECUTABLE)
 

@@ -50,7 +50,10 @@ void AddCube(
 
 void AddPointLight(
   glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
+
 );
+
+void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage);
 
 void DrawObjects();
 void HandleLights();
