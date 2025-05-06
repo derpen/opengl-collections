@@ -53,7 +53,7 @@ void AddPointLight(
 
 );
 
-void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage);
+void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage = false);
 
 void DrawObjects();
 void HandleLights();

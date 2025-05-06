@@ -120,7 +120,30 @@ void AddPointLight(glm::vec3 position){
 }
 
 void AddModelToScene(std::string ModelName, std::string VertexShader, std::string FragmentShader, bool flipImage){
+  Model new_model(ModelName.c_str());
+  Shader new_shader(VertexShader.c_str(), FragmentShader.c_str());
 
+  GameObject new_object;
+  new_object.name = "new_model";
+  new_object.ObjectShader = new_shader;
+  new_object.useModel = true;
+  new_object.modelMesh = new_model;
+
+  Transform transform;
+  transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+  transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+  transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+  new_object.transform = transform;
+
+  // TODO:
+  // Need to handle this somewhere else at some point
+  ObjectMaterial object_material;
+  object_material.object_shininess = 32.0f;
+  object_material.object_specular = glm::vec3(1.0f);
+  object_material.object_diffuse = glm::vec3(1.0f, 0.0f, 0.0f);
+  new_object.material = object_material;
+
+  Objects.push_back(new_object);
 }
 
 void DrawObjects(){
@@ -128,16 +151,20 @@ void DrawObjects(){
     GameObject currentObject = Objects[i];
     HandleShaderUniforms(currentObject);
 
-    if(currentObject.material.diffuseMap!= 0){
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, currentObject.material.diffuseMap);
+    if(currentObject.useModel){
+      currentObject.modelMesh.Draw(currentObject.ObjectShader);
     } else {
-      glBindTexture(GL_TEXTURE_2D, 0);
-    }
+      if(currentObject.material.diffuseMap!= 0){
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, currentObject.material.diffuseMap);
+      } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+      }
 
-    glBindVertexArray(currentObject.ObjectVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes
-    /*glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
+      glBindVertexArray(currentObject.ObjectVAO);
+      glDrawArrays(GL_TRIANGLES, 0, 36); // TODO: handle this shit, for now we just draw cubes
+      /*glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
+    }
   }
 
   for(long unsigned int i=0; i<Lights.size(); i++){

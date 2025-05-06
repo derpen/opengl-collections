@@ -46,9 +46,9 @@ int init_gl(float width, float height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
-  // Might wanna move this adding cube in another file
-  // Probably the Scene.cpp file
+  // Plz move this somewhere else
   /*Scene::AddCube("cube1");*/
+  Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
   Scene::AddPointLight(glm::vec3(5.0f, 0.0f, 0.0f));
 
   Camera::InitCamera();
