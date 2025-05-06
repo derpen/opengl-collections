@@ -28,11 +28,6 @@ void AddCube(
   glm::vec3 rotation,
   glm::vec3 scale
 ){
-  // If not initialized
-  if(Shapes::cube_VAO == 0){
-    (void)Shapes::init_cube(); // (void) because return value not used
-  }
-
   bool useTexture = false;
   if(!texturePath.empty()) {
     useTexture = true;
@@ -57,6 +52,11 @@ void AddCube(
     new_object.name = "cube";
   } else {
     new_object.name = name;
+  }
+
+  // If not initialized
+  if(Shapes::cube_VAO == 0){
+    (void)Shapes::init_cube(); // (void) because return value not used
   }
 
   new_object.ObjectVAO = Shapes::cube_VAO;
@@ -108,6 +108,13 @@ void AddPointLight(glm::vec3 position){
   default_mat.light_quadratic = 0.032f;
 
   new_light.material = default_mat;
+
+  // If not initialized
+  if(Shapes::cube_VAO == 0){
+    (void)Shapes::init_cube(); // (void) because return value not used
+  }
+
+  new_light.ObjectVAO = Shapes::cube_VAO;
 
   Lights.push_back(new_light);
 }

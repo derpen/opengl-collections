@@ -46,9 +46,9 @@ int init_gl(float width, float height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
-  Scene::AddCube("cube1");
-  Scene::AddCube("cube2", "assets/images/yotsuba.jpg", glm::vec3(0.0f, 3.0f, 0.0f));
-  Scene::AddCube("cube3", "assets/images/yotsuba.jpg", glm::vec3(0.0f, -3.0f, 0.0f));
+  // Might wanna move this adding cube in another file
+  // Probably the Scene.cpp file
+  /*Scene::AddCube("cube1");*/
   Scene::AddPointLight(glm::vec3(5.0f, 0.0f, 0.0f));
 
   Camera::InitCamera();
