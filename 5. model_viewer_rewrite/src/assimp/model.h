@@ -1,9 +1,9 @@
 #pragma once
-#include "../../vendor/assimp/Importer.hpp"
-#include "../../vendor/assimp/scene.h"
-#include "../../vendor/assimp/postprocess.h"
+#include "../../lib/assimp/Importer.hpp"
+#include "../../lib/assimp/scene.h"
+#include "../../lib/assimp/postprocess.h"
+#include "../shaders/shaders.hpp"
 #include "mesh.h"
-#include "../shaders/shader.h"
 #include <vector>
 #include <unordered_map>
 

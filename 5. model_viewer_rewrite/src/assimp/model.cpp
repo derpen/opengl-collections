@@ -1,10 +1,10 @@
 #include "model.h"
-#include "../../vendor/assimp/Importer.hpp"
-#include "../../vendor/assimp/scene.h"
-#include "../../vendor/assimp/postprocess.h"
+#include "../../lib/assimp/Importer.hpp"
+#include "../../lib/assimp/scene.h"
+#include "../../lib/assimp/postprocess.h"
+#include "../../lib/stb/stb_image.h"
 #include <cstring>
 #include <glad/glad.h>
-#include "../../vendor/stb/stb_image.h"
 
 Model::Model(){
   m_modelName = "default";

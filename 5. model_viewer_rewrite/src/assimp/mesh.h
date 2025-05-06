@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "../shaders/shader.h"
+#include "../shaders/shaders.hpp"
 #include <iostream>
 #include <vector>
 

@@ -2,7 +2,9 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 
-struct Material {
+// TODO:
+// Rename this shit properly since it clashes with 'Material' in model
+struct ObjectMaterial {
   unsigned int diffuseMap;
   float object_shininess;
   glm::vec3 object_specular;
@@ -19,7 +21,7 @@ struct LightMaterial {
   glm::vec3 ambientColor;
 };
 
-struct Model {
+struct Transform {
   glm::vec3 position;
   glm::vec3 rotation;
   glm::vec3 scale;

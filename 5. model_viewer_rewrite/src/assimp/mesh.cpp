@@ -34,7 +34,7 @@ void Mesh::Draw(Shader &shader){
         number = std::to_string(specularNr++);
       }
 
-      glUniform1i(glGetUniformLocation(shader.ShaderID, (name + number).c_str()), i);
+      glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
 
       // Another way of setting the le shader
       /*shader.setInt((name + number).c_str(), i);*/

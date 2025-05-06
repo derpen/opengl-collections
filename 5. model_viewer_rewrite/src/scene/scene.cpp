@@ -38,13 +38,13 @@ void AddCube(
   // TODO: need a way to handle textureless object, do it in the shader
   unsigned int texture1 = 0;
   if(useTexture){
-    texture1 = Texture::read_texture(texturePath.c_str());
+    texture1 = TextureHandler::read_texture(texturePath.c_str());
   }
 
-  Model model;
-  model.position = position;
-  model.rotation = rotation;
-  model.scale = scale;
+  Transform transform;
+  transform.position = position;
+  transform.rotation = rotation;
+  transform.scale = scale;
 
   GameObject new_object;
 
@@ -61,9 +61,9 @@ void AddCube(
 
   new_object.ObjectVAO = Shapes::cube_VAO;
   new_object.ObjectShader = new_shader;
-  new_object.model = model;
+  new_object.transform = transform;
 
-  Material object_material;
+  ObjectMaterial object_material;
 
   object_material.diffuseMap = texture1;
   object_material.object_shininess = 32.0f;
@@ -79,12 +79,12 @@ void AddPointLight(glm::vec3 position){
   Light new_light;
   new_light.name = "Light1";
 
-  Model new_model;
-  new_model.position = position;
-  new_model.rotation = glm::vec3(0.0f);
-  new_model.scale = glm::vec3(1.0f);
+  Transform transform;
+  transform.position = position;
+  transform.rotation = glm::vec3(0.0f);
+  transform.scale = glm::vec3(1.0f);
 
-  new_light.model = new_model;
+  new_light.transform = transform;
 
   // TODO
   // Should not be needed later
@@ -162,7 +162,7 @@ void HandleShaderUniforms(GameObject currentObject){
   currentShader.setMat4("view", Camera::GetViewMatrix());
   currentShader.setInt("material.diffuse", 0);
 
-  glm::mat4 model = currentObject.model.GetModelMatrix();
+  glm::mat4 model = currentObject.transform.GetModelMatrix();
   currentShader.setMat4("model", model);
 
   for(long unsigned int i=0; i<Lights.size(); i++){
@@ -177,7 +177,7 @@ void HandleShaderUniforms(Light currentLight){
   currentShader.setMat4("view", Camera::GetViewMatrix());
   currentShader.setInt("material.diffuse", 0);
 
-  glm::mat4 model = currentLight.model.GetModelMatrix();
+  glm::mat4 model = currentLight.transform.GetModelMatrix();
   currentShader.setMat4("model", model);
 }
 
@@ -190,7 +190,7 @@ void HandleLightingUniforms(Shader currentShader, Light currentLight, GameObject
   currentShader.use(); // Is using it again necessary lol
   currentShader.setVec3("material.specular", currentObject.material.object_specular);
   currentShader.setFloat("material.shininess", currentObject.material.object_shininess);
-  glm::mat4 lightModel = currentLight.model.GetModelMatrix(); // This feels so ugly lol
+  glm::mat4 lightModel = currentLight.transform.GetModelMatrix(); // This feels so ugly lol
   currentShader.setVec3("pointLight.position", glm::vec3(lightModel[3]));
   currentShader.setVec3("viewPos", Camera::Position); // TODO: can this be cached somehow?
   currentShader.setVec3("pointLight.lightColor", currentLight.material.lightColor);

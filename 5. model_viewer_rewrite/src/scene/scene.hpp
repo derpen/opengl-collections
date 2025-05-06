@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "../shaders/shaders.hpp"
+#include "../assimp/model.h"
 #include "object.hpp"
 
 namespace Scene {
@@ -10,28 +11,27 @@ namespace Scene {
 struct GameObject {
   // Should have an ID so I can modify existing object on runtime
   // Should probably learn some naming conventions
+  // Need to somehow make this cleaner, separate normal shape with external Model
   bool enabled = true;
   std::string name;
   unsigned int ObjectVAO;
   Shader ObjectShader;
-  Model model;
-  Material material; // Where do I set the values for this thing
+  Transform transform;
+  bool useModel = false; // Very ugly way of handling this
+  Model modelMesh;
+  ObjectMaterial material; // Where do I set the values for this thing
   void Update();
 };
 
 struct Light {
   // Should have an ID so I can modify existing light on runtime
-  /*Model model;*/
-  /*Shader lightShader; // Probably not exactly important, ideally light is not rendered as cube*/
-  /*LightMaterial material;*/
-
   // THIS IS BASICALLY JUST GameObject, but instead in a different vector
   // VERY DIRTY HACK UNTIL I LEARN HOW TO MAKE SCENETREE PROPERLY
   bool enabled = true;
   std::string name;
   unsigned int ObjectVAO;
   Shader ObjectShader;
-  Model model;
+  Transform transform;
   LightMaterial material;
 };
 
