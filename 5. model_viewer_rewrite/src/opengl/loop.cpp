@@ -1,5 +1,12 @@
 #include "loop.hpp"
-#include <GLFW/glfw3.h>
+
+#ifdef _WIN32
+    #include <Windows/glfw3.h>
+#elif defined(__linux__)
+	#include <GLFW/glfw3.h>
+#endif
+
+
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/matrix.hpp>
