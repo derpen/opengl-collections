@@ -83,6 +83,10 @@
     <None Include="lib\assimp\vector3.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="lib\assimp\.editorconfig" />
+    <None Include="lib\assimp\config.h.in" />
+    <None Include="lib\assimp\revision.h.in" />
+    <None Include="lib\Windows\glfw\glfw3.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\assimp\aabb.h">
@@ -376,5 +380,19 @@
     <ClInclude Include="src\utils\textures\textures.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Windows\glfw3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\glad\glad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\KHR\khrplatform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\Windows\glfw\glfw3.lib" />
+    <Library Include="lib\Windows\glfw\glfw3dll.lib" />
+    <Library Include="lib\Windows\glfw\glfw3_mt.lib" />
   </ItemGroup>
 </Project>
