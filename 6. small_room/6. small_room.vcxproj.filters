@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\assimp">
+      <UniqueIdentifier>{3cdc0837-d658-4a4f-8bb0-15f6d45fbefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\input">
+      <UniqueIdentifier>{5510977f-3e40-4200-9ff0-c8a394ec6d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\opengl">
+      <UniqueIdentifier>{32dba6ef-6500-40e2-a567-14c60867e37b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{080c5367-b484-4c9a-8b7b-96c4d9ebacf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders">
+      <UniqueIdentifier>{4b5b451c-b314-4059-9477-ac1224ba3df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{2e8317d0-bc6c-4efb-9598-4a1cb79a4f6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{b39fd1e4-f5a6-4086-b4c4-c230ca764600}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\config.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\loop.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\glm_utils\utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\shapes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\textures\textures.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assimp\mesh.cpp">
+      <Filter>src\assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assimp\model.cpp">
+      <Filter>src\assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\input.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\include\glad\glad.c">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\include\stb\stb_image.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\utils\textures\textures.hpp" />
+    <ClInclude Include="src\opengl\config.hpp" />
+    <ClInclude Include="src\opengl\loop.hpp" />
+    <ClInclude Include="src\scene\camera.hpp" />
+    <ClInclude Include="src\scene\object.hpp" />
+    <ClInclude Include="src\scene\scene.hpp" />
+    <ClInclude Include="src\shaders\shaders.hpp" />
+    <ClInclude Include="src\utils\glm_utils\utils.hpp" />
+    <ClInclude Include="src\utils\shapes\shapes.hpp" />
+    <ClInclude Include="src\assimp\mesh.h">
+      <Filter>src\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assimp\model.h">
+      <Filter>src\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\input.hpp">
+      <Filter>src\input</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
