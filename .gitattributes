@@ -1,0 +1,2 @@
+vendor/lib/assimp filter=lfs diff=lfs merge=lfs -text
+vendor/lib/glm filter=lfs diff=lfs merge=lfs -text
