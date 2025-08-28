@@ -101,8 +101,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>G:\Code\opengl-collections\vendor\include;$(IncludePath)</IncludePath>
-    <LibraryPath>G:\Code\opengl-collections\vendor\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\vendor\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\vendor\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,7 +142,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;assimp-vc143-mtd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>G:\Code\opengl-collections\vendor\lib\glm;G:\Code\opengl-collections\vendor\lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\vendor\lib\glm;..\vendor\lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "..\vendor\lib\assimp\assimp-vc143-mtd.dll" "$(TargetDir)assimp-vc143-mtd.dll"</Command>
