@@ -21,7 +21,7 @@ void DrawScene(float deltaTime){
     // Testing some transform, there's only one object right now (Osaka)
     glm::mat4 newModelMatrix = glm::rotate(
         Objects[0].transform.GetModelMatrix(),
-        static_cast<float>(glfwGetTime()) * 0.01f,
+        static_cast<float>(glfwGetTime()),
         glm::vec3(0.0, 1.0, 0.0)
     );
     Objects[0].transform.setModelMatrix(newModelMatrix);
