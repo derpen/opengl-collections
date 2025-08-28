@@ -53,10 +53,11 @@ int init_gl(float width, float height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
+  // TODO:
   // Plz move this somewhere else
   /*Scene::AddCube("cube1");*/
 #ifdef _WIN32
-  Scene::AddModelToScene(PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
+  Scene::AddModelToScene(PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
 #else
   // TODO
   // Handle this for GNU/Linux
@@ -78,7 +79,7 @@ int init_gl(float width, float height, const char* title){
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    Scene::DrawScene();
+    Scene::DrawScene(deltaTime);
 
     glfwSwapBuffers(window);
   }
@@ -101,7 +102,9 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos){
 }
 
 void process_input(GLFWwindow *window){
-  if(glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_PRESS)
+   if(glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_PRESS ||
+     glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS
+      )
     glfwSetWindowShouldClose(window, true);
 
   // TODO: handle input in input.cpp
@@ -116,8 +119,6 @@ void process_input(GLFWwindow *window){
 
   if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     Camera::ProcessKeyboard(RIGHT, deltaTime);
-
 }
-
 }
 

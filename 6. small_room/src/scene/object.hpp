@@ -1,5 +1,9 @@
 #pragma once
 #include <glm/ext/matrix_transform.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/matrix_decompose.hpp>
+
 #include <glm/glm.hpp>
 
 // TODO:
@@ -22,7 +26,7 @@ struct LightMaterial {
 };
 
 struct Transform {
-  glm::vec3 position;
+  glm::vec3 position; // TODO: should have call this a translation
   glm::vec3 rotation;
   glm::vec3 scale;
 
@@ -35,5 +39,18 @@ struct Transform {
     model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::translate(model, position);
     return model;
+  }
+
+  void setModelMatrix(glm::mat4 newModelMatrix) {
+      glm::quat rotate;
+      glm::vec3 skew;
+      glm::vec4 perspective;
+
+      glm::decompose(newModelMatrix, scale, rotate, position, skew, perspective); // Not actually using last two value
+
+      // How do I turn a quaternion into a vec3??
+      // https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
+      rotate = glm::conjugate(rotate); 
+      rotation = glm::eulerAngles(rotate);
   }
 };

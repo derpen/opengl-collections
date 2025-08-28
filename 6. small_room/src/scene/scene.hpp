@@ -38,7 +38,7 @@ struct Light {
 extern std::vector<GameObject> Objects;
 extern std::vector<Light> Lights;
 
-void DrawScene();
+void DrawScene(float deltaTime);
 void AddObjectToScene(); // Preferably this one is used for everything, but we'll hold on to that
 void AddCube(
   std::string name, // TODO: need to automate this

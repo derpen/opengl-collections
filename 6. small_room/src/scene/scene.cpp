@@ -5,15 +5,30 @@
 #include "../utils/shapes/shapes.hpp"
 #include "../utils/textures/textures.hpp"
 
+#ifdef _WIN32
+    #include <glfw/glfw3.h>
+#elif defined(__linux__)
+	#include <GLFW/glfw3.h>
+#endif
+
 namespace Scene {
 
 std::vector<GameObject> Objects;
 std::vector<Light> Lights;
 
-void DrawScene(){
+void DrawScene(float deltaTime){
 
-  // TODO: why did I do this again?
-  DrawObjects();
+    // Testing some transform, there's only one object right now (Osaka)
+    glm::mat4 newModelMatrix = glm::rotate(
+        Objects[0].transform.GetModelMatrix(),
+        static_cast<float>(glfwGetTime()) * 0.01f,
+        glm::vec3(0.0, 1.0, 0.0)
+    );
+    Objects[0].transform.setModelMatrix(newModelMatrix);
+
+
+	// TODO: why did I do this again?
+	DrawObjects();
 
 }
 
@@ -33,7 +48,7 @@ void AddCube(
     useTexture = true;
   }
 
-  Shader new_shader("src/utils/shapes/shaders/cube.vert", "src/utils/shapes/shaders/cube.frag");
+  Shader new_shader(PROJECT_DIR"../assets/shaders/cube.vert", PROJECT_DIR"../assets/shaders/cube.frag");
 
   // TODO: need a way to handle textureless object, do it in the shader
   unsigned int texture1 = 0;
@@ -89,7 +104,7 @@ void AddPointLight(glm::vec3 position){
   // TODO
   // Should not be needed later
   // Its not even used now lol
-  Shader point_light("src/utils/shapes/shaders/light_cube.vert", "src/utils/shapes/shaders/light_cube.frag");
+  Shader point_light(PROJECT_DIR"../assets/shaders/light_cube.vert", PROJECT_DIR"../assets/shaders/light_cube.frag");
   new_light.ObjectShader = point_light;
 
   LightMaterial default_mat;
