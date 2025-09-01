@@ -48,6 +48,18 @@
     <ClInclude Include="src\utils\shapes\shapes.hpp" />
     <ClInclude Include="src\utils\textures\textures.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\shaders\cube.frag" />
+    <None Include="..\assets\shaders\cube.vert" />
+    <None Include="..\assets\shaders\light_cube.frag" />
+    <None Include="..\assets\shaders\light_cube.vert" />
+    <None Include="..\assets\shaders\osaka.frag" />
+    <None Include="..\assets\shaders\osaka.vert" />
+    <None Include="..\assets\shaders\planes.frag" />
+    <None Include="..\assets\shaders\planes.vert" />
+    <None Include="..\assets\shaders\triangle.frag" />
+    <None Include="..\assets\shaders\triangle.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -137,6 +149,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;PROJECT_DIR=R"($(ProjectDir))";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

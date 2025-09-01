@@ -30,6 +30,9 @@
     <Filter Include="vendor">
       <UniqueIdentifier>{b39fd1e4-f5a6-4086-b4c4-c230ca764600}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{e6de418c-b3d8-4458-8973-9af7e21f3105}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -94,5 +97,37 @@
     <ClInclude Include="src\input\input.hpp">
       <Filter>src\input</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\shaders\cube.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\cube.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\light_cube.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\light_cube.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\osaka.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\osaka.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\planes.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\planes.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\triangle.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\triangle.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

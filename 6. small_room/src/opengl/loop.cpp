@@ -55,15 +55,21 @@ int init_gl(float width, float height, const char* title){
 
   // TODO:
   // Plz move this somewhere else
+  // Why tf don't I have a way to move around objects easily lol
   /*Scene::AddCube("cube1");*/
 #ifdef _WIN32
-  Scene::AddModelToScene(PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  //Scene::AddModelToScene("Osaka", PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  //Scene::AddModelToScene("Room", PROJECT_DIR"../assets/models/room/small_jp_apartment.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  //Scene::AddModelToScene("TrapRoom", PROJECT_DIR"../assets/models/trap_room/room_one.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  Scene::AddModelToScene("Chair", PROJECT_DIR"../assets/models/trap_room/just_chair.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
 #else
   // TODO
   // Handle this for GNU/Linux
   Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
 #endif
-  Scene::AddPointLight(glm::vec3(5.0f, 0.0f, 0.0f));
+
+  Scene::AddPointLight(glm::vec3(0.0f, 0.0f, 0.0f));
+  Scene::Objects["Chair"].transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
 
   Camera::InitCamera();
 

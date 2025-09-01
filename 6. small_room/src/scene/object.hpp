@@ -41,6 +41,9 @@ struct Transform {
     return model;
   }
 
+  // This thing is broken
+  // Fix me
+  // Or not... maybe I should have just figure out something else
   void setModelMatrix(glm::mat4 newModelMatrix) {
       glm::quat rotate;
       glm::vec3 skew;
