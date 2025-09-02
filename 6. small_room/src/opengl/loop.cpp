@@ -60,10 +60,11 @@ int init_gl(float width, float height, const char* title){
   /*Scene::AddCube("cube1");*/
 #ifdef _WIN32
   // So apparently FBX and OBJ works out of the box, while GLB just outright dies
-  //Scene::AddModelToScene("Osaka", PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  //Scene::AddModelToScene("Osaka_OBJ", PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Osaka_Collada", PROJECT_DIR"../assets/models/osaka/osaka_collada.dae", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Osaka_FBX", PROJECT_DIR"../assets/models/osaka/osaka_fbx.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  Scene::AddModelToScene("Apartment", PROJECT_DIR"../assets/models/room/apartment.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  //Scene::AddModelToScene("Apartment", PROJECT_DIR"../assets/models/room/apartment.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  Scene::AddModelToScene("Apartment_OBJ", PROJECT_DIR"../assets/models/room/apartment.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
 
   //Scene::AddModelToScene("TrapRoom", PROJECT_DIR"../assets/models/trap_room/room_one.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Chair", PROJECT_DIR"../assets/models/trap_room/just_chair.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
@@ -75,7 +76,9 @@ int init_gl(float width, float height, const char* title){
 
   Scene::AddPointLight("PointLight1", glm::vec3(0.0f, 0.0f, 0.0f)); // Need to automate naming?
   Scene::Lights["PointLight1"].enabled = false;
-  Scene::Objects["Apartment"].transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
+  //Scene::Objects["Apartment"].transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
+  Scene::Objects["Apartment_OBJ"].transform.position = glm::vec3(3.0f, 0.0f, 0.0f);
+  //Scene::Objects["Osaka_OBJ"].transform.position = glm::vec3(-5.0f, 0.0f, 0.0f);
 
   Camera::InitCamera();
 

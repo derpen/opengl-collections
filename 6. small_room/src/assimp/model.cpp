@@ -125,8 +125,8 @@ Material Model::loadMaterial(aiMaterial* mat){
   mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
   material.Diffuse = glm::vec3(color.r, color.b, color.g);
 
-  /*mat->Get(AI_MATKEY_COLOR_AMBIENT, color);*/
-  /*material.Ambient = glm::vec3(color.r, color.b, color.g);*/
+  mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+  material.Ambient = glm::vec3(color.r, color.b, color.g);
 
   mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
   material.Specular = glm::vec3(color.r, color.b, color.g);

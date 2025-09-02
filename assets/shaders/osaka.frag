@@ -5,7 +5,9 @@ struct Material {
     float shininess;
     sampler2D diffuse;
     vec3 specular;
+	vec3 ambient;
 }; 
+uniform float checkDiffuse;
 
 struct PointLight { 
     float constant;
@@ -31,25 +33,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-//  vec3 checkDiffuse = vec3(texture(material.diffuse, TexCoords));
-//
-//  if(checkDiffuse.x < 0.0 || checkDiffuse.x > 1.0){
-//    // There isn't any diffuse map, so skip
-//	  FragColor = vec4(vec3(1.0), 1.0);
-//  } else {
-//    // Properties
-//    // No clue what this mean
-//    // Plz learn vector calculation
-//    vec3 norm = normalize(Normal);
-//    vec3 viewDir = normalize(viewPos - FragPos);
-//    vec3 result = CalcPointLight(pointLight, norm, FragPos, viewDir);
-//
-//	  FragColor = vec4(result, 1.0);
-//  }
-  
-    // Base color
-    FragColor = vec4(vec3(texture(material.diffuse, TexCoords)), 1.0);
-
+	// There isn't any diffuse map, so skip
+	FragColor = vec4(material.ambient, 1.0);
+	//FragColor = vec4(vec3(texture(material.diffuse, TexCoords)), 1.0);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {

@@ -49,7 +49,7 @@ namespace Camera {
 	  if(direction == LEFT)
 		Position -= Right * velocity;
 
-	  Position.y = 0.0; // First person cam hack
+	  //Position.y = 0.0; // First person cam hack
 
 	}
 
