@@ -15,8 +15,7 @@
 namespace Scene {
 
     std::unordered_map<std::string, GameObject> Objects;
-	//std::vector<GameObject> Objects;
-	std::vector<Light> Lights;
+	std::unordered_map<std::string, Light> Lights;
 
 	void DrawScene(float deltaTime){
 
@@ -97,9 +96,9 @@ namespace Scene {
 	  Objects.emplace(new_object.name, new_object); // @Fix: This will break
 	}
 
-	void AddPointLight(glm::vec3 position){
+	void AddPointLight(std::string lightName, glm::vec3 position){
 	  Light new_light;
-	  new_light.name = "Light1";
+	  new_light.name = lightName.c_str();
 
 	  Transform transform;
 	  transform.position = position;
@@ -139,7 +138,7 @@ namespace Scene {
 	  new_light.ObjectVAO = Shapes::cube_VAO;
 
 	  //Lights.push_back(new_light);
-	  Lights.emplace_back(new_light); // Trying to one instead
+	  Lights.emplace(new_light.name, new_light); // Trying to one instead
 	}
 
 	void AddModelToScene(std::string modelName, std::string modelDirectory, std::string VertexShader, std::string FragmentShader, bool flipImage){
@@ -172,9 +171,10 @@ namespace Scene {
 
 	void DrawObjects(){
 	  //for(long unsigned int i=0; i<Objects.size(); i++){
-		for (auto& it: Objects){
+		//for (auto& it: Objects){
+		for (auto& [objectName, gameObject] : Objects) {
 			//GameObject currentObject = Objects[i];
-			GameObject currentObject = it.second;
+			GameObject currentObject = gameObject;
 			HandleShaderUniforms(currentObject);
 
 			if(currentObject.useModel){
@@ -193,12 +193,17 @@ namespace Scene {
 			}
 	  }
 
-	  for(long unsigned int i=0; i<Lights.size(); i++){
-		Light currentLight = Lights[i];
-		HandleShaderUniforms(currentLight);
+	  //for(long unsigned int i=0; i<Lights.size(); i++){
+	  for(auto& [lightName, lightObject]: Lights) {
+		  Light currentLight = lightObject;
+		  HandleShaderUniforms(currentLight);
 
-		glBindVertexArray(currentLight.ObjectVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		  // Just disable the cube rendering for now
+		  // They really should be two different things lol
+		  if (currentLight.enabled) {
+			  glBindVertexArray(currentLight.ObjectVAO);
+			  glDrawArrays(GL_TRIANGLES, 0, 36);
+		  }
 	  }
 	}
 
@@ -218,8 +223,9 @@ namespace Scene {
 	  glm::mat4 model = currentObject.transform.GetModelMatrix();
 	  currentShader.setMat4("model", model);
 
-	  for(long unsigned int i=0; i<Lights.size(); i++){
-		HandleLightingUniforms(currentShader, Lights[i], currentObject);
+	  //for(long unsigned int i=0; i<Lights.size(); i++){
+	  for(auto& [lightName, lightObject]: Lights) {
+		HandleLightingUniforms(currentShader, lightObject, currentObject);
 	  }
 	}
 

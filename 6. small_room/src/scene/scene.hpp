@@ -27,7 +27,7 @@ namespace Scene {
 	  // Should have an ID so I can modify existing light on runtime
 	  // THIS IS BASICALLY JUST GameObject, but instead in a different vector
 	  // VERY DIRTY HACK UNTIL I LEARN HOW TO MAKE SCENETREE PROPERLY
-	  bool enabled = true;
+	  bool enabled = true; // for now should only disable rendering the cube and not the light, honestly though they should be two different things lol
 	  std::string name;
 	  unsigned int ObjectVAO;
 	  Shader ObjectShader;
@@ -37,8 +37,8 @@ namespace Scene {
 
 	//extern std::vector<GameObject> Objects;
     extern std::unordered_map<std::string, GameObject> Objects;
-
-	extern std::vector<Light> Lights;
+	extern std::unordered_map<std::string, Light> Lights;
+	//extern std::vector<Light> Lights;
 
 	void DrawScene(float deltaTime);
 	void AddObjectToScene(); // Preferably this one is used for everything, but we'll hold on to that
@@ -51,8 +51,8 @@ namespace Scene {
 	);
 
 	void AddPointLight(
-	  glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
-
+		std::string lightName,
+		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
 	);
 
 	void AddModelToScene(std::string modelName, std::string modelDirectory, std::string VertexShader, std::string FragmentShader, bool flipImage = false);

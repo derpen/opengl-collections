@@ -63,7 +63,6 @@ int init_gl(float width, float height, const char* title){
   //Scene::AddModelToScene("Osaka", PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Osaka_Collada", PROJECT_DIR"../assets/models/osaka/osaka_collada.dae", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Osaka_FBX", PROJECT_DIR"../assets/models/osaka/osaka_fbx.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-
   Scene::AddModelToScene("Apartment", PROJECT_DIR"../assets/models/room/apartment.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
 
   //Scene::AddModelToScene("TrapRoom", PROJECT_DIR"../assets/models/trap_room/room_one.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
@@ -74,7 +73,8 @@ int init_gl(float width, float height, const char* title){
   Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
 #endif
 
-  Scene::AddPointLight(glm::vec3(0.0f, 0.0f, 0.0f));
+  Scene::AddPointLight("PointLight1", glm::vec3(0.0f, 0.0f, 0.0f)); // Need to automate naming?
+  Scene::Lights["PointLight1"].enabled = false;
   Scene::Objects["Apartment"].transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
 
   Camera::InitCamera();
