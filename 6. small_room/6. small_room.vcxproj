@@ -49,6 +49,8 @@
     <ClInclude Include="src\utils\textures\textures.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\assets\shaders\apartment.frag" />
+    <None Include="..\assets\shaders\apartment.vert" />
     <None Include="..\assets\shaders\cube.frag" />
     <None Include="..\assets\shaders\cube.vert" />
     <None Include="..\assets\shaders\light_cube.frag" />

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "../utils/glm_utils/utils.hpp"
+#include <iostream>
 
 Mesh::Mesh(
     std::vector<Vertex> vertices,
@@ -19,38 +20,37 @@ Mesh::Mesh(
 }
 
 void Mesh::Draw(Shader &shader){
-  //unsigned int diffuseNr = 1;
-  //unsigned int specularNr = 1;
+  unsigned int diffuseNr = 1;
+  unsigned int specularNr = 1;
 
-  //if(Textures.size() > 0){
-  //  for(unsigned int i = 0; i < Textures.size(); i++){
-  //    glActiveTexture(GL_TEXTURE0 + i);
+  if(Textures.size() > 0){
+    for(unsigned int i = 0; i < Textures.size(); i++){
+      glActiveTexture(GL_TEXTURE0 + i);
 
-  //    std::string number;
-  //    std::string name = Textures[i].type;
-  //    if(name == "texture_diffuse"){
-  //      number = std::to_string(diffuseNr++);
-  //    }
-  //    else if(name == "texture_specular"){
-  //      number = std::to_string(specularNr++);
-  //    }
+      std::string number;
+      std::string name = Textures[i].type;
+      if(name == "texture_diffuse"){
+        number = std::to_string(diffuseNr++);
+      }
+      else if(name == "texture_specular"){
+        number = std::to_string(specularNr++);
+      }
 
-  //    glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+      glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
 
-  //    // Another way of setting the le shader
-  //    /*shader.setInt((name + number).c_str(), i);*/
-  //    /*shader.setInt(("material." + name + number).c_str(), i); //Use this if using struct in model's shader */
+      // Another way of setting the le shader
+      /*shader.setInt((name + number).c_str(), i);*/
+      /*shader.setInt(("material." + name + number).c_str(), i); //Use this if using struct in model's shader */
 
-  //    glBindTexture(GL_TEXTURE_2D, Textures[i].id);
-  //  }
-  //} else {
-
-    shader.setVec3("material.diffuse", Materials[0].Diffuse);
-    shader.setVec3("material.specular", Materials[0].Specular);
-    // shader.setVec3("Highlight", Materials[0].Highlight); // what the hell is highlight actually
-    shader.setVec3("material.ambient", Materials[0].Diffuse); // Some hack
-    shader.setFloat("material.shininess", Materials[0].Shininess);
-  //}
+      glBindTexture(GL_TEXTURE_2D, Textures[i].id);
+    }
+  } else {
+	  shader.setVec3("material.diffuse", Materials[0].Diffuse);
+	  shader.setVec3("material.specular", Materials[0].Specular);
+	  // shader.setVec3("Highlight", Materials[0].Highlight); // what the hell is highlight actually
+	  shader.setVec3("material.ambient", Materials[0].Diffuse); // Some hack
+	  shader.setFloat("material.shininess", Materials[0].Shininess);
+  }
 
   //Draw le Mesh
   glBindVertexArray(m_VAO);

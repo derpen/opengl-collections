@@ -29,6 +29,7 @@ struct Transform {
   glm::vec3 position; // TODO: should have call this a translation
   glm::vec3 rotation;
   glm::vec3 scale;
+  glm::vec3 direction; // Only used for dir light for now. Should be useful for anything else
 
   //TODO: clean this shit
   glm::mat4 GetModelMatrix(){

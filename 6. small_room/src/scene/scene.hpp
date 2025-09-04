@@ -24,15 +24,21 @@ namespace Scene {
 	};
 
 	struct Light {
-	  // Should have an ID so I can modify existing light on runtime
-	  // THIS IS BASICALLY JUST GameObject, but instead in a different vector
-	  // VERY DIRTY HACK UNTIL I LEARN HOW TO MAKE SCENETREE PROPERLY
-	  bool enabled = true; // for now should only disable rendering the cube and not the light, honestly though they should be two different things lol
-	  std::string name;
-	  unsigned int ObjectVAO;
-	  Shader ObjectShader;
-	  Transform transform;
-	  LightMaterial material;
+		enum LightType {
+			POINT = 0,
+			DIRECTIONAL
+		};
+
+	    // Should have an ID so I can modify existing light on runtime
+	    // THIS IS BASICALLY JUST GameObject, but instead in a different vector
+	    // VERY DIRTY HACK UNTIL I LEARN HOW TO MAKE SCENETREE PROPERLY
+	    bool enabled = true; // for now should only disable rendering the cube and not the light, honestly though they should be two different things lol
+	    std::string name;
+	    LightType lightType;
+	    unsigned int ObjectVAO;
+	    Shader ObjectShader;
+	    Transform transform;
+	    LightMaterial material;
 	};
 
 	//extern std::vector<GameObject> Objects;
@@ -53,6 +59,14 @@ namespace Scene {
 	void AddPointLight(
 		std::string lightName,
 		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
+	);
+
+	void AddDirLight(
+		std::string lightName, 
+		glm::vec3 direction,
+		glm::vec3 ambient,
+		glm::vec3 diffuse,
+		glm::vec3 specular
 	);
 
 	void AddModelToScene(std::string modelName, std::string modelDirectory, std::string VertexShader, std::string FragmentShader, bool flipImage = false);

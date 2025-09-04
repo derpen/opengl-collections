@@ -33,9 +33,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-	// There isn't any diffuse map, so skip
-	FragColor = vec4(material.ambient, 1.0);
-	//FragColor = vec4(vec3(texture(material.diffuse, TexCoords)), 1.0);
+	FragColor = vec4(vec3(texture(material.diffuse, TexCoords)), 1.0);
+
+    vec3 norm = normalize(Normal);
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 result = CalcPointLight(pointLight, norm, FragPos, viewDir);
+    FragColor += vec4(result, 1.0);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {

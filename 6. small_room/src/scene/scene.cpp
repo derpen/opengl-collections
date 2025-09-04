@@ -31,6 +31,10 @@ namespace Scene {
 		//Objects[0].transform.rotation.y += deltaTime; // Works apparently
 
 
+		// Testing light around camera
+		Lights["PointLight1"].transform.position = Camera::Position;
+
+
 		//TODO: why did I do this again?
 		DrawObjects();
 
@@ -129,6 +133,7 @@ namespace Scene {
 	  default_mat.light_quadratic = 0.032f;
 
 	  new_light.material = default_mat;
+	  new_light.lightType = Light::LightType::POINT;
 
 	  // If not initialized
 	  if(Shapes::cube_VAO == 0){
@@ -137,8 +142,46 @@ namespace Scene {
 
 	  new_light.ObjectVAO = Shapes::cube_VAO;
 
-	  //Lights.push_back(new_light);
-	  Lights.emplace(new_light.name, new_light); // Trying to one instead
+	  Lights.emplace(new_light.name, new_light); // Trying map
+	}
+
+	void AddDirLight(
+		std::string lightName, 
+		glm::vec3 direction,
+		glm::vec3 ambient,
+		glm::vec3 diffuse,
+		glm::vec3 specular
+	) {
+		Light new_light;
+		new_light.name = lightName.c_str();
+
+		Transform transform;
+		transform.direction = direction;
+		transform.rotation = glm::vec3(0.0f);
+		transform.scale = glm::vec3(1.0f);
+
+		new_light.transform = transform;
+
+		// Need a better way to handle directory
+		// Probably in release mode could have the assets directory directly copied inside the final folder
+		Shader point_light(PROJECT_DIR"../assets/shaders/light_cube.vert", PROJECT_DIR"../assets/shaders/light_cube.frag");
+		new_light.ObjectShader = point_light;
+
+		LightMaterial default_mat;
+		default_mat.light_specular = specular;
+
+		// For now just white
+		glm::vec3 lightColor = glm::vec3(1.0f);
+		glm::vec3 diffuseColor = lightColor   * diffuse; // decrease the influence
+		glm::vec3 ambientColor = diffuseColor * ambient; // low influence
+		default_mat.lightColor = lightColor;
+		default_mat.diffuseColor = diffuseColor;
+		default_mat.ambientColor = ambientColor;
+
+		new_light.material = default_mat;
+		new_light.lightType = Light::LightType::DIRECTIONAL;
+
+		Lights.emplace(new_light.name, new_light);
 	}
 
 	void AddModelToScene(std::string modelName, std::string modelDirectory, std::string VertexShader, std::string FragmentShader, bool flipImage){
@@ -241,23 +284,30 @@ namespace Scene {
 	}
 
 	void HandleLightingUniforms(Shader currentShader, Light currentLight, GameObject currentObject){
-	  // BIG TODO:
-	  // For now we just assume one point ligth in the Scene
-	  // Later will have to handle multiple ones
-	  // and multiple ligth casters too
-	  // Oh boy...
 	  currentShader.use(); // Is using it again necessary lol
-	  currentShader.setVec3("material.specular", currentObject.material.object_specular);
-	  currentShader.setFloat("material.shininess", currentObject.material.object_shininess);
-	  glm::mat4 lightModel = currentLight.transform.GetModelMatrix(); // This feels so ugly lol
-	  currentShader.setVec3("pointLight.position", glm::vec3(lightModel[3]));
-	  currentShader.setVec3("viewPos", Camera::Position); // TODO: can this be cached somehow?
-	  currentShader.setVec3("pointLight.lightColor", currentLight.material.lightColor);
-	  currentShader.setVec3("pointLight.diffuse", currentLight.material.diffuseColor);
-	  currentShader.setVec3("pointLight.ambient", currentLight.material.ambientColor);
-	  currentShader.setVec3("pointLight.specular", currentLight.material.light_specular);
-	  currentShader.setFloat("pointLight.constant", currentLight.material.light_constant);
-	  currentShader.setFloat("pointLight.linear", currentLight.material.light_linear);
-	  currentShader.setFloat("pointLight.quadratic", currentLight.material.light_quadratic);
+	  if (currentLight.lightType == Light::LightType::POINT) {
+		  // Some bullshit with ambient
+		  // This codebase has become too unmanageable, rewrite soon once I understand OpenGL more
+		  currentShader.setFloat("ambientStrength", 0.5f);
+		  currentShader.setVec3("ambientColor", glm::vec3(0.5f, 0.5f, 0.5f));
+		  currentShader.setVec3("material.specular", currentObject.material.object_specular);
+		  currentShader.setFloat("material.shininess", currentObject.material.object_shininess);
+		  glm::mat4 lightModel = currentLight.transform.GetModelMatrix(); // This feels so ugly lol
+		  currentShader.setVec3("pointLight.position", glm::vec3(lightModel[3]));
+		  currentShader.setVec3("viewPos", Camera::Position); // TODO: can this be cached somehow?
+		  currentShader.setVec3("pointLight.lightColor", currentLight.material.lightColor);
+		  currentShader.setVec3("pointLight.diffuse", currentLight.material.diffuseColor);
+		  currentShader.setVec3("pointLight.ambient", currentLight.material.ambientColor);
+		  currentShader.setVec3("pointLight.specular", currentLight.material.light_specular);
+		  currentShader.setFloat("pointLight.constant", currentLight.material.light_constant);
+		  currentShader.setFloat("pointLight.linear", currentLight.material.light_linear);
+		  currentShader.setFloat("pointLight.quadratic", currentLight.material.light_quadratic);
+	  }
+	  else if (currentLight.lightType == Light::LightType::DIRECTIONAL) {
+		  currentShader.setVec3("dirLight.direction", currentLight.transform.direction);
+		  currentShader.setVec3("dirLight.ambient", currentLight.material.ambientColor);
+          currentShader.setVec3("dirLight.diffuse", currentLight.material.diffuseColor);
+          currentShader.setVec3("dirLight.specular", currentLight.material.light_specular);
+	  }
 	}
 }

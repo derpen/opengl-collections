@@ -129,5 +129,11 @@
     <None Include="..\assets\shaders\triangle.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\assets\shaders\apartment.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\apartment.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

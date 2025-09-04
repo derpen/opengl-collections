@@ -53,6 +53,9 @@ int init_gl(float width, float height, const char* title){
 
   glEnable(GL_DEPTH_TEST);
 
+	// This should just contain actual loop
+	// Why tf initialization is done here too lol
+
   // TODO:
   // Plz move this somewhere else
   // Why tf don't I have a way to move around objects easily lol
@@ -64,21 +67,27 @@ int init_gl(float width, float height, const char* title){
   //Scene::AddModelToScene("Osaka_Collada", PROJECT_DIR"../assets/models/osaka/osaka_collada.dae", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Osaka_FBX", PROJECT_DIR"../assets/models/osaka/osaka_fbx.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Apartment", PROJECT_DIR"../assets/models/room/apartment.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  Scene::AddModelToScene("Apartment_OBJ", PROJECT_DIR"../assets/models/room/apartment.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+  Scene::AddModelToScene("Apartment_OBJ", PROJECT_DIR"../assets/models/room/apartment.obj", PROJECT_DIR"../assets/shaders/apartment.vert", PROJECT_DIR"../assets/shaders/apartment.frag");
 
   //Scene::AddModelToScene("TrapRoom", PROJECT_DIR"../assets/models/trap_room/room_one.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
   //Scene::AddModelToScene("Chair", PROJECT_DIR"../assets/models/trap_room/just_chair.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
 #else
   // TODO
   // Handle this for GNU/Linux
-  Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
+  //Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
 #endif
 
   Scene::AddPointLight("PointLight1", glm::vec3(0.0f, 0.0f, 0.0f)); // Need to automate naming?
+  Scene::AddDirLight(
+      "DirLight1",
+      glm::vec3(-0.2f, -1.0f, -0.3f), // direction
+      glm::vec3(0.05f, 0.05f, 0.05f), // ambient
+      glm::vec3(0.4f, 0.4f, 0.4f), // diffuse
+      glm::vec3(0.5f, 0.5f, 0.5f) // specular
+      );
+
   Scene::Lights["PointLight1"].enabled = false;
-  //Scene::Objects["Apartment"].transform.position = glm::vec3(5.0f, 0.0f, 0.0f);
-  Scene::Objects["Apartment_OBJ"].transform.position = glm::vec3(3.0f, 0.0f, 0.0f);
-  //Scene::Objects["Osaka_OBJ"].transform.position = glm::vec3(-5.0f, 0.0f, 0.0f);
+  Scene::Objects["Apartment_OBJ"].transform.position = glm::vec3(0.0f, -3.0f, 0.0f);
 
   Camera::InitCamera();
 
