@@ -12,13 +12,16 @@
 	#include <GLFW/glfw3.h>
 #endif
 
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+
 namespace Scene {
 
     std::unordered_map<std::string, GameObject> Objects;
 	std::unordered_map<std::string, Light> Lights;
 
 	void DrawScene(float deltaTime){
-
 		//// Testing some transform, there's only one object right now (Osaka)
 		//glm::mat4 newModelMatrix = glm::rotate(
 		//    Objects[0].transform.GetModelMatrix(),
@@ -34,10 +37,21 @@ namespace Scene {
 		// Testing light around camera
 		Lights["PointLight1"].transform.position = Camera::Position;
 
-
 		//TODO: why did I do this again?
 		DrawObjects();
 
+		// ImGUI, should be done last
+        ImGui_ImplOpenGL3_NewFrame();
+	    ImGui_ImplGlfw_NewFrame();
+	    ImGui::NewFrame();
+
+	    ImGui::Begin("Window yay");
+	    ImGui::Text("Text here");
+	    ImGui::End();
+
+
+	    ImGui::Render();
+	    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void AddObjectToScene(){
@@ -288,7 +302,7 @@ namespace Scene {
 	  if (currentLight.lightType == Light::LightType::POINT) {
 		  // Some bullshit with ambient
 		  // This codebase has become too unmanageable, rewrite soon once I understand OpenGL more
-		  currentShader.setFloat("ambientStrength", 0.5f);
+		  currentShader.setFloat("ambientStrength", 0.2f);
 		  currentShader.setVec3("ambientColor", glm::vec3(0.5f, 0.5f, 0.5f));
 		  currentShader.setVec3("material.specular", currentObject.material.object_specular);
 		  currentShader.setFloat("material.shininess", currentObject.material.object_shininess);

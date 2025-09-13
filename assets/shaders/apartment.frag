@@ -58,12 +58,12 @@ void main()
     FragColor += vec4(ambientStrength * ambientColor,1.0);
 
     // Directional Light
-    FragColor += vec4(CalcDirLight(dirLight, norm, viewDir), 1.0);
+    // FragColor += vec4(CalcDirLight(dirLight, norm, viewDir), 1.0);
 
-    //// Single point light
-    //// Currently giga broken, very shit
-    //vec3 result = CalcPointLight(pointLight, norm, FragPos, viewDir);
-    //FragColor += vec4(result, 1.0);
+    // Single point light
+    // Currently giga broken, very shit
+    vec3 result = CalcPointLight(pointLight, norm, FragPos, viewDir);
+    FragColor += vec4(result, 1.0);
 }
 
 // calculates the color when using a directional light.

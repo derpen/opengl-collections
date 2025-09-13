@@ -15,103 +15,125 @@
 #include "../utils/shapes/shapes.hpp"
 #include "../scene/camera.hpp"
 #include "../scene/scene.hpp"
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+
 
 namespace gl_loop {
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+bool mouseCaptured = true;
 
 int init_gl(float width, float height, const char* title){
-  std::cout << "Sometimes, I felt like killing myself than use Visual Studio again... \n";
-  std::cout << "Initializing gl...\n";
-  glfwInit();
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    std::cout << "Sometimes, I felt like killing myself than use Visual Studio again... \n";
+    std::cout << "Initializing gl...\n";
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  std::cout << "Creating window...\n";
-  GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
-  if(window == NULL){
-    std::cout << "Failed to create GLFW window\n";
-    glfwTerminate();
-    return -1;
-  }
+    std::cout << "Creating window...\n";
+    GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
+    if(window == NULL){
+      std::cout << "Failed to create GLFW window\n";
+      glfwTerminate();
+      return -1;
+    }
 
-  Config::SetWindowSize(width, height);
+    Config::SetWindowSize(width, height);
 
-  glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(window);
 
-  if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-    std::cout << "Failed to initialize GLAD\n";
-    return -1;
-  }
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+        std::cout << "Failed to initialize GLAD\n";
+        return -1;
+    }
 
-  glViewport(0, 0, 800, 600);
-  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-  glfwSetCursorPosCallback(window, mouse_callback);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-  glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
 	// This should just contain actual loop
 	// Why tf initialization is done here too lol
 
-  // TODO:
-  // Plz move this somewhere else
-  // Why tf don't I have a way to move around objects easily lol
-  // Good lord this is awful to see
-  /*Scene::AddCube("cube1");*/
+    // TODO:
+    // Plz move this somewhere else
+    // Why tf don't I have a way to move around objects easily lol
+    // Good lord this is awful to see
+    /*Scene::AddCube("cube1");*/
 #ifdef _WIN32
-  // So apparently FBX and OBJ works out of the box, while GLB just outright dies
-  //Scene::AddModelToScene("Osaka_OBJ", PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  //Scene::AddModelToScene("Osaka_Collada", PROJECT_DIR"../assets/models/osaka/osaka_collada.dae", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  //Scene::AddModelToScene("Osaka_FBX", PROJECT_DIR"../assets/models/osaka/osaka_fbx.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  //Scene::AddModelToScene("Apartment", PROJECT_DIR"../assets/models/room/apartment.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  Scene::AddModelToScene("Apartment_OBJ", PROJECT_DIR"../assets/models/room/apartment.obj", PROJECT_DIR"../assets/shaders/apartment.vert", PROJECT_DIR"../assets/shaders/apartment.frag");
+    // So apparently FBX and OBJ works out of the box, while GLB just outright dies
+    //Scene::AddModelToScene("Osaka_OBJ", PROJECT_DIR"../assets/models/osaka/osaka-assimp.obj", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+    //Scene::AddModelToScene("Osaka_Collada", PROJECT_DIR"../assets/models/osaka/osaka_collada.dae", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+    //Scene::AddModelToScene("Osaka_FBX", PROJECT_DIR"../assets/models/osaka/osaka_fbx.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+    //Scene::AddModelToScene("Apartment", PROJECT_DIR"../assets/models/room/apartment.fbx", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+    Scene::AddModelToScene("Apartment_OBJ", PROJECT_DIR"../assets/models/room/apartment.obj", PROJECT_DIR"../assets/shaders/apartment.vert", PROJECT_DIR"../assets/shaders/apartment.frag");
 
-  //Scene::AddModelToScene("TrapRoom", PROJECT_DIR"../assets/models/trap_room/room_one.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
-  //Scene::AddModelToScene("Chair", PROJECT_DIR"../assets/models/trap_room/just_chair.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+    //Scene::AddModelToScene("TrapRoom", PROJECT_DIR"../assets/models/trap_room/room_one.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
+    //Scene::AddModelToScene("Chair", PROJECT_DIR"../assets/models/trap_room/just_chair.glb", PROJECT_DIR"../assets/shaders/osaka.vert", PROJECT_DIR"../assets/shaders/osaka.frag");
 #else
-  // TODO
-  // Handle this for GNU/Linux
-  //Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
+    // TODO
+    // Handle this for GNU/Linux
+    //Scene::AddModelToScene("assets/models/osaka/osaka-assimp.obj", "src/utils/shapes/shaders/osaka.vert", "src/utils/shapes/shaders/osaka.frag");
 #endif
 
-  Scene::AddPointLight("PointLight1", glm::vec3(0.0f, 0.0f, 0.0f)); // Need to automate naming?
-  Scene::AddDirLight(
-      "DirLight1",
-      glm::vec3(-0.2f, -1.0f, -0.3f), // direction
-      glm::vec3(0.05f, 0.05f, 0.05f), // ambient
-      glm::vec3(0.4f, 0.4f, 0.4f), // diffuse
-      glm::vec3(0.5f, 0.5f, 0.5f) // specular
-      );
+    Scene::AddPointLight("PointLight1", glm::vec3(0.0f, 0.0f, 0.0f)); // Need to automate naming?
+    //Scene::AddDirLight(
+    //    "DirLight1",
+    //    glm::vec3(-0.2f, -1.0f, -0.3f), // direction
+    //    glm::vec3(0.05f, 0.05f, 0.05f), // ambient
+    //    glm::vec3(0.4f, 0.4f, 0.4f), // diffuse
+    //    glm::vec3(0.5f, 0.5f, 0.5f) // specular
+    //    );
 
-  Scene::Lights["PointLight1"].enabled = false;
-  Scene::Objects["Apartment_OBJ"].transform.position = glm::vec3(0.0f, -3.0f, 0.0f);
+    Scene::Lights["PointLight1"].enabled = false;
+    Scene::Objects["Apartment_OBJ"].transform.position = glm::vec3(0.0f, -2.0f, 0.0f);
 
-  Camera::InitCamera();
+    Camera::InitCamera();
 
-  while(!glfwWindowShouldClose(window)){
-    process_input(window);
-    glfwPollEvents();
 
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // ImGUI
+    IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Time
-    float currentFrame = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+	ImGui_ImplOpenGL3_Init();
+    while(!glfwWindowShouldClose(window)){
+        //
+        process_input(window);
+        glfwPollEvents();
 
-    Scene::DrawScene(deltaTime);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glfwSwapBuffers(window);
-  }
+        // Time
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
-  Shapes::clean_up();
+        Scene::DrawScene(deltaTime);
 
-  glfwTerminate();
-  return 0;
+        glfwSwapBuffers(window);
+    }
+
+    Shapes::clean_up();
+
+    // ImGui Clean up
+    ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+    glfwTerminate();
+    return 0;
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height){
@@ -122,7 +144,9 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height){
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos){
-  Camera::ProcessMouseMovement(xpos, ypos);
+    if (mouseCaptured) {
+        Camera::ProcessMouseMovement(xpos, ypos);
+    }
 }
 
 void process_input(GLFWwindow *window){
@@ -143,6 +167,17 @@ void process_input(GLFWwindow *window){
 
   if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     Camera::ProcessKeyboard(RIGHT, deltaTime);
+
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+      if (mouseCaptured) {
+          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+      }
+      else {
+          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+      }
+
+      mouseCaptured = !mouseCaptured;
+  }
 }
 }
 
