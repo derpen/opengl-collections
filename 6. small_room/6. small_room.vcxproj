@@ -35,6 +35,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\opengl\config.cpp" />
     <ClCompile Include="src\opengl\loop.cpp" />
+    <ClCompile Include="src\opengl\shadow\OmniDirectionalShadowMapping.cpp" />
     <ClCompile Include="src\scene\camera.cpp" />
     <ClCompile Include="src\scene\object.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="src\input\input.hpp" />
     <ClInclude Include="src\opengl\config.hpp" />
     <ClInclude Include="src\opengl\loop.hpp" />
+    <ClInclude Include="src\opengl\shadow\OmniDirectionalShadowMapping.h" />
     <ClInclude Include="src\scene\camera.hpp" />
     <ClInclude Include="src\scene\object.hpp" />
     <ClInclude Include="src\scene\scene.hpp" />

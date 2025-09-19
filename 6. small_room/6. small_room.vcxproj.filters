@@ -101,6 +101,9 @@
     <ClCompile Include="..\vendor\include\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\opengl\shadow\OmniDirectionalShadowMapping.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\textures\textures.hpp" />
@@ -148,6 +151,7 @@
     <ClInclude Include="..\vendor\include\imgui\backends\imgui_impl_glfw.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\opengl\shadow\OmniDirectionalShadowMapping.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\assets\shaders\cube.frag">

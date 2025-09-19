@@ -156,6 +156,9 @@ namespace Scene {
 
 	  new_light.ObjectVAO = Shapes::cube_VAO;
 
+	  // Shadow map
+	  new_light.shadowMap = OmniDirectionalShadowMapping(); // Init
+
 	  Lights.emplace(new_light.name, new_light); // Trying map
 	}
 

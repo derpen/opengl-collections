@@ -5,6 +5,7 @@
 #include "../shaders/shaders.hpp"
 #include "../assimp/model.h"
 #include "object.hpp"
+#include "../opengl/shadow/OmniDirectionalShadowMapping.h"
 
 namespace Scene {
 	// This will get bigger as time goes, oh god
@@ -39,6 +40,7 @@ namespace Scene {
 	    Shader ObjectShader;
 	    Transform transform;
 	    LightMaterial material;
+		OmniDirectionalShadowMapping shadowMap;
 	};
 
 	//extern std::vector<GameObject> Objects;

@@ -25,6 +25,7 @@ namespace gl_loop {
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 bool mouseCaptured = true;
+bool mouseCaptureButtonPressed = false;
 
 int init_gl(float width, float height, const char* title){
     std::cout << "Sometimes, I felt like killing myself than use Visual Studio again... \n";
@@ -57,6 +58,7 @@ int init_gl(float width, float height, const char* title){
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
 	// This should just contain actual loop
 	// Why tf initialization is done here too lol
@@ -168,15 +170,15 @@ void process_input(GLFWwindow *window){
   if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     Camera::ProcessKeyboard(RIGHT, deltaTime);
 
-  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-      if (mouseCaptured) {
-          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-      }
-      else {
-          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-      }
-
-      mouseCaptured = !mouseCaptured;
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && !mouseCaptureButtonPressed) {
+	  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+      mouseCaptured = false;
+      mouseCaptureButtonPressed = true;
+  }
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE) {
+	  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+      mouseCaptured = true;
+      mouseCaptureButtonPressed = false;
   }
 }
 }
